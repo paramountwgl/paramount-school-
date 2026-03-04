@@ -36,23 +36,22 @@
         .name-text { font-weight: 600; font-size: 16px; }
         .present-toggle { width: 28px; height: 28px; accent-color: var(--forest); cursor: pointer; }
 
-        .submit-btn { 
-            background: #1D6F42; color: white; border: none; padding: 18px; 
-            border-radius: 35px; width: 100%; font-weight: bold; font-size: 16px; 
-            cursor: pointer; margin-top: 25px; display: none; align-items: center; 
-            justify-content: center; gap: 10px;
+        .submit-btn, .reset-btn { 
+            border: none; padding: 18px; border-radius: 35px; width: 100%; 
+            font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 25px; 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
+        .submit-btn { background: #1D6F42; color: white; display: none; }
+        .reset-btn { background: var(--forest); color: white; margin-top: 15px; }
 
-        /* THANK YOU MESSAGE STYLING */
-        #thankYouMessage {
+        #thankYouSection {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
             background: #e8f5e9;
             color: #2e7d32;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-top: 20px;
-            font-weight: bold;
         }
 
         @media (max-width: 768px) {
@@ -76,33 +75,39 @@
 </header>
 
 <div class="container">
-    <div class="card" id="mainCard">
+    <div class="card">
         <h2>Mark Attendance</h2>
         
-        <label>Teacher Name</label>
-        <select id="teacherName">
-            <option value="">-- Select Teacher --</option>
-            <option value="Mr. Shaik Ahmad">Mr. Shaik Ahmad</option>
-            <option value="Ms. Geethika">Ms. Geethika</option>
-        </select>
+        <div id="formContent">
+            <label>Teacher Name</label>
+            <select id="teacherName">
+                <option value="">-- Select Teacher --</option>
+                <option value="Mr. Shaik Ahmad">Mr. Shaik Ahmad</option>
+                <option value="Ms. Geethika">Ms. Geethika</option>
+            </select>
 
-        <label>Class</label>
-        <select id="classSelect" onchange="generateList()">
-            <option value="">-- Choose Class --</option>
-            <option value="10th-A">10th Grade - A</option>
-            <option value="9th-B">9th Grade - B</option>
-        </select>
+            <label>Class</label>
+            <select id="classSelect" onchange="generateList()">
+                <option value="">-- Choose Class --</option>
+                <option value="10th-A">10th Grade - A</option>
+                <option value="9th-B">9th Grade - B</option>
+            </select>
 
-        <div id="listContainer"></div>
+            <div id="listContainer"></div>
 
-        <button id="submitBtn" class="submit-btn" onclick="submitAttendance()">
-            <i class="fas fa-file-excel"></i> Submit Attendance
-        </button>
+            <button id="submitBtn" class="submit-btn" onclick="submitAttendance()">
+                <i class="fas fa-file-excel"></i> Submit Attendance
+            </button>
+        </div>
 
-        <div id="thankYouMessage">
-            <i class="fas fa-check-circle" style="font-size: 24px; margin-bottom: 10px;"></i><br>
-            Thank you for submitting!<br>
-            <span style="font-size: 12px; font-weight: normal;">Your Excel report is downloading...</span>
+        <div id="thankYouSection">
+            <i class="fas fa-check-circle" style="font-size: 40px; margin-bottom: 15px;"></i><br>
+            <strong style="font-size: 20px;">Thank you for submitting!</strong><br>
+            <p style="font-size: 14px; font-weight: normal; margin: 10px 0;">Your Excel report is downloading...</p>
+            
+            <button class="reset-btn" onclick="resetForm()">
+                <i class="fas fa-redo"></i> Take Another Attendance
+            </button>
         </div>
     </div>
 </div>
@@ -110,25 +115,12 @@
 <div id="exportTableWrapper">
     <table id="attendanceExcelTable" border="1" style="border-collapse: collapse;">
         <thead>
-            <tr>
-                <th colspan="4" style="background-color: #006633; color: #ffffff; font-size: 18pt; height: 45pt; text-align: center;">PARAMOUNT ENGLISH MEDIUM SCHOOL</th>
-            </tr>
-            <tr>
-                <th colspan="4" style="background-color: #ffd700; color: #000000; font-size: 12pt; height: 25pt; text-align: center;">TEACHERS OFFICIAL ATTENDANCE PORTAL</th>
-            </tr>
-            <tr>
-                <th colspan="2" id="xl-date" style="text-align: left; padding: 5px;">Date: </th>
-                <th colspan="2" id="xl-teacher" style="text-align: left; padding: 5px;">Teacher: </th>
-            </tr>
-            <tr>
-                <th colspan="2" id="xl-class" style="text-align: left; padding: 5px;">Class: </th>
-                <th colspan="2" style="text-align: left; padding: 5px;">Status: FINALIZED</th>
-            </tr>
+            <tr><th colspan="4" style="background-color: #006633; color: #ffffff; font-size: 18pt; height: 45pt; text-align: center;">PARAMOUNT ENGLISH MEDIUM SCHOOL</th></tr>
+            <tr><th colspan="4" style="background-color: #ffd700; color: #000000; font-size: 12pt; height: 25pt; text-align: center;">TEACHERS OFFICIAL ATTENDANCE PORTAL</th></tr>
+            <tr><th colspan="2" id="xl-date" style="text-align: left; padding: 5px;">Date: </th><th colspan="2" id="xl-teacher" style="text-align: left; padding: 5px;">Teacher: </th></tr>
+            <tr><th colspan="2" id="xl-class" style="text-align: left; padding: 5px;">Class: </th><th colspan="2" style="text-align: left; padding: 5px;">Status: FINALIZED</th></tr>
             <tr style="background-color: #eeeeee; font-weight: bold;">
-                <th style="width: 50px;">S.No</th>
-                <th style="width: 250px;">STUDENT NAME</th>
-                <th style="width: 100px;">STATUS</th>
-                <th style="width: 150px;">REMARKS</th>
+                <th style="width: 50px;">S.No</th><th style="width: 250px;">STUDENT NAME</th><th style="width: 100px;">STATUS</th><th style="width: 150px;">REMARKS</th>
             </tr>
         </thead>
         <tbody id="xl-body"></tbody>
@@ -145,11 +137,7 @@ function generateList() {
     const cls = document.getElementById('classSelect').value;
     const listDiv = document.getElementById('listContainer');
     const submitBtn = document.getElementById('submitBtn');
-    const thanks = document.getElementById('thankYouMessage');
-    
     listDiv.innerHTML = "";
-    thanks.style.display = "none"; // Hide message if changing class
-    
     if (schoolData[cls]) {
         schoolData[cls].forEach(name => {
             listDiv.innerHTML += `
@@ -165,53 +153,45 @@ function generateList() {
 function submitAttendance() {
     const teacher = document.getElementById('teacherName').value;
     const cls = document.getElementById('classSelect').value;
-    const today = new Date();
-    const dateStr = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
-    // Display Thank You Message
-    document.getElementById('submitBtn').style.display = "none";
-    document.getElementById('thankYouMessage').style.display = "block";
+    // Hide input form and show Thank You section
+    document.getElementById('formContent').style.display = "none";
+    document.getElementById('thankYouSection').style.display = "block";
 
-    // Prepare Hidden Table for Export
+    // Prepare Hidden Table
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
     document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
     document.getElementById('xl-class').innerText = "Class: " + cls;
-
     const xlBody = document.getElementById('xl-body');
     xlBody.innerHTML = "";
-
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.querySelector('.name-text').innerText;
-        const isPresent = row.querySelector('.present-toggle').checked;
-        const status = isPresent ? "PRESENT" : "ABSENT";
-        const color = isPresent ? "#c8e6c9" : "#ffcdd2";
-
-        xlBody.innerHTML += `
-            <tr>
-                <td style="text-align: center;">${index + 1}</td>
-                <td>${name}</td>
-                <td style="text-align: center; background-color: ${color}; font-weight: bold;">${status}</td>
-                <td></td>
-            </tr>`;
+        const status = row.querySelector('.present-toggle').checked ? "PRESENT" : "ABSENT";
+        const color = row.querySelector('.present-toggle').checked ? "#c8e6c9" : "#ffcdd2";
+        xlBody.innerHTML += `<tr><td style="text-align: center;">${index+1}</td><td>${name}</td><td style="text-align: center; background-color: ${color}; font-weight: bold;">${status}</td><td></td></tr>`;
     });
 
-    // Mobile Optimized Download Method
-    const table = document.getElementById("attendanceExcelTable");
-    const html = table.outerHTML;
-    const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>${html}</body></html>`;
-
-    const blob = new Blob([template], { type: 'application/vnd.ms-excel' });
-    const url = URL.createObjectURL(blob);
+    // Excel Download
+    const html = document.getElementById("attendanceExcelTable").outerHTML;
+    const blob = new Blob([`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>${html}</body></html>`], { type: 'application/vnd.ms-excel' });
     const link = document.createElement("a");
-    link.href = url;
+    link.href = URL.createObjectURL(blob);
     link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
+    setTimeout(() => link.click(), 500);
+}
+
+function resetForm() {
+    // Reset inputs and show form again
+    document.getElementById('teacherName').value = "";
+    document.getElementById('classSelect').value = "";
+    document.getElementById('listContainer').innerHTML = "";
+    document.getElementById('submitBtn').style.display = "none";
     
-    // Slight delay to ensure UI update before download starts
-    setTimeout(() => {
-        link.click();
-    }, 800);
+    document.getElementById('thankYouSection').style.display = "none";
+    document.getElementById('formContent').style.display = "block";
 }
 </script>
 </body>
