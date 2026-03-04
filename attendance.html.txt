@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Attendance Portal | Paramount School</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
+        
+        /* Navigation / Header */
+        header { 
+            background: #006633; /* Forest Green */
+            color: white; 
+            padding: 20px; 
+            text-align: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .back-link { 
+            display: inline-block; 
+            color: white; 
+            text-decoration: none; 
+            margin-bottom: 15px; 
+            font-size: 0.9rem; 
+            border: 1px solid white; 
+            padding: 5px 15px; 
+            border-radius: 20px;
+        }
+
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+
+        /* Dashboard Card */
+        .card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+        h2 { color: #006633; margin-top: 0; text-align: center; border-bottom: 2px solid #ffd700; padding-bottom: 10px; }
+        
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin: 15px 0 5px; text-transform: uppercase; }
+        select { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 1px solid #ddd; 
+            font-size: 16px; 
+            background: #fafafa;
+            outline: none;
+        }
+
+        /* Attendance List */
+        .list-container { margin-top: 25px; border-top: 1px solid #eee; }
+        .student-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 5px; 
+            border-bottom: 1px solid #f9f9f9; 
+        }
+        .student-name { font-weight: 600; color: #444; }
+        .present-checkbox { width: 28px; height: 28px; accent-color: #006633; cursor: pointer; }
+
+        /* Summary Box */
+        .summary-box { 
+            background: #e8f5e9; 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-top: 30px; 
+            text-align: center; 
+            border: 1px solid #c8e6c9;
+        }
+        #statsText { font-size: 20px; font-weight: 800; color: #004d40; margin-bottom: 15px; }
+        
+        .whatsapp-btn { 
+            background: #25D366; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 35px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 16px; 
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            transition: 0.3s;
+        }
+        .whatsapp-btn:hover { background: #128c7e; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+    <h1 style="margin: 0; font-size: 1.5rem;">PARAMOUNT SCHOOL</h1>
+    <p style="margin: 5px 0 0; font-size: 0.8rem; opacity: 0.9;">TEACHER ATTENDANCE PORTAL</p>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>Daily Attendance</h2>
+        
+        <label>Teacher Name</label>
+        <select id="teacherName">
+            <option value="">-- Select Your Name --</option>
+            <option value="Mr. Shaik Ahmad">Mr. Shaik Ahmad</option>
+            <option value="Ms. Geethika">Ms. Geethika</option>
+        </select>
+
+        <label>Class / Section</label>
+        <select id="classSelect" onchange="loadStudents()">
+            <option value="">-- Select Class --</option>
+            <option value="10th-A">10th Grade - A</option>
+            <option value="9th-B">9th Grade - B</option>
+            <option value="8th-C">8th Grade - C</option>
+        </select>
+
+        <div id="attendanceArea" style="display:none;">
+            <div class="list-container" id="studentList">
+                </div>
+
+            <div class="summary-box">
+                <div id="statsText">Present: 0 | Absent: 0</div>
+                <button onclick="sendToCorrespondent()" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> Send to Correspondent
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// TEACHER'S STUDENT DATABASE
+const schoolRecords = {
+    "10th-A": ["Shaik Tauseef Ali", "Student Name 2", "Student Name 3", "Student Name 4"],
+    "9th-B": ["Shaik Minhaj Ali", "Student Name B2", "Student Name B3"],
+    "8th-C": ["Student C1", "Student C2", "Student C3"]
+};
+
+function loadStudents() {
+    const cls = document.getElementById('classSelect').value;
+    const listDiv = document.getElementById('studentList');
+    const area = document.getElementById('attendanceArea');
+    
+    listDiv.innerHTML = ""; // Clear current list
+
+    if (schoolRecords[cls]) {
+        schoolRecords[cls].forEach((name, index) => {
+            listDiv.innerHTML += `
+                <div class="student-row">
+                    <span class="student-name">${index + 1}. ${name}</span>
+                    <input type="checkbox" class="present-checkbox" checked onchange="updateSummary()">
+                </div>`;
+        });
+        area.style.display = "block";
+        updateSummary();
+    } else {
+        area.style.display = "none";
+    }
+}
+
+function updateSummary() {
+    const total = document.querySelectorAll('.present-checkbox').length;
+    const present = document.querySelectorAll('.present-checkbox:checked').length;
+    const absent = total - present;
+    document.getElementById('statsText').innerText = `Present: ${present} | Absent: ${absent}`;
+}
+
+function sendToCorrespondent() {
+    const teacher = document.getElementById('teacherName').value;
+    const cls = document.getElementById('classSelect').value;
+    
+    if(!teacher || !cls) {
+        alert("Please select Teacher Name and Class.");
+        return;
+    }
+
+    const total = document.querySelectorAll('.present-checkbox').length;
+    const present = document.querySelectorAll('.present-checkbox:checked').length;
+    const absent = total - present;
+    
+    let absentNames = [];
+    document.querySelectorAll('.student-row').forEach(row => {
+        if(!row.querySelector('input').checked) {
+            // Remove number and dot from name
+            let name = row.querySelector('.student-name').innerText.split(". ")[1];
+            absentNames.push(name);
+        }
+    });
+
+    const absenteeList = absentNames.length > 0 ? absentNames.join(", ") : "All Present";
+    const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    // FORMATTED MESSAGE FOR SHAIK TAUSEEF ALI
+    const message = `*PARAMOUNT SCHOOL ATTENDANCE*%0A` +
+                    `----------------------------%0A` +
+                    `*Teacher:* ${teacher}%0A` +
+                    `*Class:* ${cls}%0A` +
+                    `*Date:* ${today}%0A` +
+                    `----------------------------%0A` +
+                    `*Total Students:* ${total}%0A` +
+                    `*Present:* ${present}%0A` +
+                    `*Absent:* ${absent}%0A%0A` +
+                    `*Absentees:* ${absenteeList}%0A` +
+                    `----------------------------%0A` +
+                    `_Generated via Teacher Portal_`;
+
+    // Opens WhatsApp to your specific number
+    const whatsappLink = `https://wa.me/919550791538?text=${message}`;
+    window.open(whatsappLink, '_blank');
+}
+</script>
+
+</body>
+</html>
