@@ -11,32 +11,61 @@
         :root { --forest: #006633; --gold: #ffd700; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
+        /* RESPONSIVE HEADER */
         header { 
             background: var(--forest); 
             color: white; 
-            padding: 30px 5%; 
+            padding: 20px 5%; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             gap: 20px;
+            flex-wrap: wrap; /* Allows wrapping on small screens */
         }
         .logo-img { height: 85px; width: auto; display: block; }
         .school-info { text-align: left; }
-        .school-name { font-size: 2.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
-        .school-tagline { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; font-weight: 500; }
+        .school-name { font-size: clamp(1.2rem, 5vw, 2.2rem); font-weight: 900; margin: 0; white-space: normal; }
+        .school-tagline { font-size: clamp(0.8rem, 3vw, 1.1rem); opacity: 0.9; margin-top: 5px; font-weight: 500; }
 
-        .container { max-width: 500px; margin: 20px auto; padding: 15px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
+        .container { max-width: 600px; margin: 10px auto; padding: 10px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-top: 0; }
         
-        select { width: 100%; padding: 12px; margin: 10px 0 20px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; }
-        .student-row { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #f0f0f0; }
-        .present-toggle { width: 25px; height: 25px; accent-color: var(--forest); cursor: pointer; }
+        label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 5px; }
+        select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; background: #fff; }
+        
+        /* MOBILE OPTIMIZED ROWS */
+        .student-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 15px 10px; 
+            border-bottom: 1px solid #f0f0f0; 
+        }
+        .name-text { font-size: 16px; font-weight: 600; color: #333; }
+        .present-toggle { width: 28px; height: 28px; accent-color: var(--forest); cursor: pointer; }
 
         .summary-report { background: #e8f5e9; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; text-align: center; }
-        .action-btn { border: none; padding: 15px; border-radius: 35px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* ACTION BUTTONS */
+        .action-btn { 
+            border: none; padding: 15px; border-radius: 35px; width: 100%; 
+            font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 12px; 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: transform 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
         .excel-btn { background: #1D6F42; color: white; }
         .whatsapp-btn { background: #25D366; color: white; }
+
+        /* MOBILE SPECIFIC ADJUSTMENTS */
+        @media (max-width: 600px) {
+            header { flex-direction: column; text-align: center; padding: 15px; gap: 10px; }
+            .school-info { text-align: center; }
+            .logo-img { height: 60px; }
+            .container { margin: 0; padding: 15px; }
+            .student-row { padding: 18px 5px; } /* Larger touch area for mobile */
+        }
 
         #exportTableWrapper { display: none; }
     </style>
@@ -55,14 +84,14 @@
     <div class="card">
         <h2>Mark Attendance</h2>
         
-        <label style="font-size: 12px; font-weight: bold; color: #666;">Teacher Name</label>
+        <label>Teacher Name</label>
         <select id="teacherName">
             <option value="">-- Select Teacher --</option>
             <option value="Mr. Shaik Ahmad">Mr. Shaik Ahmad</option>
             <option value="Ms. Geethika">Ms. Geethika</option>
         </select>
 
-        <label style="font-size: 12px; font-weight: bold; color: #666;">Class</label>
+        <label>Class</label>
         <select id="classSelect" onchange="generateList()">
             <option value="">-- Choose Class --</option>
             <option value="10th-A">10th Grade - A</option>
@@ -73,7 +102,7 @@
 
         <div id="reportSection" class="summary-report">
             <button class="action-btn excel-btn" onclick="exportToExcel()">
-                <i class="fas fa-file-excel"></i> 1. Download Professional Excel
+                <i class="fas fa-file-excel"></i> 1. Download Excel
             </button>
             <button class="action-btn whatsapp-btn" onclick="openWhatsApp()">
                 <i class="fab fa-whatsapp"></i> 2. Send to Correspondent
@@ -129,7 +158,7 @@ function generateList() {
         schoolData[cls].forEach(name => {
             listDiv.innerHTML += `
                 <div class="student-row">
-                    <span class="name-text" style="font-weight: 600;">${name}</span>
+                    <span class="name-text">${name}</span>
                     <input type="checkbox" class="present-toggle" checked>
                 </div>`;
         });
@@ -153,8 +182,9 @@ function exportToExcel() {
 
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.querySelector('.name-text').innerText;
-        const status = row.querySelector('.present-toggle').checked ? "PRESENT" : "ABSENT";
-        const color = row.querySelector('.present-toggle').checked ? "#c8e6c9" : "#ffcdd2";
+        const isPresent = row.querySelector('.present-toggle').checked;
+        const status = isPresent ? "PRESENT" : "ABSENT";
+        const color = isPresent ? "#c8e6c9" : "#ffcdd2";
 
         xlBody.innerHTML += `
             <tr>
