@@ -29,7 +29,7 @@
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
         
-        select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-bottom: 15px; }
+        select { width: 100%; padding: 12px; margin: 10px 0 20px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; }
         .student-row { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #f0f0f0; }
         .present-toggle { width: 25px; height: 25px; accent-color: var(--forest); cursor: pointer; }
 
@@ -44,7 +44,7 @@
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" crossorigin="anonymous" onerror="this.style.display='none'">
+    <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" onerror="this.style.display='none'">
     <div class="school-info">
         <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
         <p class="school-tagline">Teachers Official Attendance Portal</p>
@@ -85,11 +85,6 @@
 <div id="exportTableWrapper">
     <table id="attendanceExcelTable" border="1" style="border-collapse: collapse;">
         <thead>
-            <tr>
-                <th colspan="4" style="text-align: center; border: none; height: 100pt; vertical-align: middle;">
-                    <div id="excelLogoContainer"></div>
-                </th>
-            </tr>
             <tr>
                 <th colspan="4" style="background-color: #006633; color: #ffffff; font-size: 20pt; height: 50pt; text-align: center; border: 1px solid #000000;">
                     PARAMOUNT ENGLISH MEDIUM SCHOOL
@@ -135,7 +130,7 @@ function generateList() {
             listDiv.innerHTML += `
                 <div class="student-row">
                     <span class="name-text" style="font-weight: 600;">${name}</span>
-                    <input type="checkbox" class="present-toggle" checked onchange="updateStats()">
+                    <input type="checkbox" class="present-toggle" checked>
                 </div>`;
         });
         reportBox.style.display = "block";
@@ -148,16 +143,6 @@ function exportToExcel() {
     const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
-
-    // Capture Logo for Excel
-    const img = document.getElementById('webLogo');
-    const canvas = document.createElement('canvas');
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    const logoData = canvas.toDataURL('image/png');
-    document.getElementById('excelLogoContainer').innerHTML = `<img src="${logoData}" width="100" height="100">`;
 
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
     document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
@@ -182,13 +167,7 @@ function exportToExcel() {
 
     const table = document.getElementById("attendanceExcelTable");
     const html = table.outerHTML;
-    
-    // Use an Excel XML Wrapper to strictly contain styles
-    const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-    <head></head>
-    <body>${html}</body></html>`;
-
-    const url = 'data:application/vnd.ms-excel;base64,' + window.btoa(unescape(encodeURIComponent(template)));
+    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
     const link = document.createElement("a");
     link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
     link.href = url;
