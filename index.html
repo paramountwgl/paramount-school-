@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paramount School | Professional Attendance</title>
+    <title>Paramount School | Professional Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -21,13 +21,15 @@
             gap: 20px;
         }
         .logo-img { height: 85px; width: auto; display: block; }
+        .school-info { text-align: left; }
         .school-name { font-size: 2.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
+        .school-tagline { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; font-weight: 500; }
 
         .container { max-width: 500px; margin: 20px auto; padding: 15px; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
         
-        select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-bottom: 15px; }
+        select { width: 100%; padding: 12px; margin: 10px 0 20px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; }
         .student-row { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #f0f0f0; }
         .present-toggle { width: 25px; height: 25px; accent-color: var(--forest); cursor: pointer; }
 
@@ -36,7 +38,6 @@
         .excel-btn { background: #1D6F42; color: white; }
         .whatsapp-btn { background: #25D366; color: white; }
 
-        /* Hidden Export Table Styles */
         #exportTableWrapper { display: none; }
     </style>
 </head>
@@ -84,6 +85,11 @@
 <div id="exportTableWrapper">
     <table id="attendanceExcelTable" border="1">
         <thead>
+            <tr>
+                <th colspan="4" style="text-align: center; background-color: #ffffff; height: 100pt;">
+                    <img id="excelLogo" width="100" height="100" src="">
+                </th>
+            </tr>
             <tr style="background-color: #006633; color: #ffffff;">
                 <th colspan="4" style="font-size: 20pt; height: 50pt; text-align: center;">PARAMOUNT ENGLISH MEDIUM SCHOOL</th>
             </tr>
@@ -122,7 +128,11 @@ function generateList() {
     listDiv.innerHTML = "";
     if (schoolData[cls]) {
         schoolData[cls].forEach(name => {
-            listDiv.innerHTML += `<div class="student-row"><span class="name-text" style="font-weight: 600;">${name}</span><input type="checkbox" class="present-toggle" checked></div>`;
+            listDiv.innerHTML += `
+                <div class="student-row">
+                    <span class="name-text" style="font-weight: 600;">${name}</span>
+                    <input type="checkbox" class="present-toggle" checked>
+                </div>`;
         });
         reportBox.style.display = "block";
     } else { reportBox.style.display = "none"; }
@@ -135,6 +145,15 @@ function exportToExcel() {
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
+    // Logo Base64 Conversion
+    const img = document.getElementById('webLogo');
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    document.getElementById('excelLogo').src = canvas.toDataURL('image/png');
+
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
     document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
     document.getElementById('xl-class').innerText = "Class: " + cls;
@@ -144,8 +163,9 @@ function exportToExcel() {
 
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.querySelector('.name-text').innerText;
-        const status = row.querySelector('.present-toggle').checked ? "PRESENT" : "ABSENT";
-        const color = row.querySelector('.present-toggle').checked ? "#c8e6c9" : "#ffcdd2";
+        const isPresent = row.querySelector('.present-toggle').checked;
+        const status = isPresent ? "PRESENT" : "ABSENT";
+        const color = isPresent ? "#c8e6c9" : "#ffcdd2";
 
         xlBody.innerHTML += `
             <tr>
@@ -158,7 +178,13 @@ function exportToExcel() {
 
     const table = document.getElementById("attendanceExcelTable");
     const html = table.outerHTML;
-    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+    
+    // Excel XML template to force style and image rendering
+    const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head></head>
+    <body>${html}</body></html>`;
+
+    const url = 'data:application/vnd.ms-excel;base64,' + window.btoa(unescape(encodeURIComponent(template)));
     const link = document.createElement("a");
     link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
     link.href = url;
@@ -174,4 +200,3 @@ function openWhatsApp() {
 </script>
 </body>
 </html>
-
