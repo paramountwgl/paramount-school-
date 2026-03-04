@@ -44,7 +44,7 @@
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" onerror="this.style.display='none'">
+    <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" crossorigin="anonymous" onerror="this.style.display='none'">
     <div class="school-info">
         <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
         <p class="school-tagline">Teachers Official Attendance Portal</p>
@@ -85,9 +85,9 @@
 <div id="exportTableWrapper">
     <table id="attendanceExcelTable" border="1">
         <thead>
-            <tr>
-                <th colspan="4" style="text-align: center; background-color: #ffffff; height: 100pt;">
-                    <img id="excelLogo" width="100" height="100" src="">
+            <tr style="height: 100pt;">
+                <th colspan="4" style="text-align: center; background-color: #ffffff; vertical-align: middle;">
+                    <div id="excelLogoContainer"></div>
                 </th>
             </tr>
             <tr style="background-color: #006633; color: #ffffff;">
@@ -131,7 +131,7 @@ function generateList() {
             listDiv.innerHTML += `
                 <div class="student-row">
                     <span class="name-text" style="font-weight: 600;">${name}</span>
-                    <input type="checkbox" class="present-toggle" checked>
+                    <input type="checkbox" class="present-toggle" checked onchange="updateStats()">
                 </div>`;
         });
         reportBox.style.display = "block";
@@ -145,14 +145,15 @@ function exportToExcel() {
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
-    // Logo Base64 Conversion
+    // Logo Embedding Logic
     const img = document.getElementById('webLogo');
     const canvas = document.createElement('canvas');
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
-    document.getElementById('excelLogo').src = canvas.toDataURL('image/png');
+    const logoData = canvas.toDataURL('image/png');
+    document.getElementById('excelLogoContainer').innerHTML = `<img src="${logoData}" width="100" height="100">`;
 
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
     document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
@@ -179,7 +180,7 @@ function exportToExcel() {
     const table = document.getElementById("attendanceExcelTable");
     const html = table.outerHTML;
     
-    // Excel XML template to force style and image rendering
+    // Using a specific XML template for Excel to preserve styles and images
     const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
     <head></head>
     <body>${html}</body></html>`;
@@ -194,7 +195,7 @@ function exportToExcel() {
 function openWhatsApp() {
     const teacher = document.getElementById('teacherName').value;
     const cls = document.getElementById('classSelect').value;
-    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A*Teacher:* ${teacher}%0A*Class:* ${cls}%0A_Detailed Excel attached._`;
+    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A*Teacher:* ${teacher}%0A*Class:* ${cls}%0A_Detailed Excel attached below._`;
     window.open(`https://wa.me/919550791538?text=${msg}`, '_blank');
 }
 </script>
