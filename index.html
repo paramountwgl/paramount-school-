@@ -163,4 +163,116 @@ if (!attendanceRecords) {
 function generateList() {
     const cls = document.getElementById('classSelect').value;
     const listDiv = document.getElementById('listContainer');
-    const submitBtn =
+    const submitBtn = document.getElementById('submitBtn');
+    listDiv.innerHTML = "";
+    
+    if (schoolData[cls]) {
+        schoolData[cls].forEach(name => {
+            // Calculate current percentage without changing it
+            const stats = attendanceRecords[cls].students[name];
+            let percentText = "New";
+            let badgeClass = "percent-new";
+            
+            if (stats && stats.totalDays > 0) {
+                const percent = Math.round((stats.presentDays / stats.totalDays) * 100);
+                percentText = percent + "%";
+                badgeClass = percent >= 50 ? "percent-good" : "percent-bad";
+            }
+
+            listDiv.innerHTML += `
+                <div class="student-row" data-name="${name}">
+                    <div>
+                        <span class="name-text">${name}</span>
+                        <span class="percent-badge ${badgeClass}">${percentText}</span>
+                    </div>
+                    <input type="checkbox" class="present-toggle" checked>
+                </div>`;
+        });
+        submitBtn.style.display = "flex";
+    } else { 
+        submitBtn.style.display = "none"; 
+    }
+}
+
+function submitAttendance() {
+    const teacher = document.getElementById('teacherName').value;
+    const cls = document.getElementById('classSelect').value;
+    const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    if(!teacher || !cls) return alert("Select Teacher and Class First!");
+
+    // SAFEGUARD: Check if this class was already submitted today
+    if (attendanceRecords[cls].lastSubmittedDate === dateStr) {
+        const confirmDouble = confirm("Warning: Attendance for " + cls + " was already submitted today. Submitting again will count as a brand new school day. Do you wish to proceed?");
+        if (!confirmDouble) {
+            return; // Stops the submission to protect the percentages
+        }
+    }
+
+    // Hide input form and show Thank You section
+    document.getElementById('formContent').style.display = "none";
+    document.getElementById('thankYouSection').style.display = "block";
+
+    // Prepare Hidden Table
+    document.getElementById('xl-date').innerText = "Date: " + dateStr;
+    document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
+    document.getElementById('xl-class').innerText = "Class: " + cls;
+    const xlBody = document.getElementById('xl-body');
+    xlBody.innerHTML = "";
+
+    // Update records and build Excel table
+    document.querySelectorAll('.student-row').forEach((row, index) => {
+        const name = row.getAttribute('data-name');
+        const isPresent = row.querySelector('.present-toggle').checked;
+        
+        // This is where the math updates only AFTER hitting submit
+        if (attendanceRecords[cls].students[name]) {
+            attendanceRecords[cls].students[name].totalDays += 1; // +1 to total days
+            if (isPresent) {
+                attendanceRecords[cls].students[name].presentDays += 1; // +1 if present
+            }
+        }
+
+        // Calculate New Percentage for Excel
+        const stats = attendanceRecords[cls].students[name];
+        const newPercent = Math.round((stats.presentDays / stats.totalDays) * 100) + "%";
+
+        // Setup Excel Row
+        const status = isPresent ? "PRESENT" : "ABSENT";
+        const color = isPresent ? "#c8e6c9" : "#ffcdd2";
+        xlBody.innerHTML += `<tr>
+            <td style="text-align: center;">${index+1}</td>
+            <td>${name}</td>
+            <td style="text-align: center; background-color: ${color}; font-weight: bold;">${status}</td>
+            <td style="text-align: center; font-weight: bold;">${newPercent}</td>
+            <td></td>
+        </tr>`;
+    });
+
+    // Mark the date as submitted for this class
+    attendanceRecords[cls].lastSubmittedDate = dateStr;
+
+    // Save updated data to browser storage
+    localStorage.setItem('paramountAttendance', JSON.stringify(attendanceRecords));
+
+    // Excel Download
+    const html = document.getElementById("attendanceExcelTable").outerHTML;
+    const blob = new Blob([`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>${html}</body></html>`], { type: 'application/vnd.ms-excel' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
+    setTimeout(() => link.click(), 500);
+}
+
+function resetForm() {
+    document.getElementById('teacherName').value = "";
+    document.getElementById('classSelect').value = "";
+    document.getElementById('listContainer').innerHTML = "";
+    document.getElementById('submitBtn').style.display = "none";
+    
+    document.getElementById('thankYouSection').style.display = "none";
+    document.getElementById('formContent').style.display = "block";
+}
+</script>
+</body>
+</html>
