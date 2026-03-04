@@ -11,7 +11,6 @@
         :root { --forest: #006633; --gold: #ffd700; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
-        /* UPDATED HEADER: Single line name, Big size, Logo on left */
         header { 
             background: var(--forest); 
             color: white; 
@@ -22,25 +21,17 @@
             gap: 20px;
         }
         .logo-img { height: 85px; width: auto; display: block; }
-        
         .school-info { text-align: left; }
-        .school-name { 
-            font-size: 2.2rem; /* Big size as before */
-            font-weight: 900; 
-            margin: 0;
-            white-space: nowrap; /* Forces single line */
-        }
-        .school-tagline { 
-            font-size: 1rem; 
-            opacity: 0.9; 
-            margin-top: 5px; 
-        }
+        .school-name { font-size: 2.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
+        .school-tagline { font-size: 1rem; opacity: 0.9; margin-top: 5px; }
 
         .container { max-width: 500px; margin: 20px auto; padding: 15px; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
         
-        select { width: 100%; padding: 12px; margin: 10px 0 20px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; }
+        label { display: block; font-size: 12px; font-weight: bold; color: #666; margin: 15px 0 5px; }
+        select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-bottom: 15px; }
+        
         .student-row { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #f0f0f0; }
         .present-toggle { width: 25px; height: 25px; accent-color: var(--forest); cursor: pointer; }
 
@@ -48,15 +39,10 @@
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .stat-item { background: white; padding: 10px; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         
-        .action-btn { 
-            border: none; padding: 15px; border-radius: 35px; width: 100%; 
-            font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        .action-btn { border: none; padding: 15px; border-radius: 35px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .excel-btn { background: #1D6F42; color: white; }
         .whatsapp-btn { background: #25D366; color: white; }
 
-        /* Responsive adjustment for mobile screens */
         @media (max-width: 768px) {
             header { flex-direction: column; text-align: center; gap: 10px; padding: 20px; }
             .school-name { font-size: 1.5rem; white-space: normal; }
@@ -70,7 +56,7 @@
     <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
     <div class="school-info">
         <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
-        <p class="school-tagline">Teachers Official Attendance Portal</p>
+        <p class="school-tagline">Official Attendance Portal</p>
     </div>
 </header>
 
@@ -78,14 +64,14 @@
     <div class="card">
         <h2>Mark Attendance</h2>
         
-        <label style="font-size: 12px; font-weight: bold; color: #666;">Teacher Name</label>
+        <label>Teacher Name</label>
         <select id="teacherName">
             <option value="">-- Select Teacher --</option>
             <option value="Mr. Shaik Ahmad">Mr. Shaik Ahmad</option>
             <option value="Ms. Geethika">Ms. Geethika</option>
         </select>
 
-        <label style="font-size: 12px; font-weight: bold; color: #666;">Class</label>
+        <label>Class</label>
         <select id="classSelect" onchange="generateList()">
             <option value="">-- Choose Class --</option>
             <option value="10th-A">10th Grade - A</option>
@@ -102,13 +88,12 @@
             </div>
 
             <button class="action-btn excel-btn" onclick="exportToExcel()">
-                <i class="fas fa-file-excel"></i> 1. Generate Excel Sheet
+                <i class="fas fa-file-excel"></i> 1. Download Class Excel
             </button>
 
             <button class="action-btn whatsapp-btn" onclick="openWhatsApp()">
-                <i class="fab fa-whatsapp"></i> 2. Open WhatsApp to Attach
+                <i class="fab fa-whatsapp"></i> 2. Send to Correspondent
             </button>
-            <p style="font-size: 11px; color: #666;">Generate the Excel first, then attach it in WhatsApp.</p>
         </div>
     </div>
 </div>
@@ -149,14 +134,15 @@ function updateStats() {
 function exportToExcel() {
     const teacher = document.getElementById('teacherName').value;
     const cls = document.getElementById('classSelect').value;
-    const date = new Date().toLocaleDateString('en-IN');
+    const today = new Date();
+    const dateFormatted = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
-    if(!teacher || !cls) return alert("Select Teacher and Class");
+    if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
     let rows = [
         ["PARAMOUNT ENGLISH MEDIUM SCHOOL"],
-        ["Daily Attendance Report"],
-        ["Date:", date],
+        ["Official Attendance Report"],
+        ["Date:", dateFormatted],
         ["Teacher:", teacher],
         ["Class:", cls],
         [],
@@ -173,7 +159,10 @@ function exportToExcel() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Attendance");
 
-    const filename = `Attendance_${cls}_${date.replace(/\//g, '-')}.xlsx`;
+    // Dynamic Filename: Attendance_Class_Date.xlsx
+    const safeDate = dateFormatted.replace(/ /g, '-');
+    const filename = `Attendance_${cls}_${safeDate}.xlsx`;
+    
     XLSX.writeFile(wb, filename);
 }
 
@@ -183,17 +172,19 @@ function openWhatsApp() {
     const total = document.getElementById('countTotal').innerText;
     const present = document.getElementById('countPresent').innerText;
     const absent = document.getElementById('countAbsent').innerText;
+    const date = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
-    const msg = `*PARAMOUNT SCHOOL ATTENDANCE REPORT*%0A` +
+    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A` +
                 `*Teacher:* ${teacher}%0A` +
                 `*Class:* ${cls}%0A` +
+                `*Date:* ${date}%0A` +
                 `*Summary:* Total: ${total}, Present: ${present}, Absent: ${absent}%0A` +
                 `----------------------------%0A` +
-                `_Excel report generated. Please attach the downloaded file below._`;
+                `_Please find the generated Excel file attached._`;
+    
+    // Redirects to Correspondent: Mr. Shaik Ahmad
     window.open(`https://wa.me/919550791538?text=${msg}`, '_blank');
 }
 </script>
 </body>
 </html>
-
-
