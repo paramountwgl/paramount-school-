@@ -154,4 +154,53 @@ function exportToExcel() {
     const canvas = document.createElement('canvas');
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
-    const
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const logoData = canvas.toDataURL('image/png');
+    document.getElementById('excelLogoContainer').innerHTML = `<img src="${logoData}" width="100" height="100">`;
+
+    document.getElementById('xl-date').innerText = "Date: " + dateStr;
+    document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
+    document.getElementById('xl-class').innerText = "Class: " + cls;
+
+    const xlBody = document.getElementById('xl-body');
+    xlBody.innerHTML = "";
+
+    document.querySelectorAll('.student-row').forEach((row, index) => {
+        const name = row.querySelector('.name-text').innerText;
+        const status = row.querySelector('.present-toggle').checked ? "PRESENT" : "ABSENT";
+        const color = row.querySelector('.present-toggle').checked ? "#c8e6c9" : "#ffcdd2";
+
+        xlBody.innerHTML += `
+            <tr>
+                <td style="text-align: center; border: 1px solid #000000;">${index + 1}</td>
+                <td style="border: 1px solid #000000;">${name}</td>
+                <td style="text-align: center; background-color: ${color}; font-weight: bold; border: 1px solid #000000;">${status}</td>
+                <td style="border: 1px solid #000000;"></td>
+            </tr>`;
+    });
+
+    const table = document.getElementById("attendanceExcelTable");
+    const html = table.outerHTML;
+    
+    // Use an Excel XML Wrapper to strictly contain styles
+    const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head></head>
+    <body>${html}</body></html>`;
+
+    const url = 'data:application/vnd.ms-excel;base64,' + window.btoa(unescape(encodeURIComponent(template)));
+    const link = document.createElement("a");
+    link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
+    link.href = url;
+    link.click();
+}
+
+function openWhatsApp() {
+    const teacher = document.getElementById('teacherName').value;
+    const cls = document.getElementById('classSelect').value;
+    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A*Teacher:* ${teacher}%0A*Class:* ${cls}%0A_Detailed Excel attached below._`;
+    window.open(`https://wa.me/919550791538?text=${msg}`, '_blank');
+}
+</script>
+</body>
+</html>
