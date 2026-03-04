@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paramount School | Attendance to Excel</title>
+    <title>Paramount School | Professional Attendance</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -21,57 +21,41 @@
             gap: 20px;
         }
         .logo-img { height: 85px; width: auto; display: block; }
-        .school-info { text-align: left; }
         .school-name { font-size: 2.2rem; font-weight: 900; margin: 0; white-space: nowrap; }
-        .school-tagline { font-size: 1rem; opacity: 0.9; margin-top: 5px; }
 
         .container { max-width: 500px; margin: 20px auto; padding: 15px; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
         
-        label { display: block; font-size: 12px; font-weight: bold; color: #666; margin: 15px 0 5px; }
         select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-bottom: 15px; }
-        
         .student-row { display: flex; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid #f0f0f0; }
         .present-toggle { width: 25px; height: 25px; accent-color: var(--forest); cursor: pointer; }
 
         .summary-report { background: #e8f5e9; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; text-align: center; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-item { background: white; padding: 10px; border-radius: 8px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        
         .action-btn { border: none; padding: 15px; border-radius: 35px; width: 100%; font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .excel-btn { background: #1D6F42; color: white; }
         .whatsapp-btn { background: #25D366; color: white; }
-
-        @media (max-width: 768px) {
-            header { flex-direction: column; text-align: center; gap: 10px; padding: 20px; }
-            .school-name { font-size: 1.5rem; white-space: normal; }
-            .school-info { text-align: center; }
-        }
     </style>
 </head>
 <body>
 
 <header>
     <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-    <div class="school-info">
-        <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
-        <p class="school-tagline">Official Attendance Portal</p>
-    </div>
+    <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
 </header>
 
 <div class="container">
     <div class="card">
         <h2>Mark Attendance</h2>
         
-        <label>Teacher Name</label>
+        <label style="font-size: 12px; font-weight: bold; color: #666;">Teacher Name</label>
         <select id="teacherName">
             <option value="">-- Select Teacher --</option>
             <option value="Mr. Shaik Ahmad">Mr. Shaik Ahmad</option>
             <option value="Ms. Geethika">Ms. Geethika</option>
         </select>
 
-        <label>Class</label>
+        <label style="font-size: 12px; font-weight: bold; color: #666;">Class</label>
         <select id="classSelect" onchange="generateList()">
             <option value="">-- Choose Class --</option>
             <option value="10th-A">10th Grade - A</option>
@@ -81,16 +65,9 @@
         <div id="listContainer"></div>
 
         <div id="reportSection" class="summary-report">
-            <div class="stats-grid">
-                <div class="stat-item">T: <span id="countTotal">0</span></div>
-                <div class="stat-item" style="color: green;">P: <span id="countPresent">0</span></div>
-                <div class="stat-item" style="color: red;">A: <span id="countAbsent">0</span></div>
-            </div>
-
             <button class="action-btn excel-btn" onclick="exportToExcel()">
-                <i class="fas fa-file-excel"></i> 1. Download Class Excel
+                <i class="fas fa-file-excel"></i> 1. Download Professional Excel
             </button>
-
             <button class="action-btn whatsapp-btn" onclick="openWhatsApp()">
                 <i class="fab fa-whatsapp"></i> 2. Send to Correspondent
             </button>
@@ -109,80 +86,65 @@ function generateList() {
     const listDiv = document.getElementById('listContainer');
     const reportBox = document.getElementById('reportSection');
     listDiv.innerHTML = "";
-    
     if (schoolData[cls]) {
         schoolData[cls].forEach(name => {
-            listDiv.innerHTML += `
-                <div class="student-row">
-                    <span class="name-text" style="font-weight: 600;">${name}</span>
-                    <input type="checkbox" class="present-toggle" checked onchange="updateStats()">
-                </div>`;
+            listDiv.innerHTML += `<div class="student-row"><span class="name-text" style="font-weight: 600;">${name}</span><input type="checkbox" class="present-toggle" checked></div>`;
         });
         reportBox.style.display = "block";
-        updateStats();
     } else { reportBox.style.display = "none"; }
-}
-
-function updateStats() {
-    const total = document.querySelectorAll('.present-toggle').length;
-    const present = document.querySelectorAll('.present-toggle:checked').length;
-    document.getElementById('countTotal').innerText = total;
-    document.getElementById('countPresent').innerText = present;
-    document.getElementById('countAbsent').innerText = total - present;
 }
 
 function exportToExcel() {
     const teacher = document.getElementById('teacherName').value;
     const cls = document.getElementById('classSelect').value;
-    const today = new Date();
-    const dateFormatted = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    const dateFormatted = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
-    let rows = [
+    // Create Data Array with Professional Layout
+    let data = [
         ["PARAMOUNT ENGLISH MEDIUM SCHOOL"],
-        ["Official Attendance Report"],
-        ["Date:", dateFormatted],
-        ["Teacher:", teacher],
-        ["Class:", cls],
-        [],
-        ["S.No", "Student Name", "Status"]
+        ["OFFICIAL ATTENDANCE REPORT"],
+        [""],
+        ["DATE:", dateFormatted, "", "TEACHER:", teacher],
+        ["CLASS:", cls, "", "STATUS:", "FINALIZED"],
+        [""],
+        ["S.No", "STUDENT NAME", "STATUS", "REMARKS"]
     ];
 
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.querySelector('.name-text').innerText;
-        const status = row.querySelector('.present-toggle').checked ? "Present" : "Absent";
-        rows.push([index + 1, name, status]);
+        const status = row.querySelector('.present-toggle').checked ? "PRESENT" : "ABSENT";
+        data.push([index + 1, name, status, ""]);
     });
 
-    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Professional Formatting: Set Column Widths
+    ws['!cols'] = [
+        { wch: 8 },  // S.No
+        { wch: 25 }, // Student Name
+        { wch: 12 }, // Status
+        { wch: 15 }  // Remarks
+    ];
+
+    // Merge Header Cells for School Name
+    ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }, // Merge School Name row
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } }  // Merge Subheader row
+    ];
+
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Attendance");
 
-    // Dynamic Filename: Attendance_Class_Date.xlsx
-    const safeDate = dateFormatted.replace(/ /g, '-');
-    const filename = `Attendance_${cls}_${safeDate}.xlsx`;
-    
+    const filename = `Attendance_${cls}_${dateFormatted.replace(/ /g, '-')}.xlsx`;
     XLSX.writeFile(wb, filename);
 }
 
 function openWhatsApp() {
     const teacher = document.getElementById('teacherName').value;
     const cls = document.getElementById('classSelect').value;
-    const total = document.getElementById('countTotal').innerText;
-    const present = document.getElementById('countPresent').innerText;
-    const absent = document.getElementById('countAbsent').innerText;
-    const date = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-
-    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A` +
-                `*Teacher:* ${teacher}%0A` +
-                `*Class:* ${cls}%0A` +
-                `*Date:* ${date}%0A` +
-                `*Summary:* Total: ${total}, Present: ${present}, Absent: ${absent}%0A` +
-                `----------------------------%0A` +
-                `_Please find the generated Excel file attached._`;
-    
-    // Redirects to Correspondent: Mr. Shaik Ahmad
+    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A*Teacher:* ${teacher}%0A*Class:* ${cls}%0A_Excel report attached below._`;
     window.open(`https://wa.me/919550791538?text=${msg}`, '_blank');
 }
 </script>
