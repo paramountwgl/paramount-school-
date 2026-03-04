@@ -44,7 +44,7 @@
 <body>
 
 <header>
-    <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" crossorigin="anonymous" onerror="this.style.display='none'">
+    <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" onerror="this.style.display='none'">
     <div class="school-info">
         <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
         <p class="school-tagline">Teachers Official Attendance Portal</p>
@@ -85,16 +85,11 @@
 <div id="exportTableWrapper">
     <table id="attendanceExcelTable" border="1">
         <thead>
-            <tr style="height: 100pt;">
-                <th colspan="4" style="text-align: center; background-color: #ffffff; vertical-align: middle;">
-                    <div id="excelLogoContainer"></div>
-                </th>
-            </tr>
             <tr style="background-color: #006633; color: #ffffff;">
                 <th colspan="4" style="font-size: 20pt; height: 50pt; text-align: center;">PARAMOUNT ENGLISH MEDIUM SCHOOL</th>
             </tr>
             <tr style="background-color: #ffd700;">
-                <th colspan="4" style="font-size: 14pt; text-align: center;">TEACHERS OFFICIAL ATTENDANCE PORTAL</th>
+                <th colspan="4" style="font-size: 14pt; height: 30pt; text-align: center;">TEACHERS OFFICIAL ATTENDANCE PORTAL</th>
             </tr>
             <tr>
                 <th colspan="2" id="xl-date" style="text-align: left; padding: 5px;">Date: </th>
@@ -145,16 +140,6 @@ function exportToExcel() {
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
-    // Logo Embedding Logic
-    const img = document.getElementById('webLogo');
-    const canvas = document.createElement('canvas');
-    canvas.width = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    const logoData = canvas.toDataURL('image/png');
-    document.getElementById('excelLogoContainer').innerHTML = `<img src="${logoData}" width="100" height="100">`;
-
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
     document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
     document.getElementById('xl-class').innerText = "Class: " + cls;
@@ -164,9 +149,8 @@ function exportToExcel() {
 
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.querySelector('.name-text').innerText;
-        const isPresent = row.querySelector('.present-toggle').checked;
-        const status = isPresent ? "PRESENT" : "ABSENT";
-        const color = isPresent ? "#c8e6c9" : "#ffcdd2";
+        const status = row.querySelector('.present-toggle').checked ? "PRESENT" : "ABSENT";
+        const color = row.querySelector('.present-toggle').checked ? "#c8e6c9" : "#ffcdd2";
 
         xlBody.innerHTML += `
             <tr>
@@ -179,13 +163,7 @@ function exportToExcel() {
 
     const table = document.getElementById("attendanceExcelTable");
     const html = table.outerHTML;
-    
-    // Using a specific XML template for Excel to preserve styles and images
-    const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-    <head></head>
-    <body>${html}</body></html>`;
-
-    const url = 'data:application/vnd.ms-excel;base64,' + window.btoa(unescape(encodeURIComponent(template)));
+    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
     const link = document.createElement("a");
     link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
     link.href = url;
