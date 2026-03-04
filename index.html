@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paramount School | Professional Portal</title>
+    <title>Paramount School | Teachers Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
@@ -11,7 +11,6 @@
         :root { --forest: #006633; --gold: #ffd700; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
-        /* RESPONSIVE HEADER */
         header { 
             background: var(--forest); 
             color: white; 
@@ -20,61 +19,41 @@
             justify-content: center; 
             align-items: center; 
             gap: 20px;
-            flex-wrap: wrap; /* Allows wrapping on small screens */
+            flex-wrap: wrap;
         }
-        .logo-img { height: 85px; width: auto; display: block; }
-        .school-info { text-align: left; }
-        .school-name { font-size: clamp(1.2rem, 5vw, 2.2rem); font-weight: 900; margin: 0; white-space: normal; }
-        .school-tagline { font-size: clamp(0.8rem, 3vw, 1.1rem); opacity: 0.9; margin-top: 5px; font-weight: 500; }
+        .logo-img { height: 75px; width: auto; }
+        .school-name { font-size: clamp(1.1rem, 4vw, 2rem); font-weight: 900; margin: 0; }
+        .school-tagline { font-size: clamp(0.7rem, 2.5vw, 1rem); opacity: 0.9; }
 
-        .container { max-width: 600px; margin: 10px auto; padding: 10px; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-top: 0; }
+        .container { max-width: 500px; margin: 15px auto; padding: 10px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; }
         
-        label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 5px; }
-        select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; background: #fff; }
+        label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-top: 15px; }
+        select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-top: 5px; }
         
-        /* MOBILE OPTIMIZED ROWS */
-        .student-row { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            padding: 15px 10px; 
-            border-bottom: 1px solid #f0f0f0; 
+        .student-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 5px; border-bottom: 1px solid #f0f0f0; }
+        .present-toggle { width: 26px; height: 26px; accent-color: var(--forest); cursor: pointer; }
+
+        .submit-btn { 
+            background: #1D6F42; color: white; border: none; padding: 18px; 
+            border-radius: 35px; width: 100%; font-weight: bold; font-size: 16px; 
+            cursor: pointer; margin-top: 25px; display: none; align-items: center; 
+            justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(29, 111, 66, 0.2);
         }
-        .name-text { font-size: 16px; font-weight: 600; color: #333; }
-        .present-toggle { width: 28px; height: 28px; accent-color: var(--forest); cursor: pointer; }
+        .submit-btn:active { transform: scale(0.98); }
 
-        .summary-report { background: #e8f5e9; padding: 20px; border-radius: 12px; margin-top: 25px; display: none; text-align: center; }
-        
-        /* ACTION BUTTONS */
-        .action-btn { 
-            border: none; padding: 15px; border-radius: 35px; width: 100%; 
-            font-weight: bold; font-size: 16px; cursor: pointer; margin-bottom: 12px; 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: transform 0.2s;
-        }
-        .action-btn:active { transform: scale(0.98); }
-        .excel-btn { background: #1D6F42; color: white; }
-        .whatsapp-btn { background: #25D366; color: white; }
-
-        /* MOBILE SPECIFIC ADJUSTMENTS */
         @media (max-width: 600px) {
-            header { flex-direction: column; text-align: center; padding: 15px; gap: 10px; }
-            .school-info { text-align: center; }
+            header { flex-direction: column; text-align: center; }
             .logo-img { height: 60px; }
-            .container { margin: 0; padding: 15px; }
-            .student-row { padding: 18px 5px; } /* Larger touch area for mobile */
         }
-
-        #exportTableWrapper { display: none; }
     </style>
 </head>
 <body>
 
 <header>
     <img src="logo.png" alt="Logo" class="logo-img" id="webLogo" onerror="this.style.display='none'">
-    <div class="school-info">
+    <div style="text-align: left;" class="school-info">
         <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
         <p class="school-tagline">Teachers Official Attendance Portal</p>
     </div>
@@ -100,47 +79,10 @@
 
         <div id="listContainer"></div>
 
-        <div id="reportSection" class="summary-report">
-            <button class="action-btn excel-btn" onclick="exportToExcel()">
-                <i class="fas fa-file-excel"></i> 1. Download Excel
-            </button>
-            <button class="action-btn whatsapp-btn" onclick="openWhatsApp()">
-                <i class="fab fa-whatsapp"></i> 2. Send to Correspondent
-            </button>
-        </div>
+        <button id="submitBtn" class="submit-btn" onclick="submitAttendance()">
+            <i class="fas fa-check-circle"></i> Submit Attendance & Download
+        </button>
     </div>
-</div>
-
-<div id="exportTableWrapper">
-    <table id="attendanceExcelTable" border="1" style="border-collapse: collapse;">
-        <thead>
-            <tr>
-                <th colspan="4" style="background-color: #006633; color: #ffffff; font-size: 20pt; height: 50pt; text-align: center; border: 1px solid #000000;">
-                    PARAMOUNT ENGLISH MEDIUM SCHOOL
-                </th>
-            </tr>
-            <tr>
-                <th colspan="4" style="background-color: #ffd700; color: #000000; font-size: 14pt; height: 30pt; text-align: center; border: 1px solid #000000;">
-                    TEACHERS OFFICIAL ATTENDANCE PORTAL
-                </th>
-            </tr>
-            <tr>
-                <th colspan="2" id="xl-date" style="text-align: left; padding: 5px; border: 1px solid #000000;">Date: </th>
-                <th colspan="2" id="xl-teacher" style="text-align: left; padding: 5px; border: 1px solid #000000;">Teacher: </th>
-            </tr>
-            <tr>
-                <th colspan="2" id="xl-class" style="text-align: left; padding: 5px; border: 1px solid #000000;">Class: </th>
-                <th colspan="2" style="text-align: left; padding: 5px; border: 1px solid #000000;">Status: FINALIZED</th>
-            </tr>
-            <tr style="background-color: #eeeeee; font-weight: bold;">
-                <th style="width: 50px; border: 1px solid #000000;">S.No</th>
-                <th style="width: 250px; border: 1px solid #000000;">STUDENT NAME</th>
-                <th style="width: 100px; border: 1px solid #000000;">STATUS</th>
-                <th style="width: 150px; border: 1px solid #000000;">REMARKS</th>
-            </tr>
-        </thead>
-        <tbody id="xl-body"></tbody>
-    </table>
 </div>
 
 <script>
@@ -152,63 +94,72 @@ const schoolData = {
 function generateList() {
     const cls = document.getElementById('classSelect').value;
     const listDiv = document.getElementById('listContainer');
-    const reportBox = document.getElementById('reportSection');
+    const submitBtn = document.getElementById('submitBtn');
     listDiv.innerHTML = "";
+    
     if (schoolData[cls]) {
         schoolData[cls].forEach(name => {
             listDiv.innerHTML += `
                 <div class="student-row">
-                    <span class="name-text">${name}</span>
+                    <span class="name-text" style="font-weight: 600;">${name}</span>
                     <input type="checkbox" class="present-toggle" checked>
                 </div>`;
         });
-        reportBox.style.display = "block";
-    } else { reportBox.style.display = "none"; }
+        submitBtn.style.display = "flex";
+    } else { submitBtn.style.display = "none"; }
 }
 
-function exportToExcel() {
+function submitAttendance() {
     const teacher = document.getElementById('teacherName').value;
     const cls = document.getElementById('classSelect').value;
     const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
     if(!teacher || !cls) return alert("Select Teacher and Class First!");
 
-    document.getElementById('xl-date').innerText = "Date: " + dateStr;
-    document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
-    document.getElementById('xl-class').innerText = "Class: " + cls;
-
-    const xlBody = document.getElementById('xl-body');
-    xlBody.innerHTML = "";
+    // Constructing Table for Excel
+    let tableHtml = `<table border="1" style="border-collapse: collapse;">
+        <thead>
+            <tr><th colspan="4" style="background-color: #006633; color: #ffffff; font-size: 16pt; height: 40pt;">PARAMOUNT ENGLISH MEDIUM SCHOOL</th></tr>
+            <tr><th colspan="4" style="background-color: #ffd700; color: #000000; font-size: 12pt; height: 25pt;">OFFICIAL ATTENDANCE REPORT</th></tr>
+            <tr><th colspan="2" style="text-align:left;">Date: ${dateStr}</th><th colspan="2" style="text-align:left;">Teacher: ${teacher}</th></tr>
+            <tr><th colspan="2" style="text-align:left;">Class: ${cls}</th><th colspan="2" style="text-align:left;">Status: FINALIZED</th></tr>
+            <tr style="background-color: #eeeeee; font-weight: bold;">
+                <th>S.No</th><th>STUDENT NAME</th><th>STATUS</th><th>REMARKS</th>
+            </tr>
+        </thead><tbody>`;
 
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.querySelector('.name-text').innerText;
         const isPresent = row.querySelector('.present-toggle').checked;
         const status = isPresent ? "PRESENT" : "ABSENT";
         const color = isPresent ? "#c8e6c9" : "#ffcdd2";
-
-        xlBody.innerHTML += `
-            <tr>
-                <td style="text-align: center; border: 1px solid #000000;">${index + 1}</td>
-                <td style="border: 1px solid #000000;">${name}</td>
-                <td style="text-align: center; background-color: ${color}; font-weight: bold; border: 1px solid #000000;">${status}</td>
-                <td style="border: 1px solid #000000;"></td>
-            </tr>`;
+        tableHtml += `<tr>
+            <td style="text-align:center;">${index + 1}</td>
+            <td>${name}</td>
+            <td style="text-align:center; background-color:${color}; font-weight:bold;">${status}</td>
+            <td></td>
+        </tr>`;
     });
 
-    const table = document.getElementById("attendanceExcelTable");
-    const html = table.outerHTML;
-    const url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
-    const link = document.createElement("a");
-    link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
-    link.href = url;
-    link.click();
-}
+    tableHtml += `</tbody></table>`;
 
-function openWhatsApp() {
-    const teacher = document.getElementById('teacherName').value;
-    const cls = document.getElementById('classSelect').value;
-    const msg = `*PARAMOUNT ATTENDANCE REPORT*%0A*Teacher:* ${teacher}%0A*Class:* ${cls}%0A_Detailed Excel attached below._`;
-    window.open(`https://wa.me/919550791538?text=${msg}`, '_blank');
+    // MOBILE COMPATIBLE EXCEL EXPORT
+    const template = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="UTF-8"></head>
+    <body>${tableHtml}</body></html>`;
+
+    const blob = new Blob([template], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
+    link.click();
+    
+    // Auto-open WhatsApp after download
+    setTimeout(() => {
+        const msg = `*PARAMOUNT ATTENDANCE*%0A*Teacher:* ${teacher}%0A*Class:* ${cls}%0A*Date:* ${dateStr}%0A_Excel report submitted and downloaded._`;
+        window.open(`https://wa.me/919550791538?text=${msg}`, '_blank');
+    }, 1500);
 }
 </script>
 </body>
