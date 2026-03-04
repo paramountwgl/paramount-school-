@@ -146,7 +146,8 @@ const schoolData = {
 // Initialize LocalStorage for tracking Attendance Percentages
 let attendanceRecords = JSON.parse(localStorage.getItem('paramountAttendance'));
 
-if (!attendanceRecords) {
+// FIXED PORTION: Check if it's null OR if it has the old format (missing the .students structure)
+if (!attendanceRecords || !attendanceRecords["10th-A"] || !attendanceRecords["10th-A"].students) {
     attendanceRecords = {};
     for (let cls in schoolData) {
         attendanceRecords[cls] = { 
@@ -276,4 +277,3 @@ function resetForm() {
 </script>
 </body>
 </html>
-
