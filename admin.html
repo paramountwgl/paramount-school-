@@ -21,6 +21,16 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center;
             width: 90%; max-width: 350px;
         }
+
+        /* Container for Logo + Lock side-by-side */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+
         .auth-box input {
             padding: 12px; width: 100%; margin: 10px 0; 
             border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none;
@@ -94,7 +104,11 @@
 
 <div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
-        <i class="fas fa-lock" style="font-size: 40px; color: #006633; margin-bottom: 15px;"></i>
+        <div class="brand-header">
+            <img src="logo.png" alt="School Logo" style="height: 55px; width: auto; display: block;" onerror="this.style.display='none'">
+            <i class="fas fa-lock" style="font-size: 35px; color: #006633; margin: 0;"></i>
+        </div>
+        
         <h2 style="color: #006633; margin-top: 0; font-size: 22px;">Admin Access</h2>
         <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="if(event.key === 'Enter') checkPassword()">
         <button class="auth-btn" onclick="checkPassword()">Login</button>
@@ -182,8 +196,8 @@
 // --- AUTHENTICATION LOGIC ---
 
 // Default password if none is saved, and the master recovery key
-const DEFAULT_PASSWORD = "Ahmad@07";
-const MASTER_RECOVERY_KEY = "paramount"; 
+const DEFAULT_PASSWORD = "Admin@123";
+const MASTER_RECOVERY_KEY = "Paramount2026"; 
 
 function getSavedPassword() {
     return localStorage.getItem('paramountAdminPwd') || DEFAULT_PASSWORD;
