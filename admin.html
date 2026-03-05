@@ -10,32 +10,38 @@
         :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
-        /* LOGIN SCREEN */
-        #loginScreen {
+        /* LOGIN & RESET SCREENS */
+        .overlay-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #f4f7f6; z-index: 9999; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .login-box {
+        .auth-box {
             background: white; padding: 40px; border-radius: 15px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center;
             width: 90%; max-width: 350px;
         }
-        .login-box input {
-            padding: 12px; width: 100%; margin: 15px 0; 
+        .auth-box input {
+            padding: 12px; width: 100%; margin: 10px 0; 
             border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none;
             box-sizing: border-box;
         }
-        .login-box input:focus { border-color: var(--forest); }
-        .login-btn {
+        .auth-box input:focus { border-color: var(--forest); }
+        .auth-btn {
             background: var(--forest); color: white; border: none; 
             padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; 
-            font-weight: bold; cursor: pointer; transition: 0.2s;
+            font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px;
         }
-        .login-btn:hover { background: #004d26; }
+        .auth-btn:hover { background: #004d26; }
+        
+        .forgot-link {
+            display: block; margin-top: 15px; color: var(--forest); 
+            text-decoration: none; font-size: 14px; font-weight: bold; cursor: pointer;
+        }
+        .forgot-link:hover { text-decoration: underline; }
 
         /* MAIN APP STYLES */
-        #mainApp { display: none; } /* Hidden until logged in */
+        #mainApp, #resetScreen { display: none; } 
 
         header { 
             background: var(--forest); color: white; padding: 20px 5%; 
@@ -86,16 +92,37 @@
 </head>
 <body>
 
-<div id="loginScreen">
-    <div class="login-box">
+<div id="loginScreen" class="overlay-screen">
+    <div class="auth-box">
         <i class="fas fa-lock" style="font-size: 40px; color: #006633; margin-bottom: 15px;"></i>
         <h2 style="color: #006633; margin-top: 0; font-size: 22px;">Admin Access</h2>
-        <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="handleEnter(event)">
-        <button class="login-btn" onclick="checkPassword()">Login</button>
+        <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="if(event.key === 'Enter') checkPassword()">
+        <button class="auth-btn" onclick="checkPassword()">Login</button>
         <p id="loginError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Incorrect Password</p>
+        
+        <a class="forgot-link" onclick="showResetScreen()">Forgot Password?</a>
         
         <button onclick="window.location.href='index.html'" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline;">
             Cancel & Return
+        </button>
+    </div>
+</div>
+
+<div id="resetScreen" class="overlay-screen">
+    <div class="auth-box">
+        <i class="fas fa-key" style="font-size: 40px; color: #ffd700; margin-bottom: 15px;"></i>
+        <h2 style="color: #333; margin-top: 0; font-size: 20px;">Reset Password</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Enter the Master Recovery Key to set a new password.</p>
+        
+        <input type="password" id="recoveryKey" placeholder="Master Recovery Key">
+        <input type="password" id="newPassword" placeholder="Enter New Password">
+        
+        <button class="auth-btn" onclick="resetPassword()">Save New Password</button>
+        <p id="resetError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Invalid Recovery Key!</p>
+        <p id="resetSuccess" style="color: #2e7d32; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Password Changed Successfully!</p>
+        
+        <button onclick="showLoginScreen()" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline;">
+            Back to Login
         </button>
     </div>
 </div>
@@ -152,12 +179,20 @@
 </div>
 
 <script>
-// --- LOGIN LOGIC ---
+// --- AUTHENTICATION LOGIC ---
+
+// Default password if none is saved, and the master recovery key
+const DEFAULT_PASSWORD = "Ahmad@07";
+const MASTER_RECOVERY_KEY = "Paramount2026"; 
+
+function getSavedPassword() {
+    return localStorage.getItem('paramountAdminPwd') || DEFAULT_PASSWORD;
+}
+
 function checkPassword() {
     const pass = document.getElementById('adminPassword').value;
     
-    // CHANGE YOUR PASSWORD HERE:
-    if (pass === "Ahmad07") {
+    if (pass === getSavedPassword()) {
         document.getElementById('loginScreen').style.display = "none";
         document.getElementById('mainApp').style.display = "block";
     } else {
@@ -165,10 +200,36 @@ function checkPassword() {
     }
 }
 
-// Allow pressing 'Enter' to login
-function handleEnter(event) {
-    if (event.key === "Enter") {
-        checkPassword();
+function showResetScreen() {
+    document.getElementById('loginScreen').style.display = "none";
+    document.getElementById('resetScreen').style.display = "flex";
+    document.getElementById('resetError').style.display = "none";
+    document.getElementById('resetSuccess').style.display = "none";
+    document.getElementById('recoveryKey').value = "";
+    document.getElementById('newPassword').value = "";
+}
+
+function showLoginScreen() {
+    document.getElementById('resetScreen').style.display = "none";
+    document.getElementById('loginScreen').style.display = "flex";
+    document.getElementById('adminPassword').value = "";
+    document.getElementById('loginError').style.display = "none";
+}
+
+function resetPassword() {
+    const keyInput = document.getElementById('recoveryKey').value;
+    const newPassInput = document.getElementById('newPassword').value;
+
+    if (keyInput === MASTER_RECOVERY_KEY && newPassInput.length > 0) {
+        localStorage.setItem('paramountAdminPwd', newPassInput);
+        document.getElementById('resetError').style.display = "none";
+        document.getElementById('resetSuccess').style.display = "block";
+        
+        // Auto return to login after 1.5 seconds
+        setTimeout(() => { showLoginScreen(); }, 1500);
+    } else {
+        document.getElementById('resetError').style.display = "block";
+        document.getElementById('resetSuccess').style.display = "none";
     }
 }
 
