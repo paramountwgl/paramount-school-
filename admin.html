@@ -20,15 +20,16 @@
             background: white; padding: 40px; border-radius: 15px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center;
             width: 90%; max-width: 350px;
+            position: relative; /* This allows the logo to stick to the corner */
         }
 
-        /* Container for Logo + Lock side-by-side */
-        .brand-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px; 
-            margin-bottom: 20px; 
+        /* NEW: Pinned Corner Logo */
+        .corner-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            height: 40px;
+            width: auto;
         }
 
         .auth-box input {
@@ -104,10 +105,9 @@
 
 <div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
-        <div class="brand-header">
-            <img src="logo.png" alt="School Logo" style="height: 55px; width: auto; display: block;" onerror="this.style.display='none'">
-            <i class="fas fa-lock" style="font-size: 35px; color: #006633; margin: 0;"></i>
-        </div>
+        <img src="logo.png" alt="School Logo" class="corner-logo" onerror="this.style.display='none'">
+        
+        <i class="fas fa-lock" style="font-size: 40px; color: #006633; margin-bottom: 15px; display: block;"></i>
         
         <h2 style="color: #006633; margin-top: 0; font-size: 22px;">Admin Access</h2>
         <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="if(event.key === 'Enter') checkPassword()">
@@ -124,7 +124,9 @@
 
 <div id="resetScreen" class="overlay-screen">
     <div class="auth-box">
-        <i class="fas fa-key" style="font-size: 40px; color: #ffd700; margin-bottom: 15px;"></i>
+        <img src="logo.png" alt="School Logo" class="corner-logo" onerror="this.style.display='none'">
+        <i class="fas fa-key" style="font-size: 40px; color: #ffd700; margin-bottom: 15px; display: block;"></i>
+        
         <h2 style="color: #333; margin-top: 0; font-size: 20px;">Reset Password</h2>
         <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Enter the Master Recovery Key to set a new password.</p>
         
@@ -194,8 +196,6 @@
 
 <script>
 // --- AUTHENTICATION LOGIC ---
-
-// Default password if none is saved, and the master recovery key
 const DEFAULT_PASSWORD = "Admin@123";
 const MASTER_RECOVERY_KEY = "Paramount2026"; 
 
@@ -239,7 +239,6 @@ function resetPassword() {
         document.getElementById('resetError').style.display = "none";
         document.getElementById('resetSuccess').style.display = "block";
         
-        // Auto return to login after 1.5 seconds
         setTimeout(() => { showLoginScreen(); }, 1500);
     } else {
         document.getElementById('resetError').style.display = "block";
