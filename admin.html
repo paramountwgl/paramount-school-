@@ -9,7 +9,6 @@
     <style>
         :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
-        
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(244, 247, 246, 0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .auth-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px; position: relative; }
         .corner-logo { position: absolute; top: 20px; left: 20px; height: 40px; width: auto; }
@@ -17,32 +16,24 @@
         .auth-box input:focus { border-color: var(--forest); }
         .auth-btn { background: var(--forest); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .auth-btn:hover { background: #004d26; }
-        
         .danger-auth-btn { background: var(--danger); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
         .danger-auth-btn:hover { background: #8e0000; }
-
         .forgot-link { display: block; margin-top: 15px; color: var(--forest); text-decoration: none; font-size: 14px; font-weight: bold; cursor: pointer; }
-        
         #mainApp, #resetScreen, #resetDataScreen { display: none; } 
-
         header { background: var(--forest); color: white; padding: 20px 5%; display: flex; justify-content: center; align-items: center; gap: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .logo-img { height: 70px; width: auto; display: block; }
         .school-info { text-align: left; }
         .school-name { font-size: 1.8rem; font-weight: 900; margin: 0; white-space: nowrap; }
         .school-tagline { font-size: 1rem; opacity: 0.9; margin-top: 5px; font-weight: bold; color: var(--gold); }
-
         .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
         .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px;}
-        
         .controls { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .select-group { flex: 1; min-width: 200px; }
         label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 8px; text-transform: uppercase; }
         select { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 16px; outline: none; box-sizing: border-box; }
         select:focus { border-color: var(--forest); }
-
         .danger-btn { background: #ffebee; color: var(--danger); border: 1px solid #ef9a9a; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .danger-btn:hover { background: var(--danger); color: white; }
-
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
         th { background: var(--forest); color: white; font-weight: bold; text-transform: uppercase; font-size: 13px; }
@@ -50,28 +41,23 @@
         th:last-child { border-top-right-radius: 8px; }
         tr:hover { background-color: #f9f9f9; }
         .student-name { font-weight: bold; color: #333; }
-        
         .badge { padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; text-align: center; display: inline-block; min-width: 50px;}
         .badge-good { background: #e8f5e9; color: #2e7d32; }
         .badge-bad { background: #ffebee; color: #c62828; }
         .badge-neutral { background: #f0f0f0; color: #666; }
         .empty-state { text-align: center; padding: 40px; color: #888; font-style: italic; }
-
-        @media (max-width: 600px) {
-            header { flex-direction: column; text-align: center; }
-            .school-name { font-size: 1.4rem; white-space: normal; }
-            .controls { flex-direction: column; align-items: stretch; }
-            th, td { padding: 10px; font-size: 14px; }
-        }
+        @media (max-width: 600px) { header { flex-direction: column; text-align: center; } .school-name { font-size: 1.4rem; white-space: normal; } .controls { flex-direction: column; align-items: stretch; } th, td { padding: 10px; font-size: 14px; } }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
-<div id="loginScreen" class="overlay-screen" style="background: #f4f7f6;">
+<div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
-        <img src="logo.png" alt="School Logo" class="corner-logo" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Logo" class="corner-logo" onerror="this.style.display='none'">
         <i class="fas fa-lock" style="font-size: 40px; color: #006633; margin-bottom: 15px; display: block;"></i>
-        <h2 style="color: #006633; margin-top: 0; font-size: 22px;">Admin Access</h2>
+        <h2 style="color: #006633; margin-top: 0;">Admin Access</h2>
         <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="if(event.key === 'Enter') checkPassword()">
         <button class="auth-btn" onclick="checkPassword()">Login</button>
         <p id="loginError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Incorrect Password</p>
@@ -80,17 +66,15 @@
     </div>
 </div>
 
-<div id="resetScreen" class="overlay-screen" style="background: #f4f7f6;">
+<div id="resetScreen" class="overlay-screen">
     <div class="auth-box">
-        <img src="logo.png" alt="School Logo" class="corner-logo" onerror="this.style.display='none'">
-        <i class="fas fa-key" style="font-size: 40px; color: #ffd700; margin-bottom: 15px; display: block;"></i>
-        <h2 style="color: #333; margin-top: 0; font-size: 20px;">Reset Password</h2>
-        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Enter the Master Recovery Key to set a new password.</p>
+        <h2 style="color: #333; margin-top: 0;">Reset Password</h2>
+        <p style="font-size: 13px; color: #666;">Enter the Master Recovery Key.</p>
         <input type="password" id="recoveryKey" placeholder="Master Recovery Key">
         <input type="password" id="newPassword" placeholder="Enter New Password">
         <button class="auth-btn" onclick="resetPassword()">Save New Password</button>
-        <p id="resetError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Invalid Recovery Key!</p>
-        <p id="resetSuccess" style="color: #2e7d32; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Password Changed Successfully!</p>
+        <p id="resetError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold;">Invalid Key!</p>
+        <p id="resetSuccess" style="color: #2e7d32; display: none; margin-top: 15px; font-weight: bold;">Changed Successfully!</p>
         <button onclick="showLoginScreen()" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline;">Back to Login</button>
     </div>
 </div>
@@ -98,11 +82,11 @@
 <div id="resetDataScreen" class="overlay-screen">
     <div class="auth-box" style="border: 2px solid #c62828;">
         <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #c62828; margin-bottom: 15px; display: block;"></i>
-        <h2 style="color: #c62828; margin-top: 0; font-size: 20px;">Are you sure?</h2>
-        <p style="font-size: 13px; color: #333; margin-bottom: 15px; font-weight: bold;">This will permanently delete ALL student attendance data.</p>
+        <h2 style="color: #c62828; margin-top: 0;">Are you sure?</h2>
+        <p style="font-size: 13px; color: #333; margin-bottom: 15px; font-weight: bold;">This will permanently delete ALL Cloud attendance data.</p>
         <input type="password" id="resetDataPassword" placeholder="Admin Password" onkeypress="if(event.key === 'Enter') confirmDataReset()">
         <button class="danger-auth-btn" onclick="confirmDataReset()">Confirm Reset Data</button>
-        <p id="resetDataError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Incorrect Password!</p>
+        <p id="resetDataError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold;">Incorrect Password!</p>
         <button onclick="cancelResetData()" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline; font-weight: bold;">Cancel</button>
     </div>
 </div>
@@ -112,7 +96,7 @@
         <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
         <div class="school-info">
             <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
-            <p class="school-tagline"><i class="fas fa-user-shield"></i> Admin Dashboard</p>
+            <p class="school-tagline"><i class="fas fa-user-shield"></i> Cloud Admin Dashboard</p>
         </div>
     </header>
 
@@ -122,17 +106,14 @@
         </button>
 
         <div class="card" style="border-left: 6px solid var(--gold);">
-            <h3 style="margin-top: 0; color: #333;"><i class="fas fa-bullhorn" style="color: var(--forest);"></i> Live School Announcement</h3>
-            <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Type a message below to display it instantly on the Student Portal.</p>
-            
-            <textarea id="announcementInput" placeholder="E.g., School will be closed tomorrow due to heavy rain..." style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-family: inherit; font-size: 15px; resize: vertical; min-height: 80px; box-sizing: border-box;"></textarea>
-            
+            <h3 style="margin-top: 0; color: #333;"><i class="fas fa-bullhorn" style="color: var(--forest);"></i> Live Cloud Announcement</h3>
+            <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Broadcast a message instantly to all parents and teachers.</p>
+            <textarea id="announcementInput" placeholder="E.g., School will be closed tomorrow..." style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-family: inherit; font-size: 15px; resize: vertical; min-height: 80px; box-sizing: border-box;"></textarea>
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button onclick="publishAnnouncement()" style="flex: 1; background: var(--forest); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;"><i class="fas fa-upload"></i> Publish to Portal</button>
-                <button onclick="clearAnnouncement()" style="background: #ffebee; color: var(--danger); border: 1px solid #ef9a9a; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;"><i class="fas fa-times"></i> Remove</button>
+                <button onclick="publishAnnouncement()" style="flex: 1; background: var(--forest); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;"><i class="fas fa-cloud-upload-alt"></i> Publish to Cloud</button>
+                <button onclick="clearAnnouncement()" style="background: #ffebee; color: var(--danger); border: 1px solid #ef9a9a; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;"><i class="fas fa-times"></i> Remove</button>
             </div>
-            
-            <p id="announceStatus" style="display: none; color: #2e7d32; font-weight: bold; font-size: 14px; margin-top: 15px; text-align: center;"></p>
+            <p id="announceStatus" style="display: none; font-weight: bold; font-size: 14px; margin-top: 15px; text-align: center;"></p>
         </div>
 
         <div class="card">
@@ -154,7 +135,6 @@
                         <option value="Grade-8">Grade-8 (Bhagat)</option>
                     </select>
                 </div>
-
                 <div class="select-group">
                     <label>Select Month</label>
                     <select id="monthSelect" onchange="loadClassData()">
@@ -176,27 +156,15 @@
                         <option value="2027-05">May 2027</option>
                     </select>
                 </div>
-                
-                <button class="danger-btn" onclick="showResetDataScreen()">
-                    <i class="fas fa-trash-alt"></i> Reset Term Data
-                </button>
+                <button class="danger-btn" onclick="showResetDataScreen()"><i class="fas fa-trash-alt"></i> Reset Cloud Data</button>
             </div>
-
             <div style="overflow-x: auto;">
                 <table id="dataTable">
                     <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Present</th>
-                            <th>Absent</th>
-                            <th>Total Classes</th>
-                            <th>Percentage</th>
-                        </tr>
+                        <tr><th>Student Name</th><th>Present</th><th>Absent</th><th>Total Classes</th><th>Percentage</th></tr>
                     </thead>
                     <tbody id="tableBody">
-                        <tr>
-                            <td colspan="5" class="empty-state">Select a class above to view attendance records.</td>
-                        </tr>
+                        <tr><td colspan="5" class="empty-state">Select a class above to view attendance records.</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -205,37 +173,31 @@
 </div>
 
 <script>
-// --- AUTHENTICATION LOGIC ---
-const DEFAULT_PASSWORD = "Ahmad@07";
-const MASTER_RECOVERY_KEY = "paramount"; 
+// --- FIREBASE INITIALIZATION ---
+const firebaseConfig = {
+  apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8",
+  authDomain: "paramount-school-d55bc.firebaseapp.com",
+  databaseURL: "https://paramount-school-d55bc-default-rtdb.firebaseio.com",
+  projectId: "paramount-school-d55bc",
+  storageBucket: "paramount-school-d55bc.firebasestorage.app",
+  messagingSenderId: "130979432562",
+  appId: "1:130979432562:web:4cd94787b23f9daba51aeb"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
+// --- AUTH LOGIC ---
+const DEFAULT_PASSWORD = "Admin@123";
+const MASTER_RECOVERY_KEY = "Paramount2026"; 
 function getSavedPassword() { return localStorage.getItem('paramountAdminPwd') || DEFAULT_PASSWORD; }
-
 function checkPassword() {
     if (document.getElementById('adminPassword').value === getSavedPassword()) {
         document.getElementById('loginScreen').style.display = "none";
         document.getElementById('mainApp').style.display = "block";
-        if(localStorage.getItem('paramountAnnouncement')) {
-            document.getElementById('announcementInput').value = localStorage.getItem('paramountAnnouncement');
-        }
-    } else {
-        document.getElementById('loginError').style.display = "block";
-    }
+    } else { document.getElementById('loginError').style.display = "block"; }
 }
-
-function showResetScreen() {
-    document.getElementById('loginScreen').style.display = "none";
-    document.getElementById('resetScreen').style.display = "flex";
-    document.getElementById('resetError').style.display = "none";
-    document.getElementById('resetSuccess').style.display = "none";
-}
-
-function showLoginScreen() {
-    document.getElementById('resetScreen').style.display = "none";
-    document.getElementById('loginScreen').style.display = "flex";
-    document.getElementById('loginError').style.display = "none";
-}
-
+function showResetScreen() { document.getElementById('loginScreen').style.display = "none"; document.getElementById('resetScreen').style.display = "flex"; document.getElementById('resetError').style.display = "none"; document.getElementById('resetSuccess').style.display = "none"; }
+function showLoginScreen() { document.getElementById('resetScreen').style.display = "none"; document.getElementById('loginScreen').style.display = "flex"; document.getElementById('loginError').style.display = "none"; }
 function resetPassword() {
     const key = document.getElementById('recoveryKey').value;
     const pass = document.getElementById('newPassword').value;
@@ -244,78 +206,65 @@ function resetPassword() {
         document.getElementById('resetError').style.display = "none";
         document.getElementById('resetSuccess').style.display = "block";
         setTimeout(() => { showLoginScreen(); }, 1500);
-    } else {
-        document.getElementById('resetError').style.display = "block";
-    }
+    } else { document.getElementById('resetError').style.display = "block"; }
 }
 
-// --- SECURE DATA RESET LOGIC ---
-function showResetDataScreen() {
-    document.getElementById('resetDataScreen').style.display = "flex";
-    document.getElementById('resetDataPassword').value = "";
-    document.getElementById('resetDataError').style.display = "none";
-}
-
-function cancelResetData() {
-    document.getElementById('resetDataScreen').style.display = "none";
-}
-
+// --- SECURE CLOUD RESET ---
+function showResetDataScreen() { document.getElementById('resetDataScreen').style.display = "flex"; document.getElementById('resetDataPassword').value = ""; document.getElementById('resetDataError').style.display = "none"; }
+function cancelResetData() { document.getElementById('resetDataScreen').style.display = "none"; }
 function confirmDataReset() {
-    const pass = document.getElementById('resetDataPassword').value;
-    if (pass === getSavedPassword()) {
-        localStorage.removeItem('paramountAttendance');
-        document.getElementById('resetDataScreen').style.display = "none";
-        alert("Success: All attendance data has been permanently cleared.");
-        loadClassData(); 
-    } else {
-        document.getElementById('resetDataError').style.display = "block";
-    }
+    if (document.getElementById('resetDataPassword').value === getSavedPassword()) {
+        db.ref('attendance').remove().then(() => {
+            document.getElementById('resetDataScreen').style.display = "none";
+            alert("Success: All attendance data has been permanently cleared from the Cloud.");
+        });
+    } else { document.getElementById('resetDataError').style.display = "block"; }
 }
 
-// --- ANNOUNCEMENT BOARD LOGIC ---
+// --- CLOUD ANNOUNCEMENTS ---
+db.ref('announcement').on('value', (snap) => {
+    if(snap.exists()) document.getElementById('announcementInput').value = snap.val();
+    else document.getElementById('announcementInput').value = "";
+});
+
 function publishAnnouncement() {
     const text = document.getElementById('announcementInput').value.trim();
     const statusBox = document.getElementById('announceStatus');
-    
     if(text.length > 0) {
-        localStorage.setItem('paramountAnnouncement', text);
-        statusBox.innerHTML = '<i class="fas fa-check-circle"></i> Live on Student Portal!';
-        statusBox.style.color = '#2e7d32';
-        statusBox.style.display = 'block';
-        setTimeout(() => { statusBox.style.display = 'none'; }, 3000);
-    } else {
-        alert("Please type a message first.");
-    }
+        db.ref('announcement').set(text).then(() => {
+            statusBox.innerHTML = '<i class="fas fa-check-circle"></i> Live on ALL devices globally!';
+            statusBox.style.color = '#2e7d32';
+            statusBox.style.display = 'block';
+            setTimeout(() => { statusBox.style.display = 'none'; }, 3000);
+        });
+    } else { alert("Please type a message first."); }
 }
 
 function clearAnnouncement() {
-    localStorage.removeItem('paramountAnnouncement');
-    document.getElementById('announcementInput').value = "";
-    const statusBox = document.getElementById('announceStatus');
-    statusBox.innerHTML = '<i class="fas fa-info-circle"></i> Announcement Removed.';
-    statusBox.style.color = '#c62828';
-    statusBox.style.display = 'block';
-    setTimeout(() => { statusBox.style.display = 'none'; }, 3000);
+    db.ref('announcement').remove().then(() => {
+        const statusBox = document.getElementById('announceStatus');
+        statusBox.innerHTML = '<i class="fas fa-info-circle"></i> Removed from all devices.';
+        statusBox.style.color = '#c62828';
+        statusBox.style.display = 'block';
+        setTimeout(() => { statusBox.style.display = 'none'; }, 3000);
+    });
 }
 
-// --- DATA DISPLAY LOGIC ---
-function getAttendanceData() { return JSON.parse(localStorage.getItem('paramountAttendance')) || {}; }
+// --- CLOUD DATA FETCHING ---
+let cloudAttendanceData = {};
+db.ref('attendance').on('value', (snap) => {
+    cloudAttendanceData = snap.val() || {};
+    if (document.getElementById('classSelect').value !== "") loadClassData(); // Auto update table
+});
 
 function loadClassData() {
     const cls = document.getElementById('classSelect').value;
     const month = document.getElementById('monthSelect').value;
     const tbody = document.getElementById('tableBody');
-    const data = getAttendanceData();
+    const data = cloudAttendanceData;
 
-    if (!cls) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Select a class above to view attendance records.</td></tr>';
-        return;
-    }
-
-    if (!data[cls] || !data[cls].students) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No attendance data recorded for ${cls} yet.</td></tr>`;
-        return;
-    }
+    if (!cls) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Select a class above to view records.</td></tr>'; return; }
+    if (!data[cls] || !data[cls].students) { tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No data in Cloud for ${cls}.</td></tr>`; return; }
 
     const students = data[cls].students;
     tbody.innerHTML = ""; 
@@ -323,45 +272,21 @@ function loadClassData() {
 
     for (const [studentName, stats] of Object.entries(students)) {
         hasStudents = true;
-        let present = 0;
-        let total = 0;
-
-        if (month === "All") {
-            present = stats.presentDays || 0;
-            total = stats.totalDays || 0;
-        } else {
-            if (stats.months && stats.months[month]) {
-                present = stats.months[month].present;
-                total = stats.months[month].total;
-            }
-        }
+        let present = 0; let total = 0;
+        if (month === "All") { present = stats.presentDays || 0; total = stats.totalDays || 0; } 
+        else { if (stats.months && stats.months[month]) { present = stats.months[month].present; total = stats.months[month].total; } }
 
         let absent = total - present;
-        let percentText = "0%";
-        let badgeClass = "badge-neutral";
-
+        let percentText = "0%"; let badgeClass = "badge-neutral";
         if (total > 0) {
             const percent = Math.round((present / total) * 100);
             percentText = percent + "%";
             badgeClass = percent >= 50 ? "badge-good" : "badge-bad";
         }
-
-        tbody.innerHTML += `
-            <tr>
-                <td class="student-name">${studentName}</td>
-                <td style="color: #2e7d32; font-weight: bold;">${present}</td>
-                <td style="color: #c62828; font-weight: bold;">${absent}</td>
-                <td>${total}</td>
-                <td><span class="badge ${badgeClass}">${percentText}</span></td>
-            </tr>
-        `;
+        tbody.innerHTML += `<tr><td class="student-name">${studentName}</td><td style="color: #2e7d32; font-weight: bold;">${present}</td><td style="color: #c62828; font-weight: bold;">${absent}</td><td>${total}</td><td><span class="badge ${badgeClass}">${percentText}</span></td></tr>`;
     }
-
-    if (!hasStudents) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No students found in ${cls}.</td></tr>`;
-    }
+    if (!hasStudents) tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No students found.</td></tr>`;
 }
 </script>
-
 </body>
 </html>
