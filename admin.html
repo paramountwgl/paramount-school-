@@ -187,8 +187,8 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // --- AUTH LOGIC ---
-const DEFAULT_PASSWORD = "Admin@123";
-const MASTER_RECOVERY_KEY = "Paramount2026"; 
+const DEFAULT_PASSWORD = "Ahmad@07";
+const MASTER_RECOVERY_KEY = "paramount"; 
 function getSavedPassword() { return localStorage.getItem('paramountAdminPwd') || DEFAULT_PASSWORD; }
 function checkPassword() {
     if (document.getElementById('adminPassword').value === getSavedPassword()) {
