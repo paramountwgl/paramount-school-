@@ -6,14 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paramount School | Teachers Portal</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
+    
     <style>
         :root { --forest: #006633; --gold: #ffd700; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
-        /* BANNER STYLING */
         #liveAnnouncementBanner { 
             display: none; 
             background-color: #c62828; 
@@ -39,6 +40,8 @@
         h2 { color: var(--forest); text-align: center; border-bottom: 2px solid var(--gold); padding-bottom: 10px; margin-top: 0; }
         label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-top: 15px; }
         select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-top: 5px; }
+        select:disabled { background-color: #eeeeee; cursor: not-allowed; }
+        
         .student-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 5px; border-bottom: 1px solid #f0f0f0; }
         .name-text { font-weight: 600; font-size: 16px; }
         .percent-badge { font-size: 12px; padding: 3px 8px; border-radius: 10px; margin-left: 10px; font-weight: bold; }
@@ -55,6 +58,7 @@
         @media (max-width: 768px) { header { flex-direction: column; text-align: center; gap: 10px; padding: 20px; } .school-name { font-size: 1.5rem; white-space: normal; } .school-info { text-align: center; } .logo-img { height: 70px; } }
         #exportTableWrapper { display: none; }
     </style>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
@@ -69,8 +73,10 @@
 </header>
 
 <div class="container">
-    
-    <div id="liveAnnouncementBanner"><i class="fas fa-bell" style="color: #ffd700; margin-right: 8px; font-size: 18px;"></i> <span id="announcementMessageText"></span></div>
+    <div id="liveAnnouncementBanner">
+        <i class="fas fa-bell" style="color: #ffd700; margin-right: 8px; font-size: 18px;"></i> 
+        <span id="announcementMessageText"></span>
+    </div>
 
     <div class="card">
         <h2>Mark Attendance</h2>
@@ -96,7 +102,7 @@
             </select>
 
             <label>Class</label>
-            <select id="classSelect" onchange="generateList()">
+            <select id="classSelect" onchange="generateList()" disabled>
                 <option value="">-- Choose Class --</option>
                 <option value="Pre-KG">Pre-KG (Diamond)</option>
                 <option value="KG-1">KG-1 (Ruby)</option>
@@ -150,7 +156,56 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// Listen for Live Announcements
+// --- NEW SECURITY: SWEETALERT2 VERIFICATION ---
+const teacherDropdown = document.getElementById('teacherName');
+const classDropdown = document.getElementById('classSelect');
+
+teacherDropdown.addEventListener('change', async (e) => {
+    const selectedTeacher = e.target.value;
+    if (!selectedTeacher) return;
+
+    // Beautiful Password Modal with Dot Masquerading (••••••)
+    const { value: password } = await Swal.fire({
+        title: `Hello, ${selectedTeacher}`,
+        text: 'Enter your password to verify your identity:',
+        input: 'password', // NEW: Hides typed characters
+        inputPlaceholder: 'Enter Password',
+        inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
+        showCancelButton: true,
+        confirmButtonColor: '#006633',
+        cancelButtonColor: '#c62828'
+    });
+
+    if (password) {
+        Swal.fire({ title: 'Verifying...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        
+        try {
+            // Verify with your Node.js backend using bcrypt
+            const response = await fetch('http://localhost:5000/api/verify-teacher', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: selectedTeacher, password: password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire({ icon: 'success', title: 'Identity Verified!', timer: 1500, showConfirmButton: false });
+                classDropdown.disabled = false; // Unlock attendance marking
+            } else {
+                Swal.fire({ icon: 'error', title: 'Invalid Password', text: 'Access Denied.' });
+                resetForm();
+            }
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Server Offline', text: 'Please start your Node.js server.' });
+            resetForm();
+        }
+    } else {
+        resetForm();
+    }
+});
+
+// --- EXISTING ATTENDANCE LOGIC ---
 db.ref('announcement').on('value', (snap) => {
     const msg = snap.val();
     const banner = document.getElementById('liveAnnouncementBanner');
@@ -164,10 +219,8 @@ const schoolData = {
     "KG-2": ["Deekshanth Sammeta", "Hanshith Erroju", "Harika Bandi", "Himarsha Naini", "Karthik Vallepu", "Kruthika Bandi", "Rajavardhan Gampala", "Roshan Kaitha", "Sri Anshu Ayaan Lyadala", "Srihansh Bandi", "Srikshitha Guduri", "Varshith Gonela", "Adyasri Makala", "Anvik Boini", "Anvith Pokanati", "Awais Ur Rehman Mohammad", "Dakshu Pothuganti", "Hansith Reddy Katukuri", "Harshith Pokanati", "Jella Aditya", "Krishank Nallabothula", "Kundana Katkuri", "Munukuntla Revanth Rudhra", "Niraja Nethri Siluveru", "Pranav Mattepelli", "Sreenith Yadav Naini", "Uvan Reddy Dasari", "Zayan Mohammad", "Zoya Mohammed"],
     "Grade-1": ["Dheeraj Gattu", "Preetham Sannayala", "Shiva nandu Gonela", "Shrayan Nuthanakanti", "Sriyanksha Mandala", "Advitha Garige", "Harika Bandi", "Himansi Kondoju", "Izhaan Rahamath Syed", "Jaisurya Myakala", "Khadeeja Fathima", "Manaswini Dandugula", "Manusri Bandi", "Rithwik krishna Amaravadi", "Rohan Bandi", "Shiva Junnu", "Shivanandh Bandi", "Sridha Thalla", "Srinika Chengelly", "Sriyanshi Oggula", "Vishwak Chekka"],
     "Grade-2": ["Aliza Manha Shaik", "Dhruvan Reddy Katukuri", "Druthika Enugala", "Manaswini Bandi", "Rakshith Macharla", "Sathwika Katkuri", "Shalini Uppala", "Chandu Devarakonda", "Gnaneshwar Pokanati", "Hasnain Syed", "Koushik Siluveru", "Senen Desabattula", "Shivarajan Pothuganti"],
-    // REMOVED THE PERIOD FROM MD ABDUL QUDDUS
     "Grade-3": ["Nagavelly Manikanta", "Mirja Ismail", "Bandi Aryan", "Dandugula Mahesh Babu", "Bandi Tejasri", "Bandi Harshavardhan", "Gampala Vyshnavi", "Gampala Laxmi", "Garige Harshith", "Katkuri Hanish", "Katukuri Manideep", "MD Abdul Quddus", "Muppa Sathwik Patel", "Nuthanakanti Sansita", "Pasarakonda Ritwin", "Pinninti Rakshith Rao", "Rayi Sriman Adithya"],
     "Grade-4": ["Abdul Saqib Mohammad", "Anudeep Chintha", "Bhavan Bandi", "Harshavardhan Gonela", "Jayadev Chiluveru", "Mahaboob Syed", "Nandith Reddy Enugala", "Sai Charan Goud Mandala", "Sai Prasanna Keerthi", "Ajmeri Shaik", "Akshith Chiluveru", "Jayasri Mykala", "Rahul Kanjarla", "Saketh Devarakonda"],
-    // REMOVED THE PERIOD FROM ABDUS SALAAM MD
     "Grade-5": ["Adya Reddy Vangala", "Kowshik Patel Muppa", "Siri Singaram", "Srikar Mandala", "Abdus Salaam MD", "Akshith Ram Kalvacharla", "Jaffar Anas Shaik", "Khaja Azeemuddin Mohammed", "Nihan Mohammed", "Saif Shaik", "Saketh Renukuntla", "Sreeja Dasari", "Vidhaatri Sahani"],
     "Grade-6": ["Abdul Razzak Mohammad", "Anudeepthi Chintha", "Saketh Ranaveni", "Shiva Sri Katukuri", "Aklees Shaik", "Akshya Kalvacharla", "Prince Katkuri"],
     "Grade-7": ["Manikanta Sannayala", "Sreeyan Reddy Karra", "Jayadhithya Chiluveru"],
@@ -176,11 +229,9 @@ const schoolData = {
 
 let attendanceRecords = {};
 
-// Listen for Cloud Data
 db.ref('attendance').on('value', (snapshot) => {
     attendanceRecords = snapshot.val() || {};
     let needsInit = false;
-    
     for (let cls in schoolData) {
         if (!attendanceRecords[cls]) { attendanceRecords[cls] = { lastSubmittedDate: null, students: {} }; needsInit = true; }
         schoolData[cls].forEach(name => {
@@ -190,25 +241,17 @@ db.ref('attendance').on('value', (snapshot) => {
             }
         });
     }
-    
-    // SAFETY CATCH ADDED HERE
-    if (needsInit) {
-        db.ref('attendance').set(attendanceRecords).catch(error => {
-            console.error("Firebase Init Error:", error);
-        });
-    }
-    
-    if (document.getElementById('classSelect').value !== "" && document.getElementById('submitBtn').style.display === "flex") {
+    if (needsInit) { db.ref('attendance').set(attendanceRecords); }
+    if (classDropdown.value !== "" && document.getElementById('submitBtn').style.display === "flex") {
         generateList();
     }
 });
 
 function generateList() {
-    const cls = document.getElementById('classSelect').value;
+    const cls = classDropdown.value;
     const listDiv = document.getElementById('listContainer');
     const submitBtn = document.getElementById('submitBtn');
     listDiv.innerHTML = "";
-    
     if (schoolData[cls] && attendanceRecords[cls]) {
         schoolData[cls].forEach(name => {
             const stats = attendanceRecords[cls].students[name];
@@ -225,20 +268,15 @@ function generateList() {
 }
 
 function submitAttendance() {
-    const teacher = document.getElementById('teacherName').value;
-    const cls = document.getElementById('classSelect').value;
+    const teacher = teacherDropdown.value;
+    const cls = classDropdown.value;
     const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     const monthKey = new Date().toISOString().slice(0, 7); 
 
-    if(!teacher || !cls) return alert("Select Teacher and Class First!");
+    if(!teacher || !cls) return Swal.fire('Wait!', 'Select Teacher and Class First!', 'warning');
     
-    if (attendanceRecords[cls].lastSubmittedDate === dateStr) {
-        if (!confirm("Attendance for " + cls + " was already marked today. Mark again as a new day?")) return; 
-    }
-
     document.getElementById('formContent').style.display = "none";
     document.getElementById('thankYouSection').style.display = "block";
-
     const xlBody = document.getElementById('xl-body');
     xlBody.innerHTML = "";
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
@@ -248,7 +286,6 @@ function submitAttendance() {
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.getAttribute('data-name');
         const isPresent = row.querySelector('.present-toggle').checked;
-        
         if (attendanceRecords[cls].students[name]) {
             attendanceRecords[cls].students[name].totalDays += 1; 
             if (isPresent) attendanceRecords[cls].students[name].presentDays += 1; 
@@ -257,7 +294,6 @@ function submitAttendance() {
             attendanceRecords[cls].students[name].months[monthKey].total += 1;
             if (isPresent) attendanceRecords[cls].students[name].months[monthKey].present += 1;
         }
-
         const stats = attendanceRecords[cls].students[name];
         const newPercent = Math.round((stats.presentDays / stats.totalDays) * 100) + "%";
         const status = isPresent ? "PRESENT" : "ABSENT";
@@ -265,8 +301,6 @@ function submitAttendance() {
     });
 
     attendanceRecords[cls].lastSubmittedDate = dateStr;
-    
-    // UPLOAD TO FIREBASE CLOUD (WITH SAFETY ALERT ADDED)
     db.ref('attendance').set(attendanceRecords).then(() => {
         const html = document.getElementById("attendanceExcelTable").outerHTML;
         const blob = new Blob([`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>${html}</body></html>`], { type: 'application/vnd.ms-excel' });
@@ -274,14 +308,13 @@ function submitAttendance() {
         link.href = URL.createObjectURL(blob);
         link.download = `Attendance_${cls}_${dateStr.replace(/ /g, '-')}.xls`;
         setTimeout(() => link.click(), 500);
-    }).catch(error => {
-        alert("FIREBASE ERROR: The data was blocked from saving. Reason: " + error.message);
     });
 }
 
 function resetForm() {
-    document.getElementById('teacherName').value = "";
-    document.getElementById('classSelect').value = "";
+    teacherDropdown.value = "";
+    classDropdown.value = "";
+    classDropdown.disabled = true;
     document.getElementById('listContainer').innerHTML = "";
     document.getElementById('submitBtn').style.display = "none";
     document.getElementById('thankYouSection').style.display = "none";
