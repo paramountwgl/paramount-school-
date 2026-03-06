@@ -8,28 +8,15 @@
     <title>Paramount School | Teachers Portal</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
     
     <style>
         :root { --forest: #006633; --gold: #ffd700; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
-        
-        #liveAnnouncementBanner { 
-            display: none; 
-            background-color: #c62828; 
-            color: white; 
-            text-align: center; 
-            padding: 15px 20px; 
-            font-weight: bold; 
-            font-size: 15px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            animation: pulseBanner 2.5s infinite; 
-            border-radius: 12px;
-            margin-bottom: 20px; 
-        }
+        #liveAnnouncementBanner { display: none; background-color: #c62828; color: white; text-align: center; padding: 15px 20px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); animation: pulseBanner 2.5s infinite; border-radius: 12px; margin-bottom: 20px; }
         @keyframes pulseBanner { 0% { background-color: #c62828; } 50% { background-color: #e53935; } 100% { background-color: #c62828; } }
-        
         header { background: var(--forest); color: white; padding: 30px 5%; display: flex; justify-content: center; align-items: center; gap: 20px; }
         .logo-img { height: 85px; width: auto; display: block; }
         .school-info { text-align: left; }
@@ -41,7 +28,6 @@
         label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-top: 15px; }
         select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; font-size: 16px; margin-top: 5px; }
         select:disabled { background-color: #eeeeee; cursor: not-allowed; }
-        
         .student-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 5px; border-bottom: 1px solid #f0f0f0; }
         .name-text { font-weight: 600; font-size: 16px; }
         .percent-badge { font-size: 12px; padding: 3px 8px; border-radius: 10px; margin-left: 10px; font-weight: bold; }
@@ -73,15 +59,10 @@
 </header>
 
 <div class="container">
-    <div id="liveAnnouncementBanner">
-        <i class="fas fa-bell" style="color: #ffd700; margin-right: 8px; font-size: 18px;"></i> 
-        <span id="announcementMessageText"></span>
-    </div>
-
+    <div id="liveAnnouncementBanner"><i class="fas fa-bell" style="color: #ffd700; margin-right: 8px; font-size: 18px;"></i> <span id="announcementMessageText"></span></div>
     <div class="card">
         <h2>Mark Attendance</h2>
         <button class="admin-btn" onclick="window.location.href='admin.html'"><i class="fas fa-user-shield"></i> Go to Admin Dashboard</button>
-        
         <div id="formContent">
             <label>Teacher Name</label>
             <select id="teacherName">
@@ -100,7 +81,6 @@
                 <option value="Ms. A. Jhansi Rani">Ms. A. Jhansi Rani</option>
                 <option value="Ms. S. Neelima">Ms. S. Neelima</option>
             </select>
-
             <label>Class</label>
             <select id="classSelect" onchange="generateList()" disabled>
                 <option value="">-- Choose Class --</option>
@@ -119,7 +99,6 @@
             <div id="listContainer"></div>
             <button id="submitBtn" class="submit-btn" onclick="submitAttendance()"><i class="fas fa-cloud-upload-alt"></i> Submit to Cloud</button>
         </div>
-
         <div id="thankYouSection">
             <i class="fas fa-check-circle" style="font-size: 40px; margin-bottom: 15px;"></i><br>
             <strong style="font-size: 20px;">Saved to Cloud!</strong><br>
@@ -156,56 +135,38 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- NEW SECURITY: SWEETALERT2 VERIFICATION ---
 const teacherDropdown = document.getElementById('teacherName');
 const classDropdown = document.getElementById('classSelect');
 
+// --- NEW SECURITY: INTERNAL PASSWORD LOGIC ---
 teacherDropdown.addEventListener('change', async (e) => {
-    const selectedTeacher = e.target.value;
-    if (!selectedTeacher) return;
+    const name = e.target.value;
+    if (!name) return;
 
-    // Beautiful Password Modal with Dot Masquerading (••••••)
     const { value: password } = await Swal.fire({
-        title: `Hello, ${selectedTeacher}`,
-        text: 'Enter your password to verify your identity:',
-        input: 'password', // NEW: Hides typed characters
-        inputPlaceholder: 'Enter Password',
-        inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
+        title: `Hello, ${name}`,
+        text: 'Please enter your teacher password:',
+        input: 'password',
+        inputPlaceholder: 'Password',
         showCancelButton: true,
-        confirmButtonColor: '#006633',
-        cancelButtonColor: '#c62828'
+        confirmButtonColor: '#006633'
     });
 
     if (password) {
-        Swal.fire({ title: 'Verifying...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        // Verification Logic: Name + @123
+        const correctPassword = `${name}@123`;
         
-        try {
-            // Verify with your Node.js backend using bcrypt
-            const response = await fetch('http://localhost:5000/api/verify-teacher', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: selectedTeacher, password: password })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                Swal.fire({ icon: 'success', title: 'Identity Verified!', timer: 1500, showConfirmButton: false });
-                classDropdown.disabled = false; // Unlock attendance marking
-            } else {
-                Swal.fire({ icon: 'error', title: 'Invalid Password', text: 'Access Denied.' });
-                resetForm();
-            }
-        } catch (error) {
-            Swal.fire({ icon: 'error', title: 'Server Offline', text: 'Please start your Node.js server.' });
+        if (password === correctPassword) {
+            Swal.fire({ icon: 'success', title: 'Verified!', timer: 1000, showConfirmButton: false });
+            classDropdown.disabled = false; // Unlock class selection
+        } else {
+            Swal.fire({ icon: 'error', title: 'Invalid Password', text: 'Identity check failed.' });
             resetForm();
         }
-    } else {
-        resetForm();
-    }
+    } else { resetForm(); }
 });
 
-// --- EXISTING ATTENDANCE LOGIC ---
+// Listen for Live Announcements
 db.ref('announcement').on('value', (snap) => {
     const msg = snap.val();
     const banner = document.getElementById('liveAnnouncementBanner');
@@ -272,7 +233,6 @@ function submitAttendance() {
     const cls = classDropdown.value;
     const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
     const monthKey = new Date().toISOString().slice(0, 7); 
-
     if(!teacher || !cls) return Swal.fire('Wait!', 'Select Teacher and Class First!', 'warning');
     
     document.getElementById('formContent').style.display = "none";
@@ -282,7 +242,7 @@ function submitAttendance() {
     document.getElementById('xl-date').innerText = "Date: " + dateStr;
     document.getElementById('xl-teacher').innerText = "Teacher: " + teacher;
     document.getElementById('xl-class').innerText = "Class: " + cls;
-
+    
     document.querySelectorAll('.student-row').forEach((row, index) => {
         const name = row.getAttribute('data-name');
         const isPresent = row.querySelector('.present-toggle').checked;
@@ -299,7 +259,7 @@ function submitAttendance() {
         const status = isPresent ? "PRESENT" : "ABSENT";
         xlBody.innerHTML += `<tr><td style="text-align: center;">${index+1}</td><td>${name}</td><td style="text-align: center; font-weight: bold;">${status}</td><td style="text-align: center;">${newPercent}</td><td></td></tr>`;
     });
-
+    
     attendanceRecords[cls].lastSubmittedDate = dateStr;
     db.ref('attendance').set(attendanceRecords).then(() => {
         const html = document.getElementById("attendanceExcelTable").outerHTML;
