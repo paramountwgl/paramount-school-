@@ -32,7 +32,7 @@
         .school-tagline { font-size: 1rem; opacity: 0.9; margin-top: 5px; font-weight: bold; color: var(--gold); }
 
         .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px;}
         
         .controls { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
         .select-group { flex: 1; min-width: 200px; }
@@ -99,17 +99,11 @@
     <div class="auth-box" style="border: 2px solid #c62828;">
         <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #c62828; margin-bottom: 15px; display: block;"></i>
         <h2 style="color: #c62828; margin-top: 0; font-size: 20px;">Are you sure?</h2>
-        <p style="font-size: 13px; color: #333; margin-bottom: 15px; font-weight: bold;">This will permanently delete ALL student attendance data and reset percentages to zero.</p>
-        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter the Admin access password to authorize this reset.</p>
-        
+        <p style="font-size: 13px; color: #333; margin-bottom: 15px; font-weight: bold;">This will permanently delete ALL student attendance data.</p>
         <input type="password" id="resetDataPassword" placeholder="Admin Password" onkeypress="if(event.key === 'Enter') confirmDataReset()">
-        
         <button class="danger-auth-btn" onclick="confirmDataReset()">Confirm Reset Data</button>
         <p id="resetDataError" style="color: #c62828; display: none; margin-top: 15px; font-weight: bold; font-size: 14px;">Incorrect Password!</p>
-        
-        <button onclick="cancelResetData()" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline; font-weight: bold;">
-            Cancel
-        </button>
+        <button onclick="cancelResetData()" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline; font-weight: bold;">Cancel</button>
     </div>
 </div>
 
@@ -118,7 +112,7 @@
         <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
         <div class="school-info">
             <h1 class="school-name">PARAMOUNT ENGLISH MEDIUM SCHOOL</h1>
-            <p class="school-tagline"><i class="fas fa-user-shield"></i> Admin Dashboard - Attendance Overview</p>
+            <p class="school-tagline"><i class="fas fa-user-shield"></i> Admin Dashboard</p>
         </div>
     </header>
 
@@ -127,14 +121,37 @@
             <i class="fas fa-arrow-left"></i> Back to Teachers Portal
         </button>
 
+        <div class="card" style="border-left: 6px solid var(--gold);">
+            <h3 style="margin-top: 0; color: #333;"><i class="fas fa-bullhorn" style="color: var(--forest);"></i> Live School Announcement</h3>
+            <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Type a message below to display it instantly on the Student Portal.</p>
+            
+            <textarea id="announcementInput" placeholder="E.g., School will be closed tomorrow due to heavy rain..." style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-family: inherit; font-size: 15px; resize: vertical; min-height: 80px; box-sizing: border-box;"></textarea>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="publishAnnouncement()" style="flex: 1; background: var(--forest); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;"><i class="fas fa-upload"></i> Publish to Portal</button>
+                <button onclick="clearAnnouncement()" style="background: #ffebee; color: var(--danger); border: 1px solid #ef9a9a; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;"><i class="fas fa-times"></i> Remove</button>
+            </div>
+            
+            <p id="announceStatus" style="display: none; color: #2e7d32; font-weight: bold; font-size: 14px; margin-top: 15px; text-align: center;"></p>
+        </div>
+
         <div class="card">
             <div class="controls">
                 <div class="select-group">
                     <label>Select Class</label>
                     <select id="classSelect" onchange="loadClassData()">
                         <option value="">-- Choose Class --</option>
-                        <option value="10th-A">10th Grade - A</option>
-                        <option value="9th-B">9th Grade - B</option>
+                        <option value="Pre-KG">Pre-KG (Diamond)</option>
+                        <option value="KG-1">KG-1 (Ruby)</option>
+                        <option value="KG-2">KG-2 (Amber)</option>
+                        <option value="Grade-1">Grade-1 (Opal)</option>
+                        <option value="Grade-2">Grade-2 (Emerald)</option>
+                        <option value="Grade-3">Grade-3 (Crystal)</option>
+                        <option value="Grade-4">Grade-4 (Citrine)</option>
+                        <option value="Grade-5">Grade-5 (Moonstone)</option>
+                        <option value="Grade-6">Grade-6 (Alluri)</option>
+                        <option value="Grade-7">Grade-7 (Kalam)</option>
+                        <option value="Grade-8">Grade-8 (Bhagat)</option>
                     </select>
                 </div>
 
@@ -145,6 +162,18 @@
                         <option value="2026-03">March 2026</option>
                         <option value="2026-04">April 2026</option>
                         <option value="2026-05">May 2026</option>
+                        <option value="2026-06">June 2026</option>
+                        <option value="2026-07">July 2026</option>
+                        <option value="2026-08">August 2026</option>
+                        <option value="2026-09">September 2026</option>
+                        <option value="2026-10">October 2026</option>
+                        <option value="2026-11">November 2026</option>
+                        <option value="2026-12">December 2026</option>
+                        <option value="2027-01">January 2027</option>
+                        <option value="2027-02">February 2027</option>
+                        <option value="2027-03">March 2027</option>
+                        <option value="2027-04">April 2027</option>
+                        <option value="2027-05">May 2027</option>
                     </select>
                 </div>
                 
@@ -177,8 +206,8 @@
 
 <script>
 // --- AUTHENTICATION LOGIC ---
-const DEFAULT_PASSWORD = "Ahmad@07";
-const MASTER_RECOVERY_KEY = "paramount"; 
+const DEFAULT_PASSWORD = "Admin@123";
+const MASTER_RECOVERY_KEY = "Paramount2026"; 
 
 function getSavedPassword() { return localStorage.getItem('paramountAdminPwd') || DEFAULT_PASSWORD; }
 
@@ -186,6 +215,9 @@ function checkPassword() {
     if (document.getElementById('adminPassword').value === getSavedPassword()) {
         document.getElementById('loginScreen').style.display = "none";
         document.getElementById('mainApp').style.display = "block";
+        if(localStorage.getItem('paramountAnnouncement')) {
+            document.getElementById('announcementInput').value = localStorage.getItem('paramountAnnouncement');
+        }
     } else {
         document.getElementById('loginError').style.display = "block";
     }
@@ -234,10 +266,36 @@ function confirmDataReset() {
         localStorage.removeItem('paramountAttendance');
         document.getElementById('resetDataScreen').style.display = "none";
         alert("Success: All attendance data has been permanently cleared.");
-        loadClassData(); // Refresh the table to show zero data
+        loadClassData(); 
     } else {
         document.getElementById('resetDataError').style.display = "block";
     }
+}
+
+// --- ANNOUNCEMENT BOARD LOGIC ---
+function publishAnnouncement() {
+    const text = document.getElementById('announcementInput').value.trim();
+    const statusBox = document.getElementById('announceStatus');
+    
+    if(text.length > 0) {
+        localStorage.setItem('paramountAnnouncement', text);
+        statusBox.innerHTML = '<i class="fas fa-check-circle"></i> Live on Student Portal!';
+        statusBox.style.color = '#2e7d32';
+        statusBox.style.display = 'block';
+        setTimeout(() => { statusBox.style.display = 'none'; }, 3000);
+    } else {
+        alert("Please type a message first.");
+    }
+}
+
+function clearAnnouncement() {
+    localStorage.removeItem('paramountAnnouncement');
+    document.getElementById('announcementInput').value = "";
+    const statusBox = document.getElementById('announceStatus');
+    statusBox.innerHTML = '<i class="fas fa-info-circle"></i> Announcement Removed.';
+    statusBox.style.color = '#c62828';
+    statusBox.style.display = 'block';
+    setTimeout(() => { statusBox.style.display = 'none'; }, 3000);
 }
 
 // --- DATA DISPLAY LOGIC ---
@@ -265,7 +323,6 @@ function loadClassData() {
 
     for (const [studentName, stats] of Object.entries(students)) {
         hasStudents = true;
-        
         let present = 0;
         let total = 0;
 
