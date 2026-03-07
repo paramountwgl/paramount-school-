@@ -14,7 +14,6 @@
         
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; border-bottom: 5px solid var(--forest); position: relative; text-align: center; }
-        .auth-logo-corner { position: absolute; top: 20px; left: 20px; height: 45px; width: auto; }
         .secure-icon { font-size: 50px; color: var(--forest); margin: 0 auto 15px auto; display: block; }
         .auth-title { color: var(--forest); margin: 0; font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; }
         .auth-input { width: 100%; max-width: 320px; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin: 20px auto; text-align: center; font-size: 16px; outline: none; display: block; }
@@ -25,24 +24,13 @@
         .school-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; margin-left: 5px; }
         .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; }
         .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.6rem, 2vw, 0.9rem); color: var(--gold); font-weight: 700; }
-        .admin-portal-title { 
-            font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); 
-            font-weight: 800; color: white; text-transform: uppercase; 
-            border-left: 3px solid var(--gold); padding-left: 15px; margin-left: 15px;
-        }
+        .admin-portal-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; color: white; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 15px; margin-left: 15px; }
 
         .container { max-width: 850px; margin: 30px auto; padding: 0 15px; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
         h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.3rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         
-        .btn-attract { 
-            background: linear-gradient(135deg, var(--forest), #004d26); 
-            color: white; padding: 14px 35px; border-radius: 50px; 
-            font-weight: bold; border: 2px solid rgba(255, 215, 0, 0.3); 
-            cursor: pointer; font-size: 14px; transition: 0.3s; 
-            box-shadow: 0 5px 15px rgba(0, 102, 51, 0.3);
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        }
+        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 14px 35px; border-radius: 50px; font-weight: bold; border: 2px solid rgba(255, 215, 0, 0.3); cursor: pointer; font-size: 14px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 102, 51, 0.3); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-attract:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.5); border-color: var(--gold); }
         .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); border-color: rgba(255,255,255,0.2); }
         .btn-attract.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); border-color: rgba(255,255,255,0.2); }
@@ -51,13 +39,9 @@
 
         .table-container { width: 100%; overflow: hidden; border-radius: 10px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        th { 
-            background: var(--forest); color: white; text-transform: uppercase; 
-            padding: 12px 2px; font-size: 11px; font-weight: 800;
-        }
+        th { background: var(--forest); color: white; text-transform: uppercase; padding: 12px 2px; font-size: 11px; font-weight: 800; }
         th:first-child { border-top-left-radius: 10px; text-align: left; padding-left: 10px; width: 45%; }
         th:last-child { border-top-right-radius: 10px; }
-        
         td { padding: 12px 2px; text-align: center; border-bottom: 1px solid #eee; font-size: 12px; }
         td:first-child { text-align: left; padding-left: 10px; }
 
@@ -71,7 +55,6 @@
 
 <div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
-        <img src="logo.png" class="auth-logo-corner" onerror="this.style.display='none'">
         <i class="fas fa-user-shield secure-icon"></i>
         <h2 class="auth-title">Admin Access</h2>
         <input type="password" id="adminPass" class="auth-input" placeholder="Admin Password">
@@ -147,7 +130,7 @@
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <button onclick="viewAtt()" class="btn-attract" style="flex:1;">View Report</button>
                     <button onclick="downloadFilteredReport()" id="dlBtn" class="btn-attract warning" style="display:none; flex:1;">
-                        <i class="fas fa-file-excel"></i> Download Excel
+                        <i class="fas fa-file-excel"></i> Download Parent Report
                     </button>
                 </div>
             </div>
@@ -163,16 +146,10 @@
 
         <div class="card" style="border-top-color: var(--danger);">
             <h3><i class="fas fa-tools"></i> Database Management</h3>
-            <p style="font-size: 13px; color: #666; text-align: center; margin-bottom: 20px;">
-                Choose a reset option. Monthly reset clears current month history and individual date logs.
-            </p>
+            <p style="font-size: 13px; color: #666; text-align: center; margin-bottom: 20px;">Monthly reset clears current month history and individual date logs.</p>
             <div style="display: flex; gap: 10px; flex-direction: column;">
-                <button onclick="resetMonthlyData()" class="btn-attract warning" style="width: 100%;">
-                    <i class="fas fa-calendar-minus"></i> Reset Current Month Only
-                </button>
-                <button onclick="resetAttendanceData()" class="btn-attract danger" style="width: 100%;">
-                    <i class="fas fa-trash-alt"></i> Backup & Reset All Attendance
-                </button>
+                <button onclick="resetMonthlyData()" class="btn-attract warning" style="width: 100%;"><i class="fas fa-calendar-minus"></i> Reset Current Month Only</button>
+                <button onclick="resetAttendanceData()" class="btn-attract danger" style="width: 100%;"><i class="fas fa-trash-alt"></i> Backup & Reset All Attendance</button>
             </div>
         </div>
     </div>
@@ -194,7 +171,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // MAPPING DATA FOR ROLL NUMBERS
     const studentRolls = {
         "Hanish Macharla": "1472070", "Arjun Vihaar Illandula": "1478225", "Thanu sree Allakunta": "1469391", "Aadhya Gangaraboina": "1459555", "Aadhya Sri Oggula": "1459560", "Aadhyasri Shivagoni": "1474500", "Afraha Begum": "1460680", "Aliya Sultana": "1472299", "Anvika Bandi": "1459683", "Aradana Devara konda": "1459620", "Devansh Bandi": "1459605", "Hanvitha Mulkalapelli": "1472069", "Harsha Vardhan Seenapelli": "1472723", "Hiranya Bandi": "1459658", "Jashritha Boina": "1478248", "Konreddy Shreyanvi": "1481135", "Kriyansh Sammeta": "1459568", "Mohammed Mohiuddin Sayyad": "1459652", "Nethra Narkurthi": "1459636", "Reeyansh Bandi": "1463720", "Rishi Manupati": "1459582", "Rudransh Bandi": "1459607", "Sanvika Bandi": "1459625", "Shanvith Khatha": "1472074", "Shishira Jalagam": "1469395", "Shiva Sai Mekala": "1456748", "Shree Rudhraveer Chevvu": "1459687", "Shreyansh Gangaraboina": "1459572", "Sreeja Thalla": "1459643", "Srikrithini Myakala": "1459603", "Srivatsav Vanam": "1472536", "Sriyansh Mekala": "1456743", "Thanvika Lakka": "1473500", "Thrilokansh Vudari": "1463724", "Ujjwal Chekka": "1459694", "Vaishnavi Lakka": "1474815", "Vedansh Myakala": "1460690", "Vishnu Priya Molugu": "1478250", "Vyshnav Tej Boina": "1413563", "Yafiah Mohammad": "1459577",
         "Aadhya Sri Amaravadi": "1424084", "Aditya Manda": "1426519", "Aadhya Jella": "1426518", "Advaita Gauri Bandi": "1392920", "Aizah Amna Shaik": "1392683", "Akshara Singaram": "1472077", "Bhahuveer Raj Somishetti": "1469394", "Gayathri Erroju": "1392676", "Hanvika Mulkalapelli": "1390570", "Manvith Kondoju": "1396188", "Sayyad Vajeed": "1392703", "Mekala Manu sri": "1412110", "Oliva Grace Vallapu": "1392687", "Rithwik Oggula": "1392696", "Rithwika Kandagatla": "1413326", "Srimahi Chevvu": "1392679", "Thanvesh Thalla": "1459706", "Trishul Nanduri": "1317800", "Yoganshika Nanduri": "1424085", "Yusra Mohammad": "1387264", "Zainul Abideen Syed": "1402461",
@@ -257,10 +233,7 @@
             db.ref(`daily_attendance/${selDate}/${cls}`).once('value', (snap) => {
                 const data = snap.val();
                 body.innerHTML = "";
-                if(!data) {
-                    document.getElementById('dlBtn').style.display = 'none';
-                    return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records found</td></tr>';
-                }
+                if(!data) { document.getElementById('dlBtn').style.display = 'none'; return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records found</td></tr>'; }
                 document.getElementById('dlBtn').style.display = 'inline-flex';
                 for(let name in data) {
                     const status = data[name] ? '<span class="status-p">PRESENT</span>' : '<span class="status-a">ABSENT</span>';
@@ -272,10 +245,7 @@
             db.ref(`attendance/${cls}/students`).once('value', (snap) => {
                 const data = snap.val(); 
                 body.innerHTML = "";
-                if(!data) {
-                    document.getElementById('dlBtn').style.display = 'none';
-                    return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data found</td></tr>';
-                }
+                if(!data) { document.getElementById('dlBtn').style.display = 'none'; return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data found</td></tr>'; }
                 document.getElementById('dlBtn').style.display = 'inline-flex';
                 for(let name in data) {
                     let p = 0, t = 0;
@@ -286,12 +256,7 @@
                         p = mData ? (mData.present || 0) : 0;
                         t = mData ? (mData.total || 0) : 0;
                     } else {
-                        if (data[name].months) {
-                            Object.values(data[name].months).forEach(month => {
-                                p += (month.present || 0);
-                                t += (month.total || 0);
-                            });
-                        }
+                        if (data[name].months) Object.values(data[name].months).forEach(month => { p += (month.present || 0); t += (month.total || 0); });
                     }
                     const a = t - p;
                     const pct = t > 0 ? Math.round((p/t)*100) : 0;
@@ -301,58 +266,86 @@
         }
     }
 
-    /* UPDATED: DOWNLOAD REPORT INCLUDES ROLL NUMBER */
+    /* HIGHLY ATTRACTIVE EXCEL EXPORT */
     async function downloadFilteredReport() {
         const cls = document.getElementById('clsPick').value;
         const type = document.getElementById('viewType').value;
         const rows = document.getElementById('attBody').querySelectorAll('tr');
-        
+        const period = (type === 'monthly') ? document.getElementById('monthInput').value : (type === 'daily' ? document.getElementById('dateInput').value : "Overall History");
+
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Attendance_Report');
 
-        let filename = `Attendance_${cls}`;
+        // Header Section
+        sheet.mergeCells('A1:G1');
+        const mainHeader = sheet.getCell('A1');
+        mainHeader.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
+        mainHeader.font = { name: 'Montserrat', size: 18, bold: true, color: { argb: 'FFFFFFFF' } };
+        mainHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF006633' } };
+        mainHeader.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        sheet.mergeCells('A2:G2');
+        const subHeader = sheet.getCell('A2');
+        subHeader.value = `STUDENT ATTENDANCE REPORT - ${cls.toUpperCase()}`;
+        subHeader.font = { name: 'Montserrat', size: 12, bold: true, color: { argb: 'FF000000' } };
+        subHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFD700' } };
+        subHeader.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        sheet.mergeCells('A3:G3');
+        sheet.getCell('A3').value = `Period: ${period} | Exported on: ${new Date().toLocaleDateString()}`;
+        sheet.getCell('A3').alignment = { horizontal: 'center' };
+        sheet.getCell('A3').font = { italic: true };
+
+        // Table Columns
+        sheet.getRow(5).height = 25;
+        const headerRow = sheet.getRow(5);
+        headerRow.values = ['ROLL NO', 'STUDENT NAME', 'PRESENT', 'ABSENT', 'TOTAL', 'PERCENTAGE', 'REMARKS'];
         
-        if(type === 'daily') {
-            const date = document.getElementById('dateInput').value;
-            filename += `_${date}`;
-            sheet.columns = [ 
-                { header: 'ROLL NUMBER', key: 'roll', width: 15 },
-                { header: 'STUDENT NAME', key: 'name', width: 35 }, 
-                { header: 'STATUS', key: 'status', width: 15 } 
-            ];
-            rows.forEach(r => {
-                const name = r.cells[0].innerText;
-                sheet.addRow({ roll: studentRolls[name] || "N/A", name: name, status: r.cells[1].innerText });
+        headerRow.eachCell((cell) => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF004D26' } };
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+
+        sheet.columns = [
+            { key: 'roll', width: 15 }, { key: 'name', width: 35 }, { key: 'p', width: 12 },
+            { key: 'a', width: 12 }, { key: 't', width: 12 }, { key: 'pct', width: 15 }, { key: 'rem', width: 20 }
+        ];
+
+        // Add Data
+        rows.forEach((r, idx) => {
+            const name = r.cells[0].innerText;
+            const rowData = {
+                roll: studentRolls[name] || "N/A",
+                name: name,
+                p: (type === 'daily') ? (r.cells[1].innerText === "PRESENT" ? 1 : 0) : r.cells[1].innerText,
+                a: (type === 'daily') ? (r.cells[1].innerText === "ABSENT" ? 1 : 0) : r.cells[2].innerText,
+                t: (type === 'daily') ? 1 : r.cells[3].innerText,
+                pct: (type === 'daily') ? (r.cells[1].innerText === "PRESENT" ? "100%" : "0%") : r.cells[4].innerText,
+                rem: ""
+            };
+            const addedRow = sheet.addRow(rowData);
+            
+            // Styling Data Rows
+            addedRow.eachCell((cell, colNum) => {
+                cell.alignment = { horizontal: (colNum === 2) ? 'left' : 'center', vertical: 'middle' };
+                cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+                
+                // Color Code Percentage
+                if(colNum === 6) {
+                    const val = parseInt(cell.value);
+                    if(val >= 85) cell.font = { color: { argb: 'FF2E7D32' }, bold: true };
+                    else if(val < 75) cell.font = { color: { argb: 'FFC62828' }, bold: true };
+                }
             });
-        } else {
-            const period = (type === 'monthly') ? document.getElementById('monthInput').value : "Overall";
-            filename = `${period}_Report_${cls}`;
-            sheet.columns = [
-                { header: 'ROLL NUMBER', key: 'roll', width: 15 },
-                { header: 'STUDENT NAME', key: 'name', width: 35 },
-                { header: 'PRESENT DAYS', key: 'p', width: 15 },
-                { header: 'ABSENT DAYS', key: 'a', width: 15 },
-                { header: 'TOTAL DAYS', key: 't', width: 15 },
-                { header: 'PERCENTAGE (%)', key: 'pct', width: 18 }
-            ];
-            rows.forEach(r => {
-                const name = r.cells[0].innerText;
-                sheet.addRow({ 
-                    roll: studentRolls[name] || "N/A",
-                    name: name, 
-                    p: r.cells[1].innerText, 
-                    a: r.cells[2].innerText, 
-                    t: r.cells[3].innerText, 
-                    pct: r.cells[4].innerText 
-                });
-            });
-        }
+        });
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `${filename}.xlsx`;
+        link.download = `Paramount_${cls}_Report.xlsx`;
         link.click();
     }
 
@@ -361,18 +354,10 @@
 
     async function resetMonthlyData() {
         const currentMonth = document.getElementById('monthInput').value;
-        const confirmResult = await Swal.fire({
-            title: 'Confirm Full Monthly Reset',
-            text: `Clear ALL records for ${currentMonth}? This erases daily logs AND monthly summary stats.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d32f2f'
-        });
-
+        const confirmResult = await Swal.fire({ title: 'Confirm Monthly Reset', text: `Fully erase logs for ${currentMonth}?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d32f2f' });
         if (confirmResult.isConfirmed) {
             const correctPass = await getAdminPassword();
-            const { value: password } = await Swal.fire({ title: 'Enter Admin Password', input: 'password', showCancelButton: true });
-
+            const { value: password } = await Swal.fire({ title: 'Enter Password', input: 'password', showCancelButton: true });
             if (password === correctPass) {
                 try {
                     Swal.fire({ title: 'Purging...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -382,20 +367,16 @@
                     if (statsData) {
                         Object.keys(statsData).forEach(cls => {
                             const students = statsData[cls].students;
-                            if (students) Object.keys(students).forEach(name => {
-                                updates[`attendance/${cls}/students/${name}/months/${currentMonth}`] = null;
-                            });
+                            if (students) Object.keys(students).forEach(name => { updates[`attendance/${cls}/students/${name}/months/${currentMonth}`] = null; });
                         });
                     }
                     const dailySnapshot = await db.ref('daily_attendance').once('value');
                     const dailyData = dailySnapshot.val();
                     if (dailyData) {
-                        Object.keys(dailyData).forEach(dateStr => {
-                            if (dateStr.startsWith(currentMonth)) updates[`daily_attendance/${dateStr}`] = null;
-                        });
+                        Object.keys(dailyData).forEach(dateStr => { if (dateStr.startsWith(currentMonth)) updates[`daily_attendance/${dateStr}`] = null; });
                     }
                     await db.ref().update(updates);
-                    Swal.fire('Success', `Data fully erased.`, 'success');
+                    Swal.fire('Success', `Data erased.`, 'success');
                     if(document.getElementById('clsPick').value) viewAtt();
                 } catch (error) { Swal.fire('Error', error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
@@ -403,19 +384,10 @@
     }
 
     async function resetAttendanceData() {
-        const confirmResult = await Swal.fire({
-            title: 'WARNING: PERMANENT RESET',
-            text: "Delete all records? A master backup will be created first.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d32f2f',
-            confirmButtonText: 'Backup & Reset Now'
-        });
-
+        const confirmResult = await Swal.fire({ title: 'MASTER RESET', text: "Delete everything? Archive will be generated first.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d32f2f' });
         if (confirmResult.isConfirmed) {
             const correctPass = await getAdminPassword();
-            const { value: password } = await Swal.fire({ title: 'Authorization Required', input: 'password', showCancelButton: true });
-
+            const { value: password } = await Swal.fire({ title: 'Enter Admin Password', input: 'password', showCancelButton: true });
             if (password === correctPass) {
                 try {
                     Swal.fire({ title: 'Running Backup...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -425,42 +397,24 @@
                     await db.ref('attendance').remove();
                     await db.ref('daily_attendance').remove(); 
                     Swal.fire('Success', 'Database cleared. Backup downloaded.', 'success');
-                } catch (error) { Swal.fire('Error', error.message, 'error'); }
+                } catch (error) { Swal.fire('Error', 'Reset failed: ' + error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
         }
     }
 
     async function generateMasterBackup(data) {
         const workbook = new ExcelJS.Workbook();
-        const sheet = workbook.addWorksheet('Attendance_Archive');
-        sheet.columns = [
-            { header: 'ROLL', key: 'roll', width: 15 },
-            { header: 'CLASS', key: 'class', width: 15 },
-            { header: 'STUDENT NAME', key: 'name', width: 30 },
-            { header: 'PRESENT DAYS', key: 'present', width: 15 },
-            { header: 'TOTAL DAYS', key: 'total', width: 15 }
-        ];
-
+        const sheet = workbook.addWorksheet('Full_Archive');
+        sheet.columns = [ { header: 'ROLL', key: 'roll', width: 15 }, { header: 'CLASS', key: 'class', width: 15 }, { header: 'NAME', key: 'name', width: 30 }, { header: 'PRESENT', key: 'present', width: 15 }, { header: 'TOTAL', key: 'total', width: 15 } ];
         Object.keys(data).forEach(className => {
             const students = data[className].students;
-            if (students) {
-                Object.keys(students).forEach(name => {
-                    sheet.addRow({
-                        roll: studentRolls[name] || "N/A",
-                        class: className,
-                        name: name,
-                        present: students[name].presentDays || 0,
-                        total: students[name].totalDays || 0
-                    });
-                });
-            }
+            if (students) Object.keys(students).forEach(name => { sheet.addRow({ roll: studentRolls[name] || "N/A", class: className, name: name, present: students[name].presentDays || 0, total: students[name].totalDays || 0 }); });
         });
-
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `Paramount_Master_Backup_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.download = `Paramount_Master_Archive.xlsx`;
         link.click();
     }
 
