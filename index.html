@@ -12,7 +12,6 @@
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 50px; overflow-x: hidden; }
         
-        /* SIDE-BY-SIDE ATTRACTION HEADER */
         header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .header-content { display: flex; align-items: center; justify-content: center; gap: 12px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .header-logo { height: clamp(55px, 8vw, 75px); width: auto; flex-shrink: 0; }
@@ -21,13 +20,10 @@
         .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.6rem, 2vw, 0.9rem); color: var(--gold); font-weight: 700; text-transform: uppercase; }
         .portal-subtitle { color: white; font-size: clamp(0.7rem, 2.5vw, 1rem); font-weight: 600; opacity: 0.9; margin-top: 4px; display: block; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 4px; }
 
-        /* PULSING ANNOUNCEMENT BAR */
         #announcementBar { background: var(--danger); color: white; padding: 15px; text-align: center; font-weight: bold; display: none; align-items: center; justify-content: center; gap: 12px; margin: 15px auto; width: 90%; max-width: 800px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); animation: pulse-brightness 2s infinite ease-in-out; }
         @keyframes pulse-brightness { 0%, 100% { filter: brightness(0.9); } 50% { filter: brightness(1.2); } }
 
         .container { max-width: 850px; margin: 0 auto; padding: 0 15px; }
-        
-        /* NAVIGATION BUTTONS BAR */
         .nav-buttons-wrapper { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
         .nav-btn { background: #e8f5e9; color: var(--forest); border: 2px solid var(--forest); padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .nav-btn:hover { background: var(--forest); color: white; transform: translateY(-2px); }
@@ -39,7 +35,6 @@
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin: 15px 0 5px; text-transform: uppercase; }
         select, input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 15px; outline: none; box-sizing: border-box; font-family: inherit; }
         
-        /* TOOLS BUTTON ROW */
         .tools-btn-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn { flex: 1; background: linear-gradient(135deg, var(--forest), #004d26); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
@@ -52,6 +47,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 </head>
 <body>
 
@@ -66,9 +62,7 @@
     </div>
 </header>
 
-<div id="announcementBar">
-    <i class="fas fa-bell"></i> <span id="announcementText"></span>
-</div>
+<div id="announcementBar"><i class="fas fa-bell"></i> <span id="announcementText"></span></div>
 
 <div class="container">
     <div class="nav-buttons-wrapper">
@@ -123,7 +117,6 @@
         </div>
         <label>Subject</label><select id="hwSubSelect" onchange="fetchExistingHW()"></select>
         <label>Task Details</label><textarea id="hwTask" rows="5" placeholder="Enter instructions..."></textarea>
-        
         <div class="tools-btn-row">
             <button class="btn" onclick="postHomework()"><i class="fas fa-paper-plane"></i> Publish / Update</button>
             <button class="btn danger" onclick="clearSubject()"><i class="fas fa-eraser"></i> Clear Task</button>
@@ -150,7 +143,7 @@
         "Grade-1": ["Dheeraj Gattu", "Preetham Sannayala", "Shiva nandu Gonela", "Shrayan Nuthanakanti", "Sriyanksha Mandala", "Advitha Garige", "Harika Bandi", "Himansi Kondoju", "Izhaan Rahamath Syed", "Jaisurya Myakala", "Khadeeja Fathima", "Manaswini Dandugula", "Manusri Bandi", "Rithwik krishna Amaravadi", "Rohan Bandi", "Shiva Junnu", "Shivanandh Bandi", "Sridha Thalla", "Srinika Chengelly", "Sriyanshi Oggula", "Vishwak Chekka"],
         "Grade-2": ["Aliza Manha Shaik", "Dhruvan Reddy Katukuri", "Druthika Enugala", "Manaswini Bandi", "Rakshith Macharla", "Sathwika Katkuri", "Shalini Uppala", "Chandu Devarakonda", "Gnaneshwar Pokanati", "Hasnain Syed", "Koushik Siluveru", "Senen Desabattula", "Shivarajan Pothuganti"],
         "Grade-3": ["Nagavelly Manikanta", "Mirja Ismail", "Bandi Aryan", "Dandugula Mahesh Babu", "Bandi Tejasri", "Bandi Harshavardhan", "Gampala Vyshnavi", "Gampala Laxmi", "Garige Harshith", "Katkuri Hanish", "Katukuri Manideep", "MD Abdul Quddus", "Muppa Sathwik Patel", "Nuthanakanti Sansita", "Pasarakonda Ritwin", "Pinninti Rakshith Rao", "Rayi Sriman Adithya"],
-        "Grade-4": ["Abdul Saqib Mohammad", "Anudeep Chintha", "Bhavan Bandi", "Harshavardhan Gonela", "Jayadev Chiluveru", "Mahaboob Syed", "Nandith Reddy Enugala", "Sai Charan Goud Mandala", "Sai Prasanna Keerthi", "Ajmeri Shaik", "Akshith Chiluveru", "Jayasri Mykala", "Rahul Kanjarla", "Saketh Devarakonda"],
+        "Grade-4": ["Abdul Saqib Mohammad", "Anudeep Chintha", "Bhavan Bandi", "Harshavardhan Gonela", "Jayadev Chiluveru", "Mahaboob Syed", "Nandith Reddy Enugala", "Sai Charan Goud Mandala", "Sai Prasanna Keerthi", "Ajmeri Shaik", "Akshith Chiluveru", "Jayasri Myakala", "Rahul Kanjarla", "Saketh Devarakonda"],
         "Grade-5": ["Adya Reddy Vangala", "Kowshik Patel Muppa", "Siri Singaram", "Srikar Mandala", "Abdus Salaam MD", "Akshith Ram Kalvacharla", "Jaffar Anas Shaik", "Khaja Azeemuddin Mohammed", "Nihan Mohammed", "Saif Shaik", "Saketh Renukuntla", "Sreeja Dasari", "Vidhaatri Sahani"],
         "Grade-6": ["Abdul Razzak Mohammad", "Anudeepthi Chintha", "Saketh Ranaveni", "Shiva Sri Katukuri", "Aklees Shaik", "Akshya Kalvacharla", "Prince Katkuri"],
         "Grade-7": ["Manikanta Sannayala", "Sreeyan Reddy Karra", "Jayadhithya Chiluveru"],
@@ -171,20 +164,98 @@
         document.getElementById('submitAtt').style.display = students.length ? 'block' : 'none';
     }
 
-    function saveAndDownload() {
-        const cls = document.getElementById('attClass').value; const teacher = document.getElementById('teacherSelect').value;
-        const checks = document.querySelectorAll('.att-check'); const month = new Date().toISOString().slice(0, 7);
-        let csv = "Student Name,Status,Class,Teacher,Date\n";
-        checks.forEach(cb => {
-            const name = cb.getAttribute('data-name'); const isP = cb.checked;
+    /* UPDATED EXCEL GENERATION LOGIC */
+    async function saveAndDownload() {
+        const cls = document.getElementById('attClass').value; 
+        const teacher = document.getElementById('teacherSelect').value;
+        const checks = document.querySelectorAll('.att-check'); 
+        const date = new Date().toLocaleDateString();
+        const monthKey = new Date().toISOString().slice(0, 7);
+
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Attendance');
+
+        // Column Config
+        sheet.columns = [
+            { header: 'S.No', key: 'sno', width: 10, style: { alignment: { horizontal: 'center' } } },
+            { header: 'STUDENT NAME', key: 'name', width: 35, style: { alignment: { horizontal: 'left' } } },
+            { header: 'STATUS', key: 'status', width: 15, style: { alignment: { horizontal: 'center' } } },
+            { header: 'REMARKS', key: 'remarks', width: 25, style: { alignment: { horizontal: 'left' } } }
+        ];
+
+        // Forest Green Header
+        sheet.mergeCells('A6:D6');
+        const schoolHeader = sheet.getCell('A6');
+        schoolHeader.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
+        schoolHeader.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FF006633'} };
+        schoolHeader.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 14 };
+        schoolHeader.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        // Gold Portal Header
+        sheet.mergeCells('A7:D7');
+        const portalLabel = sheet.getCell('A7');
+        portalLabel.value = 'TEACHERS OFFICIAL ATTENDANCE PORTAL';
+        portalLabel.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFD700'} };
+        portalLabel.font = { color: { argb: 'FF000000' }, bold: true, size: 11 };
+        portalLabel.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        // Meta Data
+        sheet.getCell('A8').value = `Date: ${date}`;
+        sheet.getCell('C8').value = `Teacher: ${teacher}`;
+        sheet.getCell('A9').value = `Class: ${cls}`;
+        sheet.getCell('C9').value = `Status: FINALIZED`;
+        [8, 9].forEach(rowNum => { sheet.getRow(rowNum).font = { bold: true }; });
+
+        // Table Header Styling
+        const headerRow = sheet.getRow(10);
+        headerRow.values = ['S.No', 'STUDENT NAME', 'STATUS', 'REMARKS'];
+        headerRow.eachCell((cell) => {
+            cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFE0E0E0'} };
+            cell.font = { bold: true };
+            cell.alignment = { horizontal: 'center' };
+            cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        });
+
+        // Processing Students
+        checks.forEach((cb, index) => {
+            const name = cb.getAttribute('data-name'); 
+            const isP = cb.checked;
+            const statusStr = isP ? 'PRESENT' : 'ABSENT';
+            const rowNumber = 11 + index;
+
+            // Save to Firebase
             db.ref(`attendance/${cls}/students/${name}`).transaction(c => {
-                if(!c) return { presentDays: isP?1:0, totalDays: 1, months: {[month]: {present: isP?1:0, total: 1}} };
+                if(!c) return { presentDays: isP?1:0, totalDays: 1, months: {[monthKey]: {present: isP?1:0, total: 1}} };
                 c.presentDays += isP?1:0; c.totalDays += 1; return c;
             });
-            csv += `"${name}","${isP?'Present':'Absent'}","${cls}","${teacher}","${new Date().toLocaleDateString()}"\n`;
+
+            // Write to Excel
+            const row = sheet.getRow(rowNumber);
+            row.values = [index + 1, name, statusStr, ''];
+            
+            const statusCell = sheet.getCell(`C${rowNumber}`);
+            if (isP) {
+                statusCell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFC8E6C9'} };
+                statusCell.font = { color: { argb: 'FF2E7D32' }, bold: true };
+            } else {
+                statusCell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFF8BBD0'} };
+                statusCell.font = { color: { argb: 'FFC62828' }, bold: true };
+            }
+
+            row.eachCell((cell) => {
+                cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+            });
         });
-        const blob = new Blob([csv], { type: 'text/csv' }); const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob); link.download = `Attendance_${cls}.csv`; link.click();
+
+        // Final Setup and Download
+        sheet.pageSetup.horizontalCentered = true;
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `Attendance_${cls}_${date}.xlsx`;
+        link.click();
+        
         Swal.fire('Success', 'Attendance saved and Excel downloaded.', 'success');
     }
 
@@ -195,7 +266,6 @@
         document.getElementById('hwSubSelect').innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
     }
 
-    /* FETCH LOGIC: Pulls current task so you can edit it */
     function fetchExistingHW() {
         const date = document.getElementById('hwDate').value;
         const cls = document.getElementById('hwClass').value;
@@ -206,7 +276,6 @@
         });
     }
 
-    /* PUBLISH / UPDATE LOGIC */
     function postHomework() {
         const date = document.getElementById('hwDate').value; 
         const cls = document.getElementById('hwClass').value;
@@ -216,7 +285,6 @@
         db.ref(`homework/${date}/${cls}`).update({ [sub]: task, lastUpdated: new Date().toLocaleTimeString() }).then(() => Swal.fire('Updated!', 'Homework is live.', 'success'));
     }
 
-    /* CLEAR LOGIC: Removes a single task */
     function clearSubject() {
         const date = document.getElementById('hwDate').value;
         const cls = document.getElementById('hwClass').value;
@@ -243,5 +311,3 @@
 </script>
 </body>
 </html>
-
-
