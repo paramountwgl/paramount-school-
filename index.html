@@ -27,7 +27,7 @@
 
         .container { max-width: 850px; margin: 0 auto; padding: 0 15px; }
         
-        /* NAVIGATION BUTTONS BAR - INTEGRATED PARENTS CHECKBOX */
+        /* NAVIGATION BUTTONS BAR */
         .nav-buttons-wrapper { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
         .nav-btn { background: #e8f5e9; color: var(--forest); border: 2px solid var(--forest); padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 14px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .nav-btn:hover { background: var(--forest); color: white; transform: translateY(-2px); }
@@ -38,10 +38,16 @@
         h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.4rem; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px; justify-content: center; text-transform: uppercase; }
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin: 15px 0 5px; text-transform: uppercase; }
         select, input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 15px; outline: none; box-sizing: border-box; font-family: inherit; }
-        .btn { background: linear-gradient(135deg, var(--forest), #004d26); color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; font-size: 16px; transition: 0.3s; }
+        
+        /* TOOLS BUTTON ROW */
+        .tools-btn-row { display: flex; gap: 10px; margin-top: 15px; }
+        .btn { flex: 1; background: linear-gradient(135deg, var(--forest), #004d26); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
         .student-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
         .student-item input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--forest); }
-        @media (max-width: 600px) { .header-content { gap: 10px; } .card { padding: 15px; } }
+        @media (max-width: 600px) { .header-content { gap: 10px; } .card { padding: 15px; } .tools-btn-row { flex-direction: column; } }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -67,7 +73,7 @@
 <div class="container">
     <div class="nav-buttons-wrapper">
         <a href="admin.html" class="nav-btn"><i class="fas fa-user-shield"></i> Go to Admin Dashboard</a>
-        <a href="Parents Checkbox.html" class="nav-btn gold"><i class="fas fa-user-check"></i> Parents Checkbox</a>
+        <a href="parent-verify.html" class="nav-btn gold"><i class="fas fa-user-check"></i> Parents Checkbox</a>
     </div>
 
     <div class="card">
@@ -101,23 +107,27 @@
             </select>
         </div>
         <div id="studentList" style="margin-top:20px;"></div>
-        <button id="submitAtt" class="btn" style="display:none;" onclick="saveAndDownload()">Submit & Download Attendance</button>
+        <button id="submitAtt" class="btn" style="display:none; width:100%;" onclick="saveAndDownload()">Submit & Download Attendance</button>
     </div>
 
     <div class="card" style="border-top-color: var(--gold);">
-        <h3>Daily Homework</h3>
+        <h3>Daily Homework Tool</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div><label>Class</label><select id="hwClass" onchange="updateHWSubjects()">
+            <div><label>Class</label><select id="hwClass" onchange="updateHWSubjects(); fetchExistingHW();">
                 <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
                 <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
                 <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
                 <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
             </select></div>
-            <div><label>Date</label><input type="date" id="hwDate"></div>
+            <div><label>Date</label><input type="date" id="hwDate" onchange="fetchExistingHW()"></div>
         </div>
-        <label>Subject</label><select id="hwSubSelect"></select>
-        <label>Task Details</label><textarea id="hwTask" rows="4" placeholder="Enter instructions..."></textarea>
-        <button class="btn" onclick="postHomework()">Post to Student Portal</button>
+        <label>Subject</label><select id="hwSubSelect" onchange="fetchExistingHW()"></select>
+        <label>Task Details</label><textarea id="hwTask" rows="5" placeholder="Enter instructions..."></textarea>
+        
+        <div class="tools-btn-row">
+            <button class="btn" onclick="postHomework()"><i class="fas fa-paper-plane"></i> Publish / Update</button>
+            <button class="btn danger" onclick="clearSubject()"><i class="fas fa-eraser"></i> Clear Task</button>
+        </div>
     </div>
 </div>
 
@@ -185,10 +195,41 @@
         document.getElementById('hwSubSelect').innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
     }
 
+    /* FETCH LOGIC: Pulls current task so you can edit it */
+    function fetchExistingHW() {
+        const date = document.getElementById('hwDate').value;
+        const cls = document.getElementById('hwClass').value;
+        const sub = document.getElementById('hwSubSelect').value;
+        if(!date) return;
+        db.ref(`homework/${date}/${cls}/${sub}`).once('value', (snap) => {
+            document.getElementById('hwTask').value = snap.val() || "";
+        });
+    }
+
+    /* PUBLISH / UPDATE LOGIC */
     function postHomework() {
-        const date = document.getElementById('hwDate').value; const sub = document.getElementById('hwSubSelect').value; const task = document.getElementById('hwTask').value;
+        const date = document.getElementById('hwDate').value; 
+        const cls = document.getElementById('hwClass').value;
+        const sub = document.getElementById('hwSubSelect').value; 
+        const task = document.getElementById('hwTask').value;
         if(!date || !task) return Swal.fire('Error', 'Fill details', 'error');
-        db.ref(`homework/${date}`).update({ [sub]: task, lastUpdated: new Date().toLocaleTimeString() }).then(() => Swal.fire('Posted!', 'Homework is live.', 'success'));
+        db.ref(`homework/${date}/${cls}`).update({ [sub]: task, lastUpdated: new Date().toLocaleTimeString() }).then(() => Swal.fire('Updated!', 'Homework is live.', 'success'));
+    }
+
+    /* CLEAR LOGIC: Removes a single task */
+    function clearSubject() {
+        const date = document.getElementById('hwDate').value;
+        const cls = document.getElementById('hwClass').value;
+        const sub = document.getElementById('hwSubSelect').value;
+        if(!date) return;
+        Swal.fire({ title: 'Clear Task?', text: `Delete ${sub} for ${cls}?`, icon: 'warning', showCancelButton: true }).then((res) => {
+            if(res.isConfirmed) {
+                db.ref(`homework/${date}/${cls}/${sub}`).remove().then(() => {
+                    document.getElementById('hwTask').value = "";
+                    Swal.fire('Cleared', 'Task removed.', 'success');
+                });
+            }
+        });
     }
 
     db.ref('announcement').on('value', (snap) => {
@@ -197,6 +238,7 @@
         else { bar.style.display = 'none'; }
     });
 
+    document.getElementById('hwDate').valueAsDate = new Date();
     updateHWSubjects();
 </script>
 </body>
