@@ -50,7 +50,7 @@
             <span class="school-name-main">PARAMOUNT</span>
             <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
         </div>
-        <h1 class="admin-portal-title">Compliance</h1>
+        <h1 class="admin-portal-title">Parents Checkbox</h1>
     </div>
 </header>
 
@@ -75,7 +75,7 @@
             </select></div>
             <div><label>Student</label><select id="vStudent"><option value="">-- Select Student --</option></select></div>
         </div>
-        <button class="btn-submit" onclick="fetchComplianceReport()">Run Compliance Check</button>
+        <button class="btn-submit" onclick="fetchComplianceReport()">Submit</button>
     </div>
     <div id="tableWrapper"></div>
     <div class="back-nav"><a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Return to Teacher Portal</a></div>
@@ -183,7 +183,7 @@
                     </td>
                     <td>
                         <div class="missing-list">
-                            ${missingSubjects.length ? missingSubjects.map(s => `<span class="missing-item"><i class="fas fa-exclamation-triangle"></i> ${s}</span>`).join('') : '<span class="signed-all">COMPLETED</span>'}
+                            ${missingSubjects.length ? missingSubjects.map(s => `<span class="missing-item"><i class="fas fa-exclamation-triangle"></i> ${s}</span>`).join('') : '<span class="signed-all">NO DUE SUBJECTS</span>'}
                         </div>
                     </td>
                     <td class="action-cell">
