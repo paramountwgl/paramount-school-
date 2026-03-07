@@ -35,6 +35,9 @@
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin: 15px 0 5px; text-transform: uppercase; }
         select, input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 15px; outline: none; box-sizing: border-box; font-family: inherit; }
         
+        /* FIX FOR HOMEWORK TOOL BOX OVERFLOW */
+        .homework-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
         .tools-btn-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn { flex: 1; background: linear-gradient(135deg, var(--forest), #004d26); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
@@ -42,7 +45,14 @@
 
         .student-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
         .student-item input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--forest); }
-        @media (max-width: 600px) { .header-content { gap: 10px; } .card { padding: 15px; } .tools-btn-row { flex-direction: column; } }
+        
+        /* MOBILE RESPONSIVE UPDATES */
+        @media (max-width: 600px) { 
+            .header-content { gap: 10px; } 
+            .card { padding: 15px; } 
+            .tools-btn-row { flex-direction: column; } 
+            .homework-row { grid-template-columns: 1fr; gap: 5px; } /* Stack Class and Date vertically */
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -106,7 +116,7 @@
 
     <div class="card" style="border-top-color: var(--gold);">
         <h3>Daily Homework Tool</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="homework-row">
             <div><label>Class</label><select id="hwClass" onchange="updateHWSubjects(); fetchExistingHW();">
                 <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
                 <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
@@ -164,7 +174,6 @@
         document.getElementById('submitAtt').style.display = students.length ? 'block' : 'none';
     }
 
-    /* UPDATED EXCEL GENERATION LOGIC WITH RIGHT-SHIFT FIX */
     async function saveAndDownload() {
         const cls = document.getElementById('attClass').value; 
         const teacher = document.getElementById('teacherSelect').value;
@@ -175,18 +184,16 @@
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Attendance');
 
-        // Column Config with 3 spacer columns to move table to the right
         sheet.columns = [
-            { key: 'spacerA', width: 8 }, // Spacer Column A
-            { key: 'spacerB', width: 8 }, // Spacer Column B
-            { key: 'spacerC', width: 8 }, // Spacer Column C
-            { key: 'sno', width: 12 },    // Data Column D
-            { key: 'name', width: 40 },   // Data Column E
-            { key: 'status', width: 18 }, // Data Column F
-            { key: 'remarks', width: 25 } // Data Column G
+            { key: 'spacerA', width: 8 }, 
+            { key: 'spacerB', width: 8 }, 
+            { key: 'spacerC', width: 8 }, 
+            { key: 'sno', width: 12 },    
+            { key: 'name', width: 40 },   
+            { key: 'status', width: 18 }, 
+            { key: 'remarks', width: 25 } 
         ];
 
-        // Forest Green Header (Shifted to D-G)
         sheet.getRow(6).height = 35; 
         sheet.mergeCells('D6:G6');
         const schoolHeader = sheet.getCell('D6');
@@ -195,7 +202,6 @@
         schoolHeader.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 16 };
         schoolHeader.alignment = { vertical: 'middle', horizontal: 'center' };
 
-        // Gold Portal Header (Shifted to D-G)
         sheet.getRow(7).height = 25; 
         sheet.mergeCells('D7:G7');
         const portalLabel = sheet.getCell('D7');
@@ -204,7 +210,6 @@
         portalLabel.font = { color: { argb: 'FF000000' }, bold: true, size: 12 };
         portalLabel.alignment = { vertical: 'middle', horizontal: 'center' };
 
-        // Metadata rows (Shifted to D-G)
         sheet.getRow(8).height = 20;
         sheet.getRow(9).height = 20;
         sheet.getCell('D8').value = `Date: ${date}`;
@@ -218,13 +223,11 @@
             row.eachCell(cell => { cell.alignment = { vertical: 'middle' }; });
         });
 
-        // Table Header Styling (Shifted to D-G)
         sheet.getRow(10).height = 25;
         const headerRow = sheet.getRow(10);
-        // values array uses placeholders for A, B, C
         headerRow.values = ['', '', '', 'S.No', 'STUDENT NAME', 'STATUS', 'REMARKS'];
         headerRow.eachCell((cell, colNum) => {
-            if (colNum >= 4) { // Only style from D onwards
+            if (colNum >= 4) { 
                 cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFE0E0E0'} };
                 cell.font = { bold: true };
                 cell.alignment = { horizontal: 'center', vertical: 'middle' };
@@ -232,14 +235,12 @@
             }
         });
 
-        // Loop through data
         checks.forEach((cb, index) => {
             const name = cb.getAttribute('data-name'); 
             const isP = cb.checked;
             const statusStr = isP ? 'PRESENT' : 'ABSENT';
             const rowNumber = 11 + index;
 
-            // Firebase Save
             db.ref(`attendance/${cls}/students/${name}`).transaction(c => {
                 if(!c) return { presentDays: isP?1:0, totalDays: 1, months: {[monthKey]: {present: isP?1:0, total: 1}} };
                 c.presentDays += isP?1:0; c.totalDays += 1; return c;
@@ -250,7 +251,7 @@
             row.values = ['', '', '', index + 1, name, statusStr, ''];
             
             row.eachCell((cell, colNumber) => {
-                if (colNumber >= 4) { // Only align from D onwards
+                if (colNumber >= 4) { 
                     cell.alignment = { 
                         vertical: 'middle', 
                         horizontal: (colNumber === 5 || colNumber === 7) ? 'left' : 'center' 
@@ -269,7 +270,6 @@
             }
         });
 
-        // Disable centering to let the spacers keep the table to the right
         sheet.pageSetup.horizontalCentered = false; 
         sheet.pageSetup.verticalCentered = false; 
 
