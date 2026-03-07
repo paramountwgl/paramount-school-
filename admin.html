@@ -159,7 +159,7 @@
         <div class="card" style="border-top-color: var(--danger);">
             <h3><i class="fas fa-tools"></i> Database Management</h3>
             <p style="font-size: 13px; color: #666; text-align: center; margin-bottom: 20px;">
-                Choose a reset option. Monthly reset clears current month history only.
+                Choose a reset option. Monthly reset clears current month history and individual date logs.
             </p>
             <div style="display: flex; gap: 10px; flex-direction: column;">
                 <button onclick="resetMonthlyData()" class="btn-attract warning" style="width: 100%;">
@@ -214,14 +214,12 @@
         } else { Swal.fire('Error', 'Invalid Master Key', 'error'); }
     }
 
-    // Toggle filter visibility
     function toggleFilterInputs() {
         const type = document.getElementById('viewType').value;
         document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'block' : 'none';
         document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'block' : 'none';
     }
 
-    /* COMPREHENSIVE VIEW LOGIC (DAILY/MONTHLY/TOTAL) */
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
         const type = document.getElementById('viewType').value;
@@ -229,45 +227,35 @@
         const head = document.getElementById('tableHead');
         
         if(!cls) return Swal.fire('Error', 'Choose a class', 'info');
-
         body.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
         
-        // Handle Daily Table Structure
         if(type === 'daily') {
             const selDate = document.getElementById('dateInput').value;
             if(!selDate) return Swal.fire('Error', 'Select a date', 'info');
-            
             head.innerHTML = `<tr><th>Student</th><th colspan="4">Attendance Status</th></tr>`;
-            
             db.ref(`daily_attendance/${selDate}/${cls}`).once('value', (snap) => {
                 const data = snap.val();
                 body.innerHTML = "";
-                if(!data) return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records for this date</td></tr>';
-                
+                if(!data) return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records found</td></tr>';
                 for(let name in data) {
                     const status = data[name] ? '<span class="status-p">PRESENT</span>' : '<span class="status-a">ABSENT</span>';
                     body.innerHTML += `<tr><td>${name}</td><td colspan="4">${status}</td></tr>`;
                 }
             });
         } else {
-            // Standard Percentage Table Structure
             head.innerHTML = `<tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr>`;
-            
             db.ref(`attendance/${cls}/students`).once('value', (snap) => {
                 const data = snap.val(); 
                 body.innerHTML = "";
                 if(!data) return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data found</td></tr>';
-                
                 for(let name in data) {
                     let p = 0, t = 0;
                     if(type === 'monthly') {
                         const selMonth = document.getElementById('monthInput').value;
-                        if(!selMonth) return Swal.fire('Error', 'Select month', 'info');
                         const mData = (data[name].months && data[name].months[selMonth]) ? data[name].months[selMonth] : null;
                         p = mData ? (mData.present || 0) : 0;
                         t = mData ? (mData.total || 0) : 0;
                     } else {
-                        // Sum up ALL months history for absolute accuracy
                         if (data[name].months) {
                             Object.values(data[name].months).forEach(month => {
                                 p += (month.present || 0);
@@ -286,13 +274,15 @@
     function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
     function clearAnn() { db.ref('announcement').remove().then(() => { document.getElementById('annMsg').value = ""; Swal.fire('Cleared', '', 'info'); }); }
 
+    /* FIXED MONTHLY RESET: PURGES DAILY LOGS AND SUMMARY STATS */
     async function resetMonthlyData() {
         const currentMonth = new Date().toISOString().slice(0, 7);
         const confirmResult = await Swal.fire({
-            title: 'Confirm Monthly Reset',
-            text: `This will erase attendance history for ${currentMonth}. History from previous months will remain untouched.`,
+            title: 'Confirm Full Monthly Reset',
+            text: `Clear ALL records for ${currentMonth}? This erases specific date checkboxes AND monthly stats.`,
             icon: 'warning',
-            showCancelButton: true
+            showCancelButton: true,
+            confirmButtonColor: '#d32f2f'
         });
 
         if (confirmResult.isConfirmed) {
@@ -301,21 +291,36 @@
 
             if (password === correctPass) {
                 try {
-                    Swal.fire({ title: 'Erasing...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                    const snapshot = await db.ref('attendance').once('value');
-                    const data = snapshot.val();
-                    if (data) {
-                        const updates = {};
-                        Object.keys(data).forEach(cls => {
-                            const students = data[cls].students;
+                    Swal.fire({ title: 'Purging...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                    const updates = {};
+
+                    // 1. Clear summary monthly history
+                    const statsSnapshot = await db.ref('attendance').once('value');
+                    const statsData = statsSnapshot.val();
+                    if (statsData) {
+                        Object.keys(statsData).forEach(cls => {
+                            const students = statsData[cls].students;
                             if (students) Object.keys(students).forEach(name => {
                                 updates[`attendance/${cls}/students/${name}/months/${currentMonth}`] = null;
                             });
                         });
-                        await db.ref().update(updates);
-                        Swal.fire('Success', `History for ${currentMonth} has been cleared.`, 'success');
-                        if(document.getElementById('clsPick').value) viewAtt();
                     }
+
+                    // 2. Clear individual daily log checkboxes
+                    const dailySnapshot = await db.ref('daily_attendance').once('value');
+                    const dailyData = dailySnapshot.val();
+                    if (dailyData) {
+                        Object.keys(dailyData).forEach(dateStr => {
+                            // Check if the date belongs to the current month
+                            if (dateStr.startsWith(currentMonth)) {
+                                updates[`daily_attendance/${dateStr}`] = null;
+                            }
+                        });
+                    }
+
+                    await db.ref().update(updates);
+                    Swal.fire('Success', `Data for ${currentMonth} fully erased.`, 'success');
+                    if(document.getElementById('clsPick').value) viewAtt();
                 } catch (error) { Swal.fire('Error', error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
         }
@@ -324,7 +329,7 @@
     async function resetAttendanceData() {
         const confirmResult = await Swal.fire({
             title: 'WARNING: PERMANENT RESET',
-            text: "This will delete all student records. A master backup file will be generated first.",
+            text: "Delete all records? A master backup will be created first.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d32f2f',
@@ -342,7 +347,7 @@
                     const allData = snapshot.val();
                     if (allData) await generateMasterBackup(allData);
                     await db.ref('attendance').remove();
-                    await db.ref('daily_attendance').remove(); // Clear day-by-day logs too
+                    await db.ref('daily_attendance').remove(); 
                     Swal.fire('Success', 'Database cleared. Backup downloaded.', 'success');
                 } catch (error) { Swal.fire('Error', 'Reset failed: ' + error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
@@ -381,7 +386,6 @@
         link.click();
     }
 
-    // Default dates
     document.getElementById('monthInput').value = new Date().toISOString().slice(0, 7);
     document.getElementById('dateInput').valueAsDate = new Date();
 </script>
