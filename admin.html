@@ -19,12 +19,21 @@
         .auth-input { width: 100%; max-width: 320px; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin: 20px auto; text-align: center; font-size: 16px; outline: none; display: block; }
         
         header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 10px; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; width: 100%; position: relative; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
         .header-logo { height: 65px; width: auto; flex-shrink: 0; }
         .school-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; margin-left: 5px; }
         .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; }
         .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.6rem, 2vw, 0.9rem); color: var(--gold); font-weight: 700; }
-        .admin-portal-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; color: white; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 15px; margin-left: 15px; }
+        .admin-portal-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1rem, 2.5vw, 1.8rem); font-weight: 800; color: white; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 15px; margin-left: 15px; }
+
+        /* NOTIFICATION BOX STYLES */
+        #notifBadge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; border: 2px solid var(--forest); }
+        #notifDropdown { display: none; position: absolute; top: 60px; right: 0; width: 320px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 10000; color: #333; overflow: hidden; }
+        .notif-header { padding: 12px 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
+        #notifList { max-height: 350px; overflow-y: auto; }
+        .notif-item { padding: 15px; border-bottom: 1px solid #f5f5f5; transition: 0.3s; }
+        .notif-item:hover { background: #f9f9f9; }
 
         .container { max-width: 850px; margin: 30px auto; padding: 0 15px; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
@@ -80,12 +89,30 @@
 <div id="mainApp" style="display:none;">
     <header>
         <div class="header-content">
-            <img src="logo.png" class="header-logo" onerror="this.style.display='none'">
-            <div class="school-text">
-                <span class="school-name-main">PARAMOUNT</span>
-                <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
+            <div class="header-left">
+                <img src="logo.png" class="header-logo" onerror="this.style.display='none'">
+                <div class="school-text">
+                    <span class="school-name-main">PARAMOUNT</span>
+                    <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
+                </div>
+                <h1 class="admin-portal-title">Admin</h1>
             </div>
-            <h1 class="admin-portal-title">Admin Portal</h1>
+
+            <div style="position: relative;">
+                <div onclick="toggleNotifBox()" style="cursor: pointer; padding: 10px;">
+                    <i class="fas fa-bell" style="font-size: 22px; color: white;"></i>
+                    <span id="notifBadge" style="display:none;">0</span>
+                </div>
+                <div id="notifDropdown">
+                    <div class="notif-header">
+                        <b>Quiz Requests</b>
+                        <small onclick="clearAllRequests()" style="cursor:pointer; color:var(--forest);">Clear</small>
+                    </div>
+                    <div id="notifList">
+                        <p style="padding:20px; text-align:center; color:#999; font-size:13px;">No new requests</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -130,7 +157,7 @@
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <button onclick="viewAtt()" class="btn-attract" style="flex:1;">View Report</button>
                     <button onclick="downloadFilteredReport()" id="dlBtn" class="btn-attract warning" style="display:none; flex:1;">
-                        <i class="fas fa-file-excel"></i> Download Parent Report
+                        <i class="fas fa-file-excel"></i> Download Attractive Report
                     </button>
                 </div>
             </div>
@@ -146,7 +173,7 @@
 
         <div class="card" style="border-top-color: var(--danger);">
             <h3><i class="fas fa-tools"></i> Database Management</h3>
-            <p style="font-size: 13px; color: #666; text-align: center; margin-bottom: 20px;">Monthly reset clears current month history and individual date logs.</p>
+            <p style="font-size: 13px; color: #666; text-align: center; margin-bottom: 20px;">Monthly reset clears history and logs for the current month period.</p>
             <div style="display: flex; gap: 10px; flex-direction: column;">
                 <button onclick="resetMonthlyData()" class="btn-attract warning" style="width: 100%;"><i class="fas fa-calendar-minus"></i> Reset Current Month Only</button>
                 <button onclick="resetAttendanceData()" class="btn-attract danger" style="width: 100%;"><i class="fas fa-trash-alt"></i> Backup & Reset All Attendance</button>
@@ -217,6 +244,44 @@
         document.getElementById('dlBtn').style.display = 'none'; 
     }
 
+    // INSTAGRAM STYLE NOTIF LOGIC
+    function toggleNotifBox() {
+        const box = document.getElementById('notifDropdown');
+        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+    }
+
+    db.ref('quiz_requests').on('value', (snap) => {
+        const requests = snap.val();
+        const list = document.getElementById('notifList');
+        const badge = document.getElementById('notifBadge');
+        let count = 0; list.innerHTML = "";
+
+        if(!requests) { badge.style.display = 'none'; list.innerHTML = '<p style="padding:20px; text-align:center; color:#999; font-size:13px;">No new requests</p>'; return; }
+
+        Object.keys(requests).forEach(id => {
+            const req = requests[id];
+            if(req.status === 'pending') {
+                count++;
+                list.innerHTML += `
+                    <div class="notif-item">
+                        <b style="font-size:13px; color:var(--forest);">${req.teacher}</b>
+                        <div style="font-size:11px; color:#666; margin:4px 0;">wants Quiz Access for ${req.class} (${req.subject})</div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <button onclick="approveReq('${id}')" style="flex:1; background:var(--forest); color:white; border:none; padding:6px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:bold;">Accept</button>
+                            <button onclick="rejectReq('${id}')" style="flex:0.4; background:#f5f5f5; color:#666; border:none; padding:6px; border-radius:6px; font-size:11px; cursor:pointer;">Decline</button>
+                        </div>
+                    </div>`;
+            }
+        });
+
+        if(count > 0) { badge.innerText = count; badge.style.display = 'block'; }
+        else { badge.style.display = 'none'; list.innerHTML = '<p style="padding:20px; text-align:center; color:#999; font-size:13px;">All caught up! ✨</p>'; }
+    });
+
+    function approveReq(id) { db.ref(`quiz_requests/${id}`).update({ status: 'approved' }); }
+    function rejectReq(id) { db.ref(`quiz_requests/${id}`).remove(); }
+    function clearAllRequests() { db.ref('quiz_requests').remove(); }
+
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
         const type = document.getElementById('viewType').value;
@@ -266,7 +331,7 @@
         }
     }
 
-    /* HIGHLY ATTRACTIVE EXCEL EXPORT */
+    /* ENHANCED ATTRACTIVE EXCEL EXPORT */
     async function downloadFilteredReport() {
         const cls = document.getElementById('clsPick').value;
         const type = document.getElementById('viewType').value;
@@ -276,67 +341,51 @@
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Attendance_Report');
 
-        // Header Section
         sheet.mergeCells('A1:G1');
-        const mainHeader = sheet.getCell('A1');
-        mainHeader.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
-        mainHeader.font = { name: 'Montserrat', size: 18, bold: true, color: { argb: 'FFFFFFFF' } };
-        mainHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF006633' } };
-        mainHeader.alignment = { horizontal: 'center', vertical: 'middle' };
+        const mH = sheet.getCell('A1'); mH.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
+        mH.font = { name: 'Montserrat', size: 18, bold: true, color: { argb: 'FFFFFFFF' } };
+        mH.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF006633' } };
+        mH.alignment = { horizontal: 'center', vertical: 'middle' };
 
         sheet.mergeCells('A2:G2');
-        const subHeader = sheet.getCell('A2');
-        subHeader.value = `STUDENT ATTENDANCE REPORT - ${cls.toUpperCase()}`;
-        subHeader.font = { name: 'Montserrat', size: 12, bold: true, color: { argb: 'FF000000' } };
-        subHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFD700' } };
-        subHeader.alignment = { horizontal: 'center', vertical: 'middle' };
+        const sH = sheet.getCell('A2'); sH.value = `STUDENT ATTENDANCE REPORT - ${cls.toUpperCase()}`;
+        sH.font = { name: 'Montserrat', size: 12, bold: true, color: { argb: 'FF000000' } };
+        sH.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFD700' } };
+        sH.alignment = { horizontal: 'center', vertical: 'middle' };
 
         sheet.mergeCells('A3:G3');
-        sheet.getCell('A3').value = `Period: ${period} | Exported on: ${new Date().toLocaleDateString()}`;
+        sheet.getCell('A3').value = `Period: ${period} | Exported: ${new Date().toLocaleDateString()}`;
         sheet.getCell('A3').alignment = { horizontal: 'center' };
-        sheet.getCell('A3').font = { italic: true };
 
-        // Table Columns
         sheet.getRow(5).height = 25;
         const headerRow = sheet.getRow(5);
         headerRow.values = ['ROLL NO', 'STUDENT NAME', 'PRESENT', 'ABSENT', 'TOTAL', 'PERCENTAGE', 'REMARKS'];
-        
-        headerRow.eachCell((cell) => {
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF004D26' } };
-            cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-            cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
+        headerRow.eachCell(c => {
+            c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF004D26' } };
+            c.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+            c.alignment = { horizontal: 'center', vertical: 'middle' };
+            c.border = { top:{style:'thin'}, left:{style:'thin'}, bottom:{style:'thin'}, right:{style:'thin'} };
         });
 
-        sheet.columns = [
-            { key: 'roll', width: 15 }, { key: 'name', width: 35 }, { key: 'p', width: 12 },
-            { key: 'a', width: 12 }, { key: 't', width: 12 }, { key: 'pct', width: 15 }, { key: 'rem', width: 20 }
-        ];
+        sheet.columns = [{key:'roll',width:15},{key:'name',width:35},{key:'p',width:12},{key:'a',width:12},{key:'t',width:12},{key:'pct',width:15},{key:'rem',width:20}];
 
-        // Add Data
-        rows.forEach((r, idx) => {
+        rows.forEach(r => {
             const name = r.cells[0].innerText;
-            const rowData = {
-                roll: studentRolls[name] || "N/A",
-                name: name,
-                p: (type === 'daily') ? (r.cells[1].innerText === "PRESENT" ? 1 : 0) : r.cells[1].innerText,
-                a: (type === 'daily') ? (r.cells[1].innerText === "ABSENT" ? 1 : 0) : r.cells[2].innerText,
-                t: (type === 'daily') ? 1 : r.cells[3].innerText,
-                pct: (type === 'daily') ? (r.cells[1].innerText === "PRESENT" ? "100%" : "0%") : r.cells[4].innerText,
+            const added = sheet.addRow({
+                roll: studentRolls[name] || "N/A", name: name,
+                p: (type==='daily') ? (r.cells[1].innerText==="PRESENT"?1:0) : r.cells[1].innerText,
+                a: (type==='daily') ? (r.cells[1].innerText==="ABSENT"?1:0) : r.cells[2].innerText,
+                t: (type==='daily') ? 1 : r.cells[3].innerText,
+                pct: (type==='daily') ? (r.cells[1].innerText==="PRESENT"?"100%":"0%") : r.cells[4].innerText,
                 rem: ""
-            };
-            const addedRow = sheet.addRow(rowData);
-            
-            // Styling Data Rows
-            addedRow.eachCell((cell, colNum) => {
-                cell.alignment = { horizontal: (colNum === 2) ? 'left' : 'center', vertical: 'middle' };
-                cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
-                
-                // Color Code Percentage
-                if(colNum === 6) {
-                    const val = parseInt(cell.value);
-                    if(val >= 85) cell.font = { color: { argb: 'FF2E7D32' }, bold: true };
-                    else if(val < 75) cell.font = { color: { argb: 'FFC62828' }, bold: true };
+            });
+            added.eachCell((cell, col) => {
+                cell.alignment = { horizontal: (col===2)?'left':'center', vertical: 'middle' };
+                cell.border = { top:{style:'thin'}, left:{style:'thin'}, bottom:{style:'thin'}, right:{style:'thin'} };
+                if(col === 6) {
+                    const v = parseInt(cell.value);
+                    if(v >= 85) cell.font = { color: { argb: 'FF2E7D32' }, bold: true };
+                    else if(v < 75) cell.font = { color: { argb: 'FFC62828' }, bold: true };
                 }
             });
         });
@@ -354,7 +403,7 @@
 
     async function resetMonthlyData() {
         const currentMonth = document.getElementById('monthInput').value;
-        const confirmResult = await Swal.fire({ title: 'Confirm Monthly Reset', text: `Fully erase logs for ${currentMonth}?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d32f2f' });
+        const confirmResult = await Swal.fire({ title: 'Confirm Full Monthly Reset', text: `Fully erase logs for ${currentMonth}?`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d32f2f' });
         if (confirmResult.isConfirmed) {
             const correctPass = await getAdminPassword();
             const { value: password } = await Swal.fire({ title: 'Enter Password', input: 'password', showCancelButton: true });
@@ -376,7 +425,7 @@
                         Object.keys(dailyData).forEach(dateStr => { if (dateStr.startsWith(currentMonth)) updates[`daily_attendance/${dateStr}`] = null; });
                     }
                     await db.ref().update(updates);
-                    Swal.fire('Success', `Data erased.`, 'success');
+                    Swal.fire('Success', `Data for ${currentMonth} fully erased.`, 'success');
                     if(document.getElementById('clsPick').value) viewAtt();
                 } catch (error) { Swal.fire('Error', error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
@@ -405,7 +454,7 @@
     async function generateMasterBackup(data) {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Full_Archive');
-        sheet.columns = [ { header: 'ROLL', key: 'roll', width: 15 }, { header: 'CLASS', key: 'class', width: 15 }, { header: 'NAME', key: 'name', width: 30 }, { header: 'PRESENT', key: 'present', width: 15 }, { header: 'TOTAL', key: 'total', width: 15 } ];
+        sheet.columns = [{header:'ROLL',key:'roll',width:15},{header:'CLASS',key:'class',width:15},{header:'NAME',key:'name',width:30},{header:'PRESENT',key:'present',width:15},{header:'TOTAL',key:'total',width:15}];
         Object.keys(data).forEach(className => {
             const students = data[className].students;
             if (students) Object.keys(students).forEach(name => { sheet.addRow({ roll: studentRolls[name] || "N/A", class: className, name: name, present: students[name].presentDays || 0, total: students[name].totalDays || 0 }); });
