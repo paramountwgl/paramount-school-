@@ -35,24 +35,15 @@
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin: 15px 0 5px; text-transform: uppercase; }
         select, input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 15px; outline: none; box-sizing: border-box; font-family: inherit; }
         
-        /* GRID FOR ATTENDANCE AND HOMEWORK */
-        .homework-row { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 10px; 
-            width: 100%; 
-        }
+        .homework-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
         .homework-row div { min-width: 0; } 
         
-        #hwDate, #hwClass, #attDate, #attClass {
-            width: 98%; 
-            border-radius: 8px;
-            padding: 10px 4px;
-        }
+        #hwDate, #hwClass, #attDate, #attClass { width: 98%; border-radius: 8px; padding: 10px 4px; }
         
         .tools-btn-row { display: flex; gap: 10px; margin-top: 15px; }
         .btn { flex: 1; background: linear-gradient(135deg, var(--forest), #004d26); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
+        .btn.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); }
         .btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
         .student-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
@@ -152,6 +143,70 @@
             <button class="btn danger" onclick="clearSubject()"><i class="fas fa-eraser"></i> Clear Task</button>
         </div>
     </div>
+
+    <div class="card" id="quizRequestCard" style="border-top-color: var(--gold);">
+        <h3><i class="fas fa-lock"></i> Quiz Access Request</h3>
+        <p style="font-size: 13px; color: #666; text-align: center;">Permission required from Admin to publish a quiz today.</p>
+        <div class="homework-row" style="margin-bottom: 15px;">
+            <div>
+                <label>Target Class</label>
+                <select id="reqQuizClass" onchange="updateQuizSubjects()">
+                    <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
+                    <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
+                    <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
+                    <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
+                </select>
+            </div>
+            <div>
+                <label>Target Subject</label>
+                <select id="reqQuizSubject"></select>
+            </div>
+        </div>
+        <button class="btn warning" id="reqBtn" onclick="requestQuizAccess()" style="width:100%;">
+            <i class="fas fa-paper-plane"></i> Send Access Request
+        </button>
+    </div>
+
+    <div id="quizCreatorTool" style="display:none;" class="card">
+        <h3 style="color: #2196f3; border-bottom: 2px solid #2196f3;"><i class="fas fa-brain"></i> Subject Quiz Creator</h3>
+        
+        <div class="homework-row" style="margin-top:10px;">
+            <div>
+                <label>Media Type</label>
+                <select id="mediaType">
+                    <option value="none">Text Only</option>
+                    <option value="image">Image URL</option>
+                    <option value="video">YouTube ID</option>
+                </select>
+            </div>
+            <div>
+                <label>Correct Option</label>
+                <select id="correctOpt">
+                    <option value="A">Option A</option><option value="B">Option B</option>
+                    <option value="C">Option C</option><option value="D">Option D</option>
+                </select>
+            </div>
+        </div>
+
+        <label>Question / Task</label>
+        <textarea id="quizQ" rows="2" placeholder="Type question here..."></textarea>
+        
+        <label>Media Link (Optional)</label>
+        <input type="text" id="mediaUrl" placeholder="Paste link or YouTube ID">
+
+        <div class="homework-row" style="margin-top:10px;">
+            <div><input type="text" id="optA" placeholder="Option A" style="margin-bottom:5px;"></div>
+            <div><input type="text" id="optB" placeholder="Option B" style="margin-bottom:5px;"></div>
+        </div>
+        <div class="homework-row">
+            <div><input type="text" id="optC" placeholder="Option C"></div>
+            <div><input type="text" id="optD" placeholder="Option D"></div>
+        </div>
+
+        <button class="btn" style="background: linear-gradient(135deg, #2196f3, #1976d2); width:100%; margin-top:20px;" onclick="publishSubjectQuiz()">
+            <i class="fas fa-rocket"></i> Publish Quiz Now
+        </button>
+    </div>
 </div>
 
 <script>
@@ -187,37 +242,23 @@
         else { document.getElementById('teacherSelect').value = ""; document.getElementById('classGroup').style.display = 'none'; if(pw) Swal.fire('Error', 'Incorrect Password', 'error'); }
     }
 
-    /* LOAD STUDENTS WITH SMART FETCHING FOR EDITING */
     async function loadStudents() {
         const cls = document.getElementById('attClass').value;
         const date = document.getElementById('attDate').value;
         const list = document.getElementById('studentList');
         const students = studentData[cls] || [];
-        
         if(!cls || !date) return;
-
         list.innerHTML = "<p style='text-align:center;'>Loading Records...</p>";
-
-        // Fetch existing record for this specific date
         const snapshot = await db.ref(`daily_attendance/${date}/${cls}`).once('value');
         const existingData = snapshot.val() || {};
-
         list.innerHTML = students.map(name => {
-            // "P" if found as true, "A" if found as false, "" if record doesn't exist
             const isChecked = (existingData[name] !== undefined) ? (existingData[name] ? "checked" : "") : "checked";
             const prevStatus = (existingData[name] !== undefined) ? (existingData[name] ? "P" : "A") : "";
-            
-            return `
-                <div class="student-item">
-                    <span>${name}</span>
-                    <input type="checkbox" class="att-check" data-name="${name}" ${isChecked} data-prev="${prevStatus}">
-                </div>`;
+            return `<div class="student-item"><span>${name}</span><input type="checkbox" class="att-check" data-name="${name}" ${isChecked} data-prev="${prevStatus}"></div>`;
         }).join('');
-
         document.getElementById('submitAtt').style.display = students.length ? 'block' : 'none';
     }
 
-    /* SMART SAVE LOGIC: UPDATES COUNTERS CORRECTLY */
     async function saveAndDownload() {
         const cls = document.getElementById('attClass').value; 
         const date = document.getElementById('attDate').value;
@@ -225,122 +266,90 @@
         const checks = document.querySelectorAll('.att-check'); 
         const displayDate = new Date(date).toLocaleDateString('en-GB');
         const monthKey = date.slice(0, 7);
-
         Swal.fire({ title: 'Updating Database...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
         const dailyUpdates = {};
-        
         for (let cb of checks) {
             const name = cb.getAttribute('data-name');
             const isP = cb.checked;
-            const prev = cb.getAttribute('data-prev'); // Status before this save
-
-            // 1. Snapshot for future editing
+            const prev = cb.getAttribute('data-prev');
             dailyUpdates[`daily_attendance/${date}/${cls}/${name}`] = isP;
-
-            // 2. Adjust counters only if needed
             await db.ref(`attendance/${cls}/students/${name}`).transaction(c => {
                 if(!c) return { presentDays: isP?1:0, totalDays: 1, months: {[monthKey]: {present: isP?1:0, total: 1}} };
-                
-                if (prev === 'P' && !isP) { // Was Present -> now Absent
-                    c.presentDays -= 1;
-                    if(c.months && c.months[monthKey]) c.months[monthKey].present -= 1;
-                } else if (prev === 'A' && isP) { // Was Absent -> now Present
-                    c.presentDays += 1;
-                    if(c.months && c.months[monthKey]) c.months[monthKey].present += 1;
-                } else if (prev === '') { // Brand new entry for this date
-                    c.totalDays += 1;
-                    c.presentDays += isP ? 1 : 0;
-                    if(!c.months) c.months = {};
-                    if(!c.months[monthKey]) c.months[monthKey] = {present: 0, total: 0};
-                    c.months[monthKey].total += 1;
-                    c.months[monthKey].present += isP ? 1 : 0;
-                }
+                if (prev === 'P' && !isP) { c.presentDays -= 1; if(c.months && c.months[monthKey]) c.months[monthKey].present -= 1; } 
+                else if (prev === 'A' && isP) { c.presentDays += 1; if(c.months && c.months[monthKey]) c.months[monthKey].present += 1; } 
+                else if (prev === '') { c.totalDays += 1; c.presentDays += isP ? 1 : 0; if(!c.months) c.months = {}; if(!c.months[monthKey]) c.months[monthKey] = {present: 0, total: 0}; c.months[monthKey].total += 1; c.months[monthKey].present += isP ? 1 : 0; }
                 return c;
             });
         }
-
         await db.ref().update(dailyUpdates);
 
-        // --- EXCEL GENERATION ---
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Attendance');
-        sheet.columns = [
-            { key: 'spacerA', width: 8 }, { key: 'spacerB', width: 8 }, { key: 'spacerC', width: 8 }, 
-            { key: 'sno', width: 12 }, { key: 'name', width: 40 }, { key: 'status', width: 18 }, { key: 'remarks', width: 25 } 
-        ];
-
+        sheet.columns = [ { key: 'spacerA', width: 8 }, { key: 'spacerB', width: 8 }, { key: 'spacerC', width: 8 }, { key: 'sno', width: 12 }, { key: 'name', width: 40 }, { key: 'status', width: 18 }, { key: 'remarks', width: 25 } ];
         sheet.getRow(6).height = 35; sheet.mergeCells('D6:G6');
-        const schoolHeader = sheet.getCell('D6');
-        schoolHeader.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
-        schoolHeader.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FF006633'} };
-        schoolHeader.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 16 };
-        schoolHeader.alignment = { vertical: 'middle', horizontal: 'center' };
-
+        const sHeader = sheet.getCell('D6'); sHeader.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
+        sHeader.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FF006633'} };
+        sHeader.font = { color: { argb: 'FFFFFFFF' }, bold: true, size: 16 };
+        sHeader.alignment = { vertical: 'middle', horizontal: 'center' };
         sheet.getRow(7).height = 25; sheet.mergeCells('D7:G7');
-        const portalLabel = sheet.getCell('D7');
-        portalLabel.value = 'TEACHERS OFFICIAL ATTENDANCE PORTAL';
-        portalLabel.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFD700'} };
-        portalLabel.font = { color: { argb: 'FF000000' }, bold: true, size: 12 };
-        portalLabel.alignment = { vertical: 'middle', horizontal: 'center' };
-
-        sheet.getRow(8).height = 20; sheet.getRow(9).height = 20;
-        sheet.getCell('D8').value = `Date: ${displayDate}`;
-        sheet.getCell('F8').value = `Teacher: ${teacher}`;
-        sheet.getCell('D9').value = `Class: ${cls}`;
-        sheet.getCell('F9').value = `Status: FINALIZED`;
-        
-        [8, 9].forEach(rowNum => { 
-            const row = sheet.getRow(rowNum);
-            row.font = { bold: true };
-            row.eachCell(cell => { cell.alignment = { vertical: 'middle' }; });
-        });
-
-        sheet.getRow(10).height = 25;
-        const headerRow = sheet.getRow(10);
-        headerRow.values = ['', '', '', 'S.No', 'STUDENT NAME', 'STATUS', 'REMARKS'];
-        headerRow.eachCell((cell, colNum) => {
-            if (colNum >= 4) { 
-                cell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFE0E0E0'} };
-                cell.font = { bold: true };
-                cell.alignment = { horizontal: 'center', vertical: 'middle' };
-                cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
-            }
-        });
-
+        const pLabel = sheet.getCell('D7'); pLabel.value = 'TEACHERS OFFICIAL ATTENDANCE PORTAL';
+        pLabel.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFFFD700'} };
+        pLabel.font = { color: { argb: 'FF000000' }, bold: true, size: 12 };
+        pLabel.alignment = { vertical: 'middle', horizontal: 'center' };
+        sheet.getCell('D8').value = `Date: ${displayDate}`; sheet.getCell('F8').value = `Teacher: ${teacher}`;
+        sheet.getCell('D9').value = `Class: ${cls}`; sheet.getCell('F9').value = `Status: FINALIZED`;
+        sheet.getRow(10).values = ['', '', '', 'S.No', 'STUDENT NAME', 'STATUS', 'REMARKS'];
         checks.forEach((cb, index) => {
             const name = cb.getAttribute('data-name'); 
             const isP = cb.checked;
-            const statusStr = isP ? 'PRESENT' : 'ABSENT';
-            const rowNumber = 11 + index;
-            const row = sheet.getRow(rowNumber);
-            row.height = 20;
-            row.values = ['', '', '', index + 1, name, statusStr, ''];
-            row.eachCell((cell, colNumber) => {
-                if (colNumber >= 4) { 
-                    cell.alignment = { vertical: 'middle', horizontal: (colNumber === 5 || colNumber === 7) ? 'left' : 'center' };
-                    cell.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} };
-                }
-            });
-            const statusCell = sheet.getCell(`F${rowNumber}`);
-            if (isP) {
-                statusCell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFC8E6C9'} };
-                statusCell.font = { color: { argb: 'FF2E7D32' }, bold: true };
-            } else {
-                statusCell.fill = { type: 'pattern', pattern:'solid', fgColor:{argb:'FFF8BBD0'} };
-                statusCell.font = { color: { argb: 'FFC62828' }, bold: true };
-            }
+            sheet.addRow(['', '', '', index + 1, name, isP ? 'PRESENT' : 'ABSENT', '']);
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `Attendance_${cls}_${date.replace(/-/g, '_')}.xlsx`;
-        link.click();
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+        link.download = `Attendance_${cls}_${date.replace(/-/g, '_')}.xlsx`; link.click();
+        Swal.fire('Success', `Record for ${displayDate} updated.`, 'success');
+        loadStudents();
+    }
+
+    // QUIZ SYSTEM LOGIC
+    async function requestQuizAccess() {
+        const teacher = document.getElementById('teacherSelect').value;
+        const cls = document.getElementById('reqQuizClass').value;
+        const sub = document.getElementById('reqQuizSubject').value;
+        if(!teacher) return Swal.fire('Error', 'Select your name first', 'error');
+
+        await db.ref(`quiz_requests/${teacher}`).set({
+            teacher: teacher, class: cls, subject: sub, status: 'pending', timestamp: new Date().getTime()
+        });
         
-        Swal.fire('Success', `Record for ${displayDate} updated successfully.`, 'success');
-        loadStudents(); // Refresh to update internal status
+        document.getElementById('reqBtn').disabled = true;
+        document.getElementById('reqBtn').innerText = "Pending Admin Approval...";
+        
+        db.ref(`quiz_requests/${teacher}/status`).on('value', (snap) => {
+            if(snap.val() === 'approved') {
+                document.getElementById('quizRequestCard').style.display = 'none';
+                document.getElementById('quizCreatorTool').style.display = 'block';
+                Swal.fire('Access Granted', 'You can now create your quiz!', 'success');
+            }
+        });
+    }
+
+    function publishSubjectQuiz() {
+        const cls = document.getElementById('reqQuizClass').value;
+        const sub = document.getElementById('reqQuizSubject').value;
+        const quizData = {
+            question: document.getElementById('quizQ').value,
+            mediaUrl: document.getElementById('mediaUrl').value,
+            mediaType: document.getElementById('mediaType').value,
+            options: { A: document.getElementById('optA').value, B: document.getElementById('optB').value, C: document.getElementById('optC').value, D: document.getElementById('optD').value },
+            correct: document.getElementById('correctOpt').value
+        };
+        if(!quizData.question || !quizData.options.A) return Swal.fire('Error', 'Question & Option A are required', 'error');
+        db.ref(`daily_quiz/${cls}/${sub}`).set(quizData).then(() => {
+            Swal.fire('Quiz Live!', 'Students can now take this quiz.', 'success');
+        });
     }
 
     function updateHWSubjects() {
@@ -350,14 +359,20 @@
         document.getElementById('hwSubSelect').innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
     }
 
+    // Helper for Quiz Subjects
+    function updateQuizSubjects() {
+        const cls = document.getElementById('reqQuizClass').value;
+        const common = ["TELUGU", "HINDI", "ENGLISH", "MATHS", "SOCIAL STUDIES"];
+        let subjects = (["Grade-6", "Grade-7", "Grade-8"].includes(cls)) ? [...common, "PHYSICS", "CHEMISTRY", "BIOLOGY"] : [...common, "SCIENCE"];
+        document.getElementById('reqQuizSubject').innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
     function fetchExistingHW() {
         const date = document.getElementById('hwDate').value;
         const cls = document.getElementById('hwClass').value;
         const sub = document.getElementById('hwSubSelect').value;
         if(!date) return;
-        db.ref(`homework/${date}/${cls}/${sub}`).once('value', (snap) => {
-            document.getElementById('hwTask').value = snap.val() || "";
-        });
+        db.ref(`homework/${date}/${cls}/${sub}`).once('value', (snap) => { document.getElementById('hwTask').value = snap.val() || ""; });
     }
 
     function postHomework() {
@@ -376,10 +391,7 @@
         if(!date) return;
         Swal.fire({ title: 'Clear Task?', text: `Delete ${sub} for ${cls}?`, icon: 'warning', showCancelButton: true }).then((res) => {
             if(res.isConfirmed) {
-                db.ref(`homework/${date}/${cls}/${sub}`).remove().then(() => {
-                    document.getElementById('hwTask').value = "";
-                    Swal.fire('Cleared', 'Task removed.', 'success');
-                });
+                db.ref(`homework/${date}/${cls}/${sub}`).remove().then(() => { document.getElementById('hwTask').value = ""; Swal.fire('Cleared', 'Task removed.', 'success'); });
             }
         });
     }
@@ -390,10 +402,10 @@
         else { bar.style.display = 'none'; }
     });
 
-    // Default dates
     document.getElementById('hwDate').valueAsDate = new Date();
     document.getElementById('attDate').valueAsDate = new Date();
     updateHWSubjects();
+    updateQuizSubjects();
 </script>
 </body>
 </html>
