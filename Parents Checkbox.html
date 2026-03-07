@@ -1,1 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Parent Verifier | Paramount School</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        :root { --forest: #006633; --gold: #ffd700; --light: #f4f7f6; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 50px; }
 
+        /* UNIFIED HEADER */
+        header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header-content { display: flex; align-items: center; justify-content: center; gap: 12px; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .header-logo { height: 60px; width: auto; }
+        .school-text { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
+        .school-name-main { font-family: 'Montserrat'; font-size: clamp(1rem, 3vw, 2rem); font-weight: 800; }
+        .school-name-sub { font-family: 'Montserrat'; font-size: clamp(0.5rem, 2vw, 0.8rem); color: var(--gold); font-weight: 700; }
+        .admin-portal-title { font-family: 'Montserrat'; font-size: clamp(1rem, 3vw, 2rem); font-weight: 800; border-left: 3px solid var(--gold); padding-left: 15px; margin-left: 15px; text-transform: uppercase; }
+
+        .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border-top: 6px solid var(--forest); }
+        
+        /* DROPDOWN GRID */
+        .search-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+        select { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #eee; outline: none; font-size: 14px; }
+
+        .btn-submit { background: linear-gradient(135deg, var(--forest), #004d26); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,102,51,0.3); }
+
+        /* DATA DISPLAY */
+        .result-table { width: 100%; border-collapse: collapse; margin-top: 30px; border-radius: 10px; overflow: hidden; }
+        .result-table th { background: var(--forest); color: white; padding: 12px; font-size: 11px; text-transform: uppercase; }
+        .result-table td { padding: 15px 10px; background: white; border-bottom: 1px solid #eee; text-align: center; font-size: 14px; }
+        .parent-info { text-align: left !important; }
+        .parent-name { font-weight: 800; display: block; color: var(--forest); }
+        .parent-phone { font-size: 12px; color: #666; }
+        .check-box-status { font-size: 20px; }
+        .status-signed { color: #2e7d32; }
+        .status-pending { color: #ccc; }
+
+        .back-nav { display: flex; justify-content: center; margin-top: 30px; }
+        .btn-back { text-decoration: none; color: #666; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <img src="logo.png" class="header-logo" onerror="this.style.display='none'">
+        <div class="school-text">
+            <span class="school-name-main">PARAMOUNT</span>
+            <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
+        </div>
+        <h1 class="admin-portal-title">Parents Verifier</h1>
+    </div>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h3><i class="fas fa-search-check"></i> Verification Search</h3>
+        <div class="search-grid">
+            <div>
+                <label>Day</label>
+                <select id="vDay"></select>
+            </div>
+            <div>
+                <label>Month</label>
+                <select id="vMonth">
+                    <option value="01">January</option><option value="02">February</option>
+                    <option value="03">March</option><option value="04">April</option>
+                    <option value="05">May</option><option value="06">June</option>
+                    <option value="07">July</option><option value="08">August</option>
+                    <option value="09">September</option><option value="10">October</option>
+                    <option value="11">November</option><option value="12">December</option>
+                </select>
+            </div>
+            <div>
+                <label>Year</label>
+                <select id="vYear">
+                    <option value="2026">2026</option><option value="2025">2025</option>
+                </select>
+            </div>
+            <div>
+                <label>Class</label>
+                <select id="vClass">
+                    <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option>
+                    <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option>
+                    </select>
+            </div>
+        </div>
+        <button class="btn-submit" onclick="fetchAknowledgment()">Submit & View Data</button>
+    </div>
+
+    <div id="tableWrapper"></div>
+
+    <div class="back-nav">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Return to Teacher Portal</a>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8", databaseURL: "https://paramount-school-d55bc-default-rtdb.firebaseio.com", projectId: "paramount-school-d55bc" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Populate Days
+    const daySelect = document.getElementById('vDay');
+    for(let i=1; i<=31; i++) {
+        let val = i < 10 ? '0' + i : i;
+        daySelect.innerHTML += `<option value="${val}">${val}</option>`;
+    }
+
+    // Student Database Reference
+    const studentInfo = {
+        "Hanish Macharla": { parent: "M.Vinay", phone: "9182861346" },
+        "Arjun Vihaar Illandula": { parent: "Illandula Ravi", phone: "9848742172" },
+        // ... include your full studentData object here for parent mapping
+    };
+
+    function fetchAknowledgment() {
+        const d = document.getElementById('vDay').value;
+        const m = document.getElementById('vMonth').value;
+        const y = document.getElementById('vYear').value;
+        const cls = document.getElementById('vClass').value;
+        const dateKey = `${y}-${m}-${d}`;
+        const wrapper = document.getElementById('tableWrapper');
+
+        wrapper.innerHTML = "<p style='text-align:center; padding:20px;'>Checking database...</p>";
+
+        db.ref(`homework_status/${dateKey}`).once('value', (snap) => {
+            const data = snap.val() || {};
+            let html = `<table class="result-table"><thead><tr><th>Parent Details</th><th>Subject</th><th>Acknowledge</th></tr></thead><tbody>`;
+            
+            let found = false;
+            for(let stName in data) {
+                const info = studentInfo[stName] || { parent: "Parent", phone: "---" };
+                const subjects = data[stName];
+                for(let sub in subjects) {
+                    found = true;
+                    const isDone = subjects[sub].verified;
+                    html += `<tr>
+                        <td class="parent-info">
+                            <span class="parent-name">${info.parent}</span>
+                            <span class="parent-phone"><i class="fas fa-phone-alt"></i> ${info.phone}</span>
+                            <small style="display:block; margin-top:4px;">Student: ${stName}</small>
+                        </td>
+                        <td><strong>${sub}</strong></td>
+                        <td>
+                            <span class="check-box-status ${isDone ? 'status-signed' : 'status-pending'}">
+                                ${isDone ? '<i class="fas fa-check-square"></i>' : '<i class="far fa-square"></i>'}
+                            </span>
+                        </td>
+                    </tr>`;
+                }
+            }
+
+            if(!found) {
+                wrapper.innerHTML = "<div class='card' style='margin-top:20px; text-align:center; color:red;'>No parent signatures found for this date.</div>";
+            } else {
+                html += "</tbody></table>";
+                wrapper.innerHTML = html;
+            }
+        });
+    }
+</script>
+</body>
+</html>
