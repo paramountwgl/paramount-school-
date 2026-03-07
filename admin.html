@@ -10,16 +10,16 @@
         :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; margin: 0; padding: 0; }
         
-        /* RESTORED AUTHENTICATION BOX STYLING */
+        /* AUTHENTICATION BOX STYLING */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(244, 247, 246, 0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .auth-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 350px; position: relative; }
         .corner-logo { position: absolute; top: 20px; left: 20px; height: 40px; width: auto; }
         .auth-box input { padding: 12px; width: 100%; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; box-sizing: border-box; }
-        .auth-box input:focus { border-color: var(--forest); }
         .auth-btn { background: var(--forest); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .danger-auth-btn { background: var(--danger); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         
-        /* MAIN DASHBOARD STYLING */
-        #mainApp { display: none; }
+        /* MAIN APP STYLING */
+        #mainApp, #resetDataScreen { display: none; }
         header { background: var(--forest); color: white; padding: 20px 5%; display: flex; justify-content: center; align-items: center; gap: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .logo-img { height: 70px; width: auto; display: block; }
         .container { max-width: 1000px; margin: 30px auto; padding: 0 15px; }
@@ -48,12 +48,23 @@
     </div>
 </div>
 
+<div id="resetDataScreen" class="overlay-screen">
+    <div class="auth-box" style="border: 2px solid var(--danger);">
+        <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: var(--danger); margin-bottom: 15px; display: block;"></i>
+        <h2 style="color: var(--danger); margin-top: 0;">Confirm Data Reset</h2>
+        <p style="font-size: 13px; color: #333; font-weight: bold;">This will permanently delete ALL Cloud attendance data.</p>
+        <input type="password" id="resetDataPassword" placeholder="Enter Admin Password">
+        <button class="danger-auth-btn" onclick="confirmDataReset()">Yes, Clear Everything</button>
+        <button onclick="document.getElementById('resetDataScreen').style.display='none'" style="background: none; border: none; color: #666; margin-top: 15px; cursor: pointer; text-decoration: underline; font-weight: bold;">Cancel</button>
+    </div>
+</div>
+
 <div id="mainApp">
     <header>
         <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
         <div class="school-info">
             <h1 style="margin:0; font-size: 1.6rem;">PARAMOUNT ADMIN</h1>
-            <p style="color: var(--gold); margin:0; font-weight:bold;">Tracking & Announcements</p>
+            <p style="color: var(--gold); margin:0; font-weight:bold;">Master Control Dashboard</p>
         </div>
     </header>
 
@@ -62,15 +73,15 @@
             <h3><i class="fas fa-bullhorn"></i> Live Cloud Announcement</h3>
             <textarea id="announcementInput" placeholder="Broadcast a message instantly..."></textarea>
             <div style="display: flex; gap: 10px;">
-                <button onclick="publishAnnouncement()" class="auth-btn" style="flex:1;">Publish to All Devices</button>
+                <button onclick="publishAnnouncement()" class="auth-btn" style="flex:1;">Publish</button>
                 <button onclick="clearAnnouncement()" class="auth-btn" style="background: var(--danger); width:100px;">Clear</button>
             </div>
         </div>
 
         <div class="card">
             <h3><i class="fas fa-chart-bar"></i> Attendance Monitoring</h3>
-            <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 200px;">
+            <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <div style="flex: 1;">
                     <label>Select Class</label>
                     <select id="classSelect">
                         <option value="Pre-KG">Pre-KG</option>
@@ -86,12 +97,16 @@
                         <option value="Grade-8">Grade-8</option>
                     </select>
                 </div>
-                <button class="auth-btn" onclick="loadAttendance()" style="width: auto; height: 48px; margin-bottom: 10px;">View Class Data</button>
+                <button class="auth-btn" onclick="loadAttendance()" style="width: auto; height: 48px; margin: 0;">View Data</button>
             </div>
             <table id="attTable">
-                <thead><tr><th>Student Name</th><th>Present</th><th>Total Classes</th><th>Percentage</th></tr></thead>
+                <thead><tr><th>Student Name</th><th>Present</th><th>Total</th><th>Percentage</th></tr></thead>
                 <tbody id="attBody"></tbody>
             </table>
+            
+            <button class="danger-auth-btn" onclick="document.getElementById('resetDataScreen').style.display='flex'" style="width: auto; padding: 10px 20px; font-size: 13px; margin-top: 30px;">
+                <i class="fas fa-trash-alt"></i> Reset Cloud Data
+            </button>
         </div>
     </div>
 </div>
@@ -105,8 +120,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+const ADMIN_PASSWORD = "Ahmad@07";
+
 function checkPassword() {
-    if(document.getElementById('adminPassword').value === "Ahmad@07") {
+    if(document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
         document.getElementById('loginScreen').style.display = "none";
         document.getElementById('mainApp').style.display = "block";
     } else { document.getElementById('loginError').style.display = "block"; }
@@ -114,11 +131,19 @@ function checkPassword() {
 
 function publishAnnouncement() {
     const txt = document.getElementById('announcementInput').value;
-    if(!txt) return alert("Type a message");
     db.ref('announcement').set(txt).then(() => Swal.fire('Success', 'Announcement Live!', 'success'));
 }
 
 function clearAnnouncement() { db.ref('announcement').remove(); }
+
+function confirmDataReset() {
+    if(document.getElementById('resetDataPassword').value === ADMIN_PASSWORD) {
+        db.ref('attendance').remove().then(() => {
+            Swal.fire('Cleared!', 'All attendance data permanently deleted.', 'success');
+            setTimeout(() => location.reload(), 1500);
+        });
+    } else { alert("Incorrect Password!"); }
+}
 
 function loadAttendance() {
     const cls = document.getElementById('classSelect').value;
@@ -129,10 +154,9 @@ function loadAttendance() {
         if(!data[cls]) { body.innerHTML = '<tr><td colspan="4" style="text-align:center;">No data found.</td></tr>'; return; }
         const students = data[cls].students;
         for(const name in students) {
-            const p = students[name].presentDays || 0; 
-            const t = students[name].totalDays || 0;
-            const pct = t > 0 ? Math.round((p/t)*100) : 0;
-            body.innerHTML += `<tr><td>${name}</td><td>${p}</td><td>${t}</td><td>${pct}%</td></tr>`;
+            const stats = students[name];
+            const percent = stats.totalDays > 0 ? Math.round((stats.presentDays / stats.totalDays) * 100) : 0;
+            body.innerHTML += `<tr><td>${name}</td><td>${stats.presentDays}</td><td>${stats.totalDays}</td><td>${percent}%</td></tr>`;
         }
     });
 }
