@@ -4,45 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | Paramount School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-     <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; --light: #f4f7f6; }
-        * { box-sizing: border-box; } 
+        * { box-sizing: border-box; } /* Prevents overlapping */
+        
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 120px; }
         
         /* LOGIN OVERLAY */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .auth-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 400px; border-bottom: 5px solid var(--forest); position: relative; text-align: center; }
+        .auth-box { 
+            background: white; padding: 40px; border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 400px; 
+            border-bottom: 5px solid var(--forest); position: relative; text-align: center;
+        }
         .auth-logo-corner { position: absolute; top: 20px; left: 20px; height: 45px; width: auto; }
         .secure-icon { font-size: 50px; color: var(--forest); margin: 0 auto 15px auto; display: block; }
         .auth-title { color: var(--forest); margin: 0; font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; }
         .auth-input { width: 100%; max-width: 320px; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin: 20px auto; text-align: center; font-size: 16px; outline: none; display: block; }
 
-        /* CENTERED LARGE HEADER */
-        header { background: var(--forest); color: white; padding: 25px 5%; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .header-top-row { display: flex; align-items: center; width: 100%; max-width: 1200px; margin-bottom: 20px; }
-        .header-logo { height: 75px; width: auto; }
-        .school-branding { text-align: left; margin-left: 15px; flex: 1; }
-        .school-name-top { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 800; display: block; letter-spacing: 1px; }
-        .school-name-bottom { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--gold); display: block; margin-top: 2px; }
+        /* CENTERED HEADER BRANDING (Matched to Screenshots) */
+        header { background: var(--forest); color: white; padding: 20px 5%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .header-logo { height: 75px; width: auto; } /* No white border */
         
-        /* MAIN CENTERED HEADING */
-        .admin-portal-main-title { font-family: 'Montserrat', sans-serif; font-size: 2.8rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 3px; border-bottom: 4px solid var(--gold); padding-bottom: 10px; margin-top: 10px; }
+        .school-branding-group { display: flex; align-items: center; gap: 25px; }
+        .school-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; letter-spacing: 1px; }
+        .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--gold); letter-spacing: 0.5px; margin-top: 2px; }
+        
+        /* ADMIN PORTAL TEXT: Center, Same Font, Gold */
+        .admin-portal-heading { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            color: var(--gold); 
+            border-left: 4px solid var(--gold); 
+            padding-left: 25px; 
+            text-transform: uppercase;
+        }
 
-        .container { max-width: 850px; margin: 30px auto; padding: 0 15px; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
-        h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.3rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        h3 { color: var(--forest); margin: 0 0 15px; font-size: 1.3rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         
         textarea { width: 100%; height: 110px; padding: 15px; border-radius: 10px; border: 2px solid #eee; outline: none; font-family: inherit; margin-bottom: 15px; resize: none; display: block; }
         
-        /* CENTERED BUTTONS */
+        /* CENTERED SMALL BUTTONS */
         .btn-row { display: flex; gap: 12px; justify-content: center; align-items: center; }
         .btn-small { background: var(--forest); color: white; padding: 12px 30px; border-radius: 50px; font-weight: bold; border: none; cursor: pointer; font-size: 14px; transition: 0.3s; white-space: nowrap; display: flex; align-items: center; justify-content: center; }
         .btn-small.clear { background: #eee; color: #666; }
 
-        /* IN-LINE DROPDOWN AND BUTTON */
+        /* IN-LINE LAYOUT: DROPDOWN NEXT TO BUTTON */
         .inline-action { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; margin-bottom: 20px; }
         .class-select { flex: 1; max-width: 400px; padding: 11px; border-radius: 8px; border: 2px solid #eee; outline: none; font-size: 15px; }
 
@@ -59,7 +74,7 @@
     <div class="auth-box">
         <img src="logo.png" class="auth-logo-corner" onerror="this.style.display='none'">
         <i class="fas fa-user-shield secure-icon"></i>
-        <h2 class="auth-title">Admin Access</h2>
+        <h2 class="auth-title">Admin Secure Login</h2>
         <input type="password" id="adminPass" class="auth-input" placeholder="Enter Admin Password">
         <button onclick="login()" class="btn-small" style="width:100%; font-size: 16px;">Unlock Dashboard</button>
     </div>
@@ -78,14 +93,16 @@
 
 <div id="mainApp" style="display:none;">
     <header>
-        <div class="header-top-row">
+        <div class="header-content">
             <img src="logo.png" class="header-logo" onerror="this.style.display='none'">
-            <div class="school-branding">
-                <span class="school-name-top">PARAMOUNT</span>
-                <span class="school-name-bottom">ENGLISH MEDIUM SCHOOL</span>
+            <div class="school-branding-group">
+                <div class="school-text">
+                    <span class="school-name-main">PARAMOUNT</span>
+                    <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
+                </div>
+                <h1 class="admin-portal-heading">Admin Portal</h1>
             </div>
         </div>
-        <h1 class="admin-portal-main-title">Admin Portal</h1>
     </header>
 
     <div class="container">
