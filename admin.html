@@ -144,7 +144,12 @@
                     <input type="date" id="dateInput" class="auth-input" style="margin: 5px 0 0 0; width:100%;">
                 </div>
 
-                <button onclick="viewAtt()" class="btn-attract">View Report</button>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button onclick="viewAtt()" class="btn-attract" style="flex:1;">View Report</button>
+                    <button onclick="downloadFilteredReport()" id="dlBtn" class="btn-attract warning" style="display:none; flex:1;">
+                        <i class="fas fa-file-excel"></i> Download Excel
+                    </button>
+                </div>
             </div>
             <div class="table-container">
                 <table id="resultsTable">
@@ -189,6 +194,21 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // MAPPING DATA FOR ROLL NUMBERS
+    const studentRolls = {
+        "Hanish Macharla": "1472070", "Arjun Vihaar Illandula": "1478225", "Thanu sree Allakunta": "1469391", "Aadhya Gangaraboina": "1459555", "Aadhya Sri Oggula": "1459560", "Aadhyasri Shivagoni": "1474500", "Afraha Begum": "1460680", "Aliya Sultana": "1472299", "Anvika Bandi": "1459683", "Aradana Devara konda": "1459620", "Devansh Bandi": "1459605", "Hanvitha Mulkalapelli": "1472069", "Harsha Vardhan Seenapelli": "1472723", "Hiranya Bandi": "1459658", "Jashritha Boina": "1478248", "Konreddy Shreyanvi": "1481135", "Kriyansh Sammeta": "1459568", "Mohammed Mohiuddin Sayyad": "1459652", "Nethra Narkurthi": "1459636", "Reeyansh Bandi": "1463720", "Rishi Manupati": "1459582", "Rudransh Bandi": "1459607", "Sanvika Bandi": "1459625", "Shanvith Khatha": "1472074", "Shishira Jalagam": "1469395", "Shiva Sai Mekala": "1456748", "Shree Rudhraveer Chevvu": "1459687", "Shreyansh Gangaraboina": "1459572", "Sreeja Thalla": "1459643", "Srikrithini Myakala": "1459603", "Srivatsav Vanam": "1472536", "Sriyansh Mekala": "1456743", "Thanvika Lakka": "1473500", "Thrilokansh Vudari": "1463724", "Ujjwal Chekka": "1459694", "Vaishnavi Lakka": "1474815", "Vedansh Myakala": "1460690", "Vishnu Priya Molugu": "1478250", "Vyshnav Tej Boina": "1413563", "Yafiah Mohammad": "1459577",
+        "Aadhya Sri Amaravadi": "1424084", "Aditya Manda": "1426519", "Aadhya Jella": "1426518", "Advaita Gauri Bandi": "1392920", "Aizah Amna Shaik": "1392683", "Akshara Singaram": "1472077", "Bhahuveer Raj Somishetti": "1469394", "Gayathri Erroju": "1392676", "Hanvika Mulkalapelli": "1390570", "Manvith Kondoju": "1396188", "Sayyad Vajeed": "1392703", "Mekala Manu sri": "1412110", "Oliva Grace Vallapu": "1392687", "Rithwik Oggula": "1392696", "Rithwika Kandagatla": "1413326", "Srimahi Chevvu": "1392679", "Thanvesh Thalla": "1459706", "Trishul Nanduri": "1317800", "Yoganshika Nanduri": "1424085", "Yusra Mohammad": "1387264", "Zainul Abideen Syed": "1402461",
+        "Deekshanth Sammeta": "1298438", "Hanshith Erroju": "1298439", "Harika Bandi": "1298447", "Himarsha Naini": "1298432", "Karthik Vallepu": "1298440", "Kruthika Bandi": "1298433", "Rajavardhan Gampala": "1298441", "Roshan Kaitha": "1298443", "Sri Anshu Ayaan Lyadala": "1298448", "Srihansh Bandi": "1298444", "Srikshitha Guduri": "1298435", "Varshith Gonela": "1298445", "Adyasri Makala": "1392815", "Anvik Boini": "1394463", "Anvith Pokanati": "1459764", "Awais Ur Rehman Mohammad": "1459748", "Dakshu Pothuganti": "1459742", "Hansith Reddy Katukuri": "1393477", "Harshith Pokanati": "1459762", "Jella Aditya": "1402310", "Krishank Nallabothula": "1390563", "Kundana Katkuri": "1459771", "Munukuntla Revanth Rudhra": "1307790", "Niraja Nethri Siluveru": "1459758", "Pranav Mattepelli": "1459752", "Sreenith Yadav Naini": "1390566", "Uvan Reddy Dasari": "1459756", "Zayan Mohammad": "1459775", "Zoya Mohammed": "1459714",
+        "Dheeraj Gattu": "1298423", "Preetham Sannayala": "1298425", "Shiva nandu Gonela": "1298428", "Shrayan Nuthanakanti": "1298429", "Sriyanksha Mandala": "1392864", "Advitha Garige": "1298411", "Himansi Kondoju": "1298414", "Izhaan Rahamath Syed": "1392895", "Jaisurya Myakala": "1298424", "Khadeeja Fathima": "1298415", "Manaswini Dandugula": "1298416", "Manusri Bandi": "1298417", "Rithwik krishna Amaravadi": "1298426", "Rohan Bandi": "1298427", "Shiva Junnu": "1392876", "Shivanandh Bandi": "1392885", "Sridha Thalla": "1459709", "Srinika Chengelly": "1298419", "Sriyanshi Oggula": "1298420", "Vishwak Chekka": "1298431",
+        "Aliza Manha Shaik": "1298397", "Dhruvan Reddy Katukuri": "1298407", "Druthika Enugala": "1298398", "Manaswini Bandi": "1298399", "Rakshith Macharla": "1298408", "Sathwika Katkuri": "1298401", "Shalini Uppala": "1298402", "Chandu Devarakonda": "1459786", "Gnaneshwar Pokanati": "1459815", "Hasnain Syed": "1298409", "Koushik Siluveru": "1459832", "Senen Desabattula": "1316732", "Shivarajan Pothuganti": "1459817",
+        "Nagavelly Manikanta": "1298393", "Mirja Ismail": "1459834", "Bandi Aryan": "1298390", "Dandugula Mahesh Babu": "1298392", "Bandi Tejasri": "1298387", "Bandi Harshavardhan": "1298391", "Gampala Vyshnavi": "1298389", "Gampala Laxmi": "1298384", "Garige Harshith": "1298410", "Katkuri Hanish": "1459844", "Katukuri Manideep": "1459798", "MD Abdul Quddus": "1459805", "Muppa Sathwik Patel": "1298395", "Nuthanakanti Sansita": "1298386", "Pasarakonda Ritwin": "1298396", "Pinninti Rakshith Rao": "1459841", "Rayi Sriman Adithya": "1400203",
+        "Abdul Saqib Mohammad": "1298376", "Anudeep Chintha": "1298366", "Bhavan Bandi": "1298368", "Harshavardhan Gonela": "1298370", "Jayadev Chiluveru": "1298372", "Mahaboob Syed": "1298373", "Nandith Reddy Enugala": "1298374", "Sai Charan Goud Mandala": "1392930", "Sai Prasanna Keerthi": "1298380", "Ajmeri Shaik": "1298363", "Akshith Chiluveru": "1392939", "Jayasri Myakala": "1298364", "Rahul Kanjarla": "1298381", "Saketh Devarakonda": "1459784",
+        "Adya Reddy Vangala": "1298353", "Kowshik Patel Muppa": "1298361", "Siri Singaram": "1298355", "Srikar Mandala": "1298360", "Abdus Salaam MD": "1459801", "Akshith Ram Kalvacharla": "1392968", "Jaffar Anas Shaik": "1392965", "Khaja Azeemuddin Mohammed": "1298359", "Nihan Mohammed": "1459839", "Saif Shaik": "1392963", "Saketh Renukuntla": "1459794", "Sreeja Dasari": "1392955", "Vidhaatri Sahani": "1459821",
+        "Abdul Razzak Mohammad": "1298347", "Anudeepthi Chintha": "1298341", "Saketh Ranaveni": "1298350", "Shiva Sri Katukuri": "1298346", "Aklees Shaik": "1298348", "Akshya Kalvacharla": "1392992", "Prince Katkuri": "1472577",
+        "Manikanta Sannayala": "1298339", "Sreeyan Reddy Karra": "1298340", "Jayadhithya Chiluveru": "1393008",
+        "Akshaya Gampala": "1459846", "Ganesh Oggula": "1298335", "Gayathri Renukuntla": "1459792", "Khaja Sadeemuddin Mohammed": "1298337", "Sathwika Nagavelly": "1298333", "Vyshnavi Uppala": "1298334"
+    };
+
     function openRecovery() { document.getElementById('loginScreen').style.display='none'; document.getElementById('recoveryScreen').style.display='flex'; }
     function closeRecovery() { document.getElementById('recoveryScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
 
@@ -218,6 +238,7 @@
         const type = document.getElementById('viewType').value;
         document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'block' : 'none';
         document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'block' : 'none';
+        document.getElementById('dlBtn').style.display = 'none'; 
     }
 
     async function viewAtt() {
@@ -236,7 +257,11 @@
             db.ref(`daily_attendance/${selDate}/${cls}`).once('value', (snap) => {
                 const data = snap.val();
                 body.innerHTML = "";
-                if(!data) return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records found</td></tr>';
+                if(!data) {
+                    document.getElementById('dlBtn').style.display = 'none';
+                    return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records found</td></tr>';
+                }
+                document.getElementById('dlBtn').style.display = 'inline-flex';
                 for(let name in data) {
                     const status = data[name] ? '<span class="status-p">PRESENT</span>' : '<span class="status-a">ABSENT</span>';
                     body.innerHTML += `<tr><td>${name}</td><td colspan="4">${status}</td></tr>`;
@@ -247,11 +272,16 @@
             db.ref(`attendance/${cls}/students`).once('value', (snap) => {
                 const data = snap.val(); 
                 body.innerHTML = "";
-                if(!data) return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data found</td></tr>';
+                if(!data) {
+                    document.getElementById('dlBtn').style.display = 'none';
+                    return body.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data found</td></tr>';
+                }
+                document.getElementById('dlBtn').style.display = 'inline-flex';
                 for(let name in data) {
                     let p = 0, t = 0;
                     if(type === 'monthly') {
                         const selMonth = document.getElementById('monthInput').value;
+                        if(!selMonth) return;
                         const mData = (data[name].months && data[name].months[selMonth]) ? data[name].months[selMonth] : null;
                         p = mData ? (mData.present || 0) : 0;
                         t = mData ? (mData.total || 0) : 0;
@@ -271,15 +301,69 @@
         }
     }
 
+    /* UPDATED: DOWNLOAD REPORT INCLUDES ROLL NUMBER */
+    async function downloadFilteredReport() {
+        const cls = document.getElementById('clsPick').value;
+        const type = document.getElementById('viewType').value;
+        const rows = document.getElementById('attBody').querySelectorAll('tr');
+        
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Attendance_Report');
+
+        let filename = `Attendance_${cls}`;
+        
+        if(type === 'daily') {
+            const date = document.getElementById('dateInput').value;
+            filename += `_${date}`;
+            sheet.columns = [ 
+                { header: 'ROLL NUMBER', key: 'roll', width: 15 },
+                { header: 'STUDENT NAME', key: 'name', width: 35 }, 
+                { header: 'STATUS', key: 'status', width: 15 } 
+            ];
+            rows.forEach(r => {
+                const name = r.cells[0].innerText;
+                sheet.addRow({ roll: studentRolls[name] || "N/A", name: name, status: r.cells[1].innerText });
+            });
+        } else {
+            const period = (type === 'monthly') ? document.getElementById('monthInput').value : "Overall";
+            filename = `${period}_Report_${cls}`;
+            sheet.columns = [
+                { header: 'ROLL NUMBER', key: 'roll', width: 15 },
+                { header: 'STUDENT NAME', key: 'name', width: 35 },
+                { header: 'PRESENT DAYS', key: 'p', width: 15 },
+                { header: 'ABSENT DAYS', key: 'a', width: 15 },
+                { header: 'TOTAL DAYS', key: 't', width: 15 },
+                { header: 'PERCENTAGE (%)', key: 'pct', width: 18 }
+            ];
+            rows.forEach(r => {
+                const name = r.cells[0].innerText;
+                sheet.addRow({ 
+                    roll: studentRolls[name] || "N/A",
+                    name: name, 
+                    p: r.cells[1].innerText, 
+                    a: r.cells[2].innerText, 
+                    t: r.cells[3].innerText, 
+                    pct: r.cells[4].innerText 
+                });
+            });
+        }
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${filename}.xlsx`;
+        link.click();
+    }
+
     function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
     function clearAnn() { db.ref('announcement').remove().then(() => { document.getElementById('annMsg').value = ""; Swal.fire('Cleared', '', 'info'); }); }
 
-    /* FIXED MONTHLY RESET: PURGES DAILY LOGS AND SUMMARY STATS */
     async function resetMonthlyData() {
-        const currentMonth = new Date().toISOString().slice(0, 7);
+        const currentMonth = document.getElementById('monthInput').value;
         const confirmResult = await Swal.fire({
             title: 'Confirm Full Monthly Reset',
-            text: `Clear ALL records for ${currentMonth}? This erases specific date checkboxes AND monthly stats.`,
+            text: `Clear ALL records for ${currentMonth}? This erases daily logs AND monthly summary stats.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d32f2f'
@@ -293,8 +377,6 @@
                 try {
                     Swal.fire({ title: 'Purging...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                     const updates = {};
-
-                    // 1. Clear summary monthly history
                     const statsSnapshot = await db.ref('attendance').once('value');
                     const statsData = statsSnapshot.val();
                     if (statsData) {
@@ -305,21 +387,15 @@
                             });
                         });
                     }
-
-                    // 2. Clear individual daily log checkboxes
                     const dailySnapshot = await db.ref('daily_attendance').once('value');
                     const dailyData = dailySnapshot.val();
                     if (dailyData) {
                         Object.keys(dailyData).forEach(dateStr => {
-                            // Check if the date belongs to the current month
-                            if (dateStr.startsWith(currentMonth)) {
-                                updates[`daily_attendance/${dateStr}`] = null;
-                            }
+                            if (dateStr.startsWith(currentMonth)) updates[`daily_attendance/${dateStr}`] = null;
                         });
                     }
-
                     await db.ref().update(updates);
-                    Swal.fire('Success', `Data for ${currentMonth} fully erased.`, 'success');
+                    Swal.fire('Success', `Data fully erased.`, 'success');
                     if(document.getElementById('clsPick').value) viewAtt();
                 } catch (error) { Swal.fire('Error', error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
@@ -349,7 +425,7 @@
                     await db.ref('attendance').remove();
                     await db.ref('daily_attendance').remove(); 
                     Swal.fire('Success', 'Database cleared. Backup downloaded.', 'success');
-                } catch (error) { Swal.fire('Error', 'Reset failed: ' + error.message, 'error'); }
+                } catch (error) { Swal.fire('Error', error.message, 'error'); }
             } else if (password) { Swal.fire('Denied', 'Incorrect Password', 'error'); }
         }
     }
@@ -358,10 +434,11 @@
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Attendance_Archive');
         sheet.columns = [
-            { header: 'Class', key: 'class', width: 15 },
-            { header: 'Student Name', key: 'name', width: 30 },
-            { header: 'Present Days', key: 'present', width: 15 },
-            { header: 'Total Days', key: 'total', width: 15 }
+            { header: 'ROLL', key: 'roll', width: 15 },
+            { header: 'CLASS', key: 'class', width: 15 },
+            { header: 'STUDENT NAME', key: 'name', width: 30 },
+            { header: 'PRESENT DAYS', key: 'present', width: 15 },
+            { header: 'TOTAL DAYS', key: 'total', width: 15 }
         ];
 
         Object.keys(data).forEach(className => {
@@ -369,6 +446,7 @@
             if (students) {
                 Object.keys(students).forEach(name => {
                     sheet.addRow({
+                        roll: studentRolls[name] || "N/A",
                         class: className,
                         name: name,
                         present: students[name].presentDays || 0,
@@ -382,7 +460,7 @@
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
-        link.download = `Paramount_Archive_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.download = `Paramount_Master_Backup_${new Date().toISOString().split('T')[0]}.xlsx`;
         link.click();
     }
 
