@@ -35,7 +35,7 @@
         label { display: block; font-size: 11px; font-weight: bold; color: #666; margin: 15px 0 5px; text-transform: uppercase; }
         select, input, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; font-size: 15px; outline: none; box-sizing: border-box; font-family: inherit; }
         
-        /* UPDATED HOMEWORK TOOL BOX CSS */
+        /* UPDATED HOMEWORK TOOL BOX CSS WITH SIZE DECREASE */
         .homework-row { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
@@ -44,10 +44,12 @@
         }
         .homework-row div { min-width: 0; } 
         
-        /* Ensure inputs fit within grid cells to maintain curved edges */
+        /* Decreasing the size of the Date input so it fits inside */
         #hwDate, #hwClass {
-            width: 98%; 
-            border-radius: 8px;
+            width: 96%; /* Shrink width to allow curves to show */
+            padding: 10px 4px; /* Narrower padding to save horizontal space */
+            font-size: 13px; /* Decreased font size for better mobile fit */
+            border-radius: 8px; /* Force curved edges */
         }
         
         .tools-btn-row { display: flex; gap: 10px; margin-top: 15px; }
@@ -62,9 +64,7 @@
             .header-content { gap: 10px; } 
             .card { padding: 15px; } 
             .tools-btn-row { flex-direction: column; } 
-            /* Kept side-by-side but refined for mobile */
-            .homework-row { gap: 8px; } 
-            #hwDate { font-size: 14px; }
+            .homework-row { gap: 6px; } 
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
