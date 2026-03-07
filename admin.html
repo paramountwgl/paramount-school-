@@ -169,14 +169,18 @@
     function openRecovery() { document.getElementById('loginScreen').style.display='none'; document.getElementById('recoveryScreen').style.display='flex'; }
     function closeRecovery() { document.getElementById('recoveryScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
 
-    function login() {
-        db.ref('admin/password').once('value', (snap) => {
-            const savedPass = snap.val() || "Ahmad@07";
-            if(document.getElementById('adminPass').value === savedPass) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-            } else { Swal.fire('Error', 'Incorrect Password', 'error'); }
-        });
+    // --- SHARED DYNAMIC PASSWORD HELPER ---
+    async function getAdminPassword() {
+        const snap = await db.ref('admin/password').once('value');
+        return snap.val() || "Ahmad@07"; // Default fallback
+    }
+
+    async function login() {
+        const correctPass = await getAdminPassword();
+        if(document.getElementById('adminPass').value === correctPass) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+        } else { Swal.fire('Error', 'Incorrect Password', 'error'); }
     }
 
     function recoverPass() {
@@ -205,7 +209,7 @@
     function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
     function clearAnn() { db.ref('announcement').remove().then(() => { document.getElementById('annMsg').value = ""; Swal.fire('Cleared', '', 'info'); }); }
 
-    /* RESET MONTHLY DATA LOGIC */
+    /* SYNCHRONIZED MONTHLY RESET */
     async function resetMonthlyData() {
         const currentMonth = new Date().toISOString().slice(0, 7);
         const confirmResult = await Swal.fire({
@@ -218,12 +222,14 @@
 
         if (confirmResult.isConfirmed) {
             const { value: password } = await Swal.fire({
-                title: 'Authorization',
+                title: 'Enter Admin Password',
                 input: 'password',
                 showCancelButton: true
             });
 
-            if (password === "ParamountAdmin@2026") { //
+            const correctPass = await getAdminPassword(); // Pull dynamic password
+
+            if (password === correctPass) {
                 try {
                     Swal.fire({ title: 'Cleaning...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                     const snapshot = await db.ref('attendance').once('value');
@@ -244,7 +250,7 @@
         }
     }
 
-    /* MASTER RESET & BACKUP LOGIC */
+    /* SYNCHRONIZED MASTER RESET & BACKUP */
     async function resetAttendanceData() {
         const confirmResult = await Swal.fire({
             title: 'WARNING: PERMANENT RESET',
@@ -258,20 +264,20 @@
         if (confirmResult.isConfirmed) {
             const { value: password } = await Swal.fire({
                 title: 'Authorization Required',
-                text: 'Enter Master Admin Password to proceed:',
+                text: 'Enter Admin Password to proceed:',
                 input: 'password',
                 showCancelButton: true
             });
 
-            if (password === "ParamountAdmin@2026") { //
+            const correctPass = await getAdminPassword(); // Pull dynamic password
+
+            if (password === correctPass) {
                 try {
                     Swal.fire({ title: 'Running Backup...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                     const snapshot = await db.ref('attendance').once('value');
                     const allData = snapshot.val();
-
-                    if (allData) await generateMasterBackup(allData); //
-
-                    await db.ref('attendance').remove(); //
+                    if (allData) await generateMasterBackup(allData);
+                    await db.ref('attendance').remove();
                     Swal.fire('Success', 'Database cleared. Backup downloaded.', 'success');
                 } catch (error) {
                     Swal.fire('Error', 'Reset failed: ' + error.message, 'error');
@@ -282,7 +288,7 @@
         }
     }
 
-    async function generateMasterBackup(data) { //
+    async function generateMasterBackup(data) {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Attendance_Archive');
         sheet.columns = [
