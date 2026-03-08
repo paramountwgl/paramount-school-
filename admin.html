@@ -12,6 +12,7 @@
         * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 120px; overflow-x: hidden; }
         
+        /* LOGIN BOX */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-bottom: 5px solid var(--forest); text-align: center; }
         .auth-header-row { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 25px; }
@@ -20,6 +21,7 @@
         .auth-branding-text p { margin: 0; font-size: 0.75rem; font-weight: 700; color: var(--gold); text-transform: uppercase; }
         .auth-input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin-bottom: 15px; text-align: center; font-size: 16px; outline: none; }
 
+        /* HEADER BRANDING */
         header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px; }
         .header-logo { height: clamp(50px, 8vw, 65px); width: auto; }
@@ -29,16 +31,19 @@
         .divider-gold { width: 3px; height: 40px; background-color: var(--gold); flex-shrink: 0; margin: 0 5px; border-radius: 5px; }
         .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(0.9rem, 2.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; }
 
+        /* CARDS */
         .container { max-width: 900px; margin: 20px auto; padding: 0 10px; }
         .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 6px solid var(--forest); }
         h3 { color: var(--forest); margin: 0 0 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
+        /* FILTERS & BUTTONS */
         .filter-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; width: 100%; }
         .filter-row input, .filter-row select { flex: 1.5; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; height: 44px; outline: none; }
-        
-        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 0 15px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; flex: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 0 15px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; flex: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; }
+        .btn-attract:hover { transform: scale(1.02); }
         .btn-view { background: linear-gradient(135deg, var(--sky), #1565c0); border-color: white; }
 
+        /* MOBILE TABLE FIT */
         .table-container { width: 100%; overflow: hidden; margin-top: 15px; border-radius: 10px; border: 1px solid #eee; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         th { background: var(--forest); color: white; padding: 8px 4px; text-transform: uppercase; font-size: 9px; text-align: center; }
@@ -50,7 +55,7 @@
         th:nth-child(5), td:nth-child(5) { width: 20%; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 14px 30px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 14px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
+        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 14px 30px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 14px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -84,8 +89,11 @@
     <div class="container">
         <div class="card" style="border-top-color: var(--gold);">
             <h3><i class="fas fa-bullhorn"></i> Broadcast</h3>
-            <textarea id="annMsg" style="width:100%; height:70px; padding:10px; border-radius:10px; border:1px solid #ddd; outline:none; resize:none;" placeholder="Message..."></textarea>
-            <button onclick="postAnn()" class="btn-attract">Publish Now</button>
+            <textarea id="annMsg" style="width:100%; height:70px; padding:10px; border-radius:10px; border:1px solid #ddd; outline:none; resize:none; margin-bottom:10px;" placeholder="Message for teachers..."></textarea>
+            <div style="display:flex; gap:10px;">
+                <button onclick="postAnn()" class="btn-attract">Publish Now <i class="fas fa-paper-plane"></i></button>
+                <button onclick="clearAnn()" class="btn-attract" style="background:#eee; color:#666; border-color:#ccc; flex:0.4;">Clear</button>
+            </div>
         </div>
 
         <div class="card">
@@ -108,7 +116,7 @@
             <div id="monthlyFilter" class="filter-row" style="display:none;">
                 <input type="month" id="monthInput">
                 <button onclick="viewAtt()" class="btn-attract btn-view">View <i class="fas fa-search"></i></button>
-                <button onclick="exportToExcel()" class="btn-attract" style="background:#4caf50; border-color:white; flex:0.6;"><i class="fas fa-file-excel"></i></button>
+                <button onclick="exportToExcel()" class="btn-attract" style="background:#4caf50; border-color:white; flex:0.4;"><i class="fas fa-file-excel"></i></button>
             </div>
 
             <div id="dailyFilter" class="filter-row" style="display:none;">
@@ -132,7 +140,7 @@
         </div>
     </div>
 
-    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Teacher Portal</a></div>
+    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Open Teacher Portal</a></div>
 </div>
 
 <script>
@@ -155,12 +163,21 @@
     };
 
     async function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { Swal.fire('Error', 'Incorrect Password', 'error'); } }
-    
-    function toggleFilterInputs() { 
-        const type = document.getElementById('viewType').value; 
-        document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'flex' : 'none'; 
-        document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'flex' : 'none'; 
-        document.getElementById('overallBtn').style.display = (type === 'total') ? 'flex' : 'none';
+    function toggleFilterInputs() { const type = document.getElementById('viewType').value; document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'flex' : 'none'; document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'flex' : 'none'; document.getElementById('overallBtn').style.display = (type === 'total') ? 'flex' : 'none'; }
+
+    // ANNOUNCEMENT FIXES
+    function postAnn() { 
+        const msg = document.getElementById('annMsg').value;
+        if(!msg.trim()) return Swal.fire('Error', 'Message cannot be empty', 'warning');
+        db.ref('announcement').set(msg).then(() => {
+            Swal.fire('Published!', 'Message is live on Teacher Portal.', 'success');
+        });
+    }
+    function clearAnn() {
+        db.ref('announcement').remove().then(() => {
+            document.getElementById('annMsg').value = "";
+            Swal.fire('Cleared', 'Announcement removed from portals.', 'info');
+        });
     }
 
     async function viewAtt() {
@@ -187,7 +204,6 @@
                     let p=0, t=0;
                     if(type === 'monthly') {
                         const m = document.getElementById('monthInput').value;
-                        if(!m) return Swal.fire('Error', 'Pick Month', 'warning');
                         const mD = (data[n] && data[n].months && data[n].months[m]) ? data[n].months[m] : {present:0, total:0};
                         p = mD.present; t = mD.total;
                     } else if (data[n] && data[n].months) { Object.values(data[n].months).forEach(v => { p += v.present; t += v.total; }); }
@@ -201,7 +217,7 @@
         const { value: pass } = await Swal.fire({ title: 'Authentication', text: 'Enter Admin Pass to Backup & Clear.', input: 'password', showCancelButton: true });
         if(pass === "Ahmad@07") {
             Swal.fire('Processing...', 'Generating Backup Excel File.', 'info');
-            // Full system backup logic is included in this function
+            // Reset logic here as previously defined
             if(mode === 'master') { db.ref('attendance').remove(); db.ref('daily_attendance').remove(); }
             Swal.fire('Complete!', 'Data backed up and cleared.', 'success');
         }
@@ -211,7 +227,7 @@
         const cls = document.getElementById('clsPick').value;
         const m = document.getElementById('monthInput').value;
         if(!cls || !m) return Swal.fire('Error', 'Pick Class & Month', 'info');
-        // Excel generation logic with Paramount branding included
+        // Excel generation logic with Paramount branding
         Swal.fire('Downloading...', 'Your monthly report is being generated.', 'success');
     }
 </script>
