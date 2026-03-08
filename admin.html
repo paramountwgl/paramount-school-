@@ -10,7 +10,228 @@
     <style>
         :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; --light: #f4f7f6; --sky: #2196f3; }
         * { box-sizing: border-box; } 
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom:<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Dashboard | Paramount School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
+    <style>
+        :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; --light: #f4f7f6; --sky: #2196f3; }
+        * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 150px; overflow-x: hidden; }
+        
+        /* LOGIN BOX - CENTERED BRANDING */
+        .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-bottom: 5px solid var(--forest); text-align: center; }
+        .auth-header-row { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 25px; }
+        .auth-logo { height: 75px; width: auto; }
+        .auth-branding-text h2 { margin: 5px 0 0; font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--forest); }
+        .auth-branding-text p { margin: 0; font-size: 0.75rem; font-weight: 700; color: var(--gold); text-transform: uppercase; }
+        .auth-input { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin-bottom: 15px; text-align: center; font-size: 16px; outline: none; }
+        .auth-links { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .auth-links span { color: #666; font-size: 13px; text-decoration: underline; cursor: pointer; font-weight: 600; }
+
+        /* HEADER BRANDING */
+        header { background: var(--forest); color: white; padding: 25px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px; }
+        .header-logo { height: 75px; width: auto; flex-shrink: 0; }
+        .school-branding { display: flex; flex-direction: column; line-height: 1; text-align: left; }
+        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; letter-spacing: 1px; }
+        .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.6rem, 1.8vw, 0.9rem); color: var(--gold); font-weight: 700; text-transform: uppercase; }
+        .divider-gold { width: 3px; height: 50px; background-color: var(--gold); flex-shrink: 0; margin: 0 10px; border-radius: 5px; }
+        .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; }
+
+        /* DASHBOARD UI */
+        .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
+        h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 14px 25px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 10px; }
+        .btn-attract:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
+        .btn-view-report { background: linear-gradient(135deg, var(--sky), #1565c0); border-color: white; width: auto; flex: 0.8; margin-top: 0; }
+        .btn-attract.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); border-color: white; }
+        .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); border-color: white; }
+
+        .filter-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; width: 100%; }
+        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: var(--forest); color: white; padding: 12px; text-transform: uppercase; text-align: center; font-size: 11px; }
+        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 13px; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px 0; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 16px 50px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 15px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
+    </style>
+</head>
+<body>
+
+<div id="loginScreen" class="overlay-screen">
+    <div class="auth-box">
+        <div class="auth-header-row">
+            <img src="logo.png" class="auth-logo" alt="Logo">
+            <div class="auth-branding-text"><h2>PARAMOUNT</h2><p>Admin Access Box</p></div>
+        </div>
+        <input type="password" id="adminPass" class="auth-input" placeholder="Admin Password">
+        <button onclick="login()" class="btn-attract">Unlock Dashboard <i class="fas fa-unlock"></i></button>
+        <div class="auth-links">
+            <span onclick="window.location.href='index.html'">Cancel & Return</span>
+            <span onclick="openRecovery()">Forgot Password?</span>
+        </div>
+    </div>
+</div>
+
+<div id="recoveryScreen" class="overlay-screen" style="display:none;">
+    <div class="auth-box"><h2>Reset Access</h2><input type="password" id="masterKey" class="auth-input" placeholder="Master Key"><input type="password" id="newPass" class="auth-input" placeholder="New Password"><button onclick="recoverPass()" class="btn-attract">Update Password</button><div class="auth-links"><span onclick="closeRecovery()">Back to Login</span></div></div>
+</div>
+
+<div id="mainApp" style="display:none;">
+    <header>
+        <div class="header-content">
+            <img src="logo.png" class="header-logo" alt="Logo">
+            <div class="school-branding"><span class="school-name-main">PARAMOUNT</span><span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span></div>
+            <div class="divider-gold"></div>
+            <div class="admin-portal-text">ADMIN PORTAL</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card" style="border-top-color: var(--gold);">
+            <h3><i class="fas fa-bullhorn"></i> School Broadcast</h3>
+            <textarea id="annMsg" style="width:100%; height:100px; padding:15px; border-radius:10px; border:2px solid #eee; outline:none; margin-bottom:20px; resize:none;" placeholder="Type broadcast message..."></textarea>
+            <div style="display:flex; gap:10px;"><button onclick="postAnn()" class="btn-attract">Publish Now</button><button onclick="db.ref('announcement').remove()" style="background:#eee; color:#666; border:none; padding:14px 25px; border-radius:50px; font-weight:bold; cursor:pointer;">Clear</button></div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-calendar-check"></i> Attendance Monitoring</h3>
+            <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:25px;">
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <select id="clsPick" class="auth-input" style="flex:1; margin:0;">
+                        <option value="">-- Choose Class --</option>
+                        <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
+                        <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
+                        <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
+                        <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
+                    </select>
+                    <select id="viewType" class="auth-input" style="flex:1; margin:0;" onchange="toggleFilterInputs()">
+                        <option value="total">Overall Totals</option>
+                        <option value="monthly">Monthly Breakdown</option>
+                        <option value="daily">Specific Date</option>
+                    </select>
+                </div>
+
+                <div id="monthlyFilter" class="filter-row" style="display:none;">
+                    <input type="month" id="monthInput" class="auth-input">
+                    <button onclick="viewAtt()" class="btn-attract btn-view-report">View Monthly <i class="fas fa-search"></i></button>
+                </div>
+
+                <div id="dailyFilter" class="filter-row" style="display:none;">
+                    <input type="date" id="dateInput" class="auth-input">
+                    <button onclick="viewAtt()" class="btn-attract btn-view-report">View Daily <i class="fas fa-search"></i></button>
+                </div>
+
+                <button id="overallBtn" onclick="viewAtt()" class="btn-attract btn-view-report" style="width:100%; background:var(--sky);">View Overall Report <i class="fas fa-chart-line"></i></button>
+            </div>
+            <div class="table-container"><table id="resultsTable"><thead id="tableHead"><tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr></thead><tbody id="attBody"></tbody></table></div>
+        </div>
+
+        <div class="card" style="border-top-color: var(--danger);">
+            <h3><i class="fas fa-tools"></i> System Maintenance</h3>
+            <div style="display: grid; gap: 10px;">
+                <button onclick="secureReset('monthly')" class="btn-attract warning">Reset Monthly Stats (Requires Pass)</button>
+                <button onclick="secureReset('master')" class="btn-attract danger">Master Database Reset (Requires Pass)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Open Teacher Portal</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8", databaseURL: "https://paramount-school-d55bc-default-rtdb.firebaseio.com", projectId: "paramount-school-d55bc" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 185 MASTER STUDENT RECORDS
+    const studentDataMaster = {
+        "Pre-KG": ["Hanish Macharla", "Arjun Vihaar Illandula", "Thanu sree Allakunta", "Aadhya Gangaraboina", "Aadhya Sri Oggula", "Aadhyasri Shivagoni", "Afraha Begum", "Aliya Sultana", "Anvika Bandi", "Aradana Devara konda", "Devansh Bandi", "Hanvitha Mulkalapelli", "Harsha Vardhan Seenapelli", "Hiranya Bandi", "Jashritha Boina", "Konreddy Shreyanvi", "Kriyansh Sammeta", "Mohammed Mohiuddin Sayyad", "Nethra Narkurthi", "Reeyansh Bandi", "Rishi Manupati", "Rudransh Bandi", "Sanvika Bandi", "Shanvith Khatha", "Shishira Jalagam", "Shiva Sai Mekala", "Shree Rudhraveer Chevvu", "Shreyansh Gangaraboina", "Sreeja Thalla", "Srikrithini Myakala", "Srivatsav Vanam", "Sriyansh Mekala", "Thanvika Lakka", "Thrilokansh Vudari", "Ujjwal Chekka", "Vaishnavi Lakka", "Vedansh Myakala", "Vishnu Priya Molugu", "Vyshnav Tej Boina", "Yafiah Mohammad"],
+        "KG-1": ["Aadhya Sri Amaravadi", "Aditya Manda", "Aadhya Jella", "Advaita Gauri Bandi", "Aizah Amna Shaik", "Akshara Singaram", "Bhahuveer Raj Somishetti", "Gayathri Erroju", "Hanvika Mulkalapelli", "Manvith Kondoju", "Sayyad Vajeed", "Mekala Manu sri", "Oliva Grace Vallapu", "Rithwik Oggula", "Rithwika Kandagatla", "Srimahi Chevvu", "Thanvesh Thalla", "Trishul Nanduri", "Yoganshika Nanduri", "Yusra Mohammad", "Zainul Abideen Syed"],
+        "KG-2": ["Deekshanth Sammeta", "Hanshith Erroju", "Harika Bandi", "Himarsha Naini", "Karthik Vallepu", "Kruthika Bandi", "Rajavardhan Gampala", "Roshan Kaitha", "Sri Anshu Ayaan Lyadala", "Srihansh Bandi", "Srikshitha Guduri", "Varshith Gonela", "Adyasri Makala", "Anvik Boini", "Anvith Pokanati", "Awais Ur Rehman Mohammad", "Dakshu Pothuganti", "Hansith Reddy Katukuri", "Harshith Pokanati", "Jella Aditya", "Krishank Nallabothula", "Kundana Katkuri", "Munukuntla Revanth Rudhra", "Niraja Nethri Siluveru", "Pranav Mattepelli", "Sreenith Yadav Naini", "Uvan Reddy Dasari", "Zayan Mohammad", "Zoya Mohammed"],
+        "Grade-1": ["Dheeraj Gattu", "Preetham Sannayala", "Shiva nandu Gonela", "Shrayan Nuthanakanti", "Sriyanksha Mandala", "Advitha Garige", "Harika Bandi", "Himansi Kondoju", "Izhaan Rahamath Syed", "Jaisurya Myakala", "Khadeeja Fathima", "Manaswini Dandugula", "Manusri Bandi", "Rithwik krishna Amaravadi", "Rohan Bandi", "Shiva Junnu", "Shivanandh Bandi", "Sridha Thalla", "Srinika Chengelly", "Sriyanshi Oggula", "Vishwak Chekka"],
+        "Grade-2": ["Aliza Manha Shaik", "Dhruvan Reddy Katukuri", "Druthika Enugala", "Manaswini Bandi", "Rakshith Macharla", "Sathwika Katkuri", "Shalini Uppala", "Chandu Devarakonda", "Gnaneshwar Pokanati", "Hasnain Syed", "Koushik Siluveru", "Senen Desabattula", "Shivarajan Pothuganti"],
+        "Grade-3": ["Nagavelly Manikanta", "Mirja Ismail", "Bandi Aryan", "Dandugula Mahesh Babu", "Bandi Tejasri", "Bandi Harshavardhan", "Gampala Vyshnavi", "Gampala Laxmi", "Garige Harshith", "Katkuri Hanish", "Katukuri Manideep", "MD Abdul Quddus", "Muppa Sathwik Patel", "Nuthanakanti Sansita", "Pasarakonda Ritwin", "Pinninti Rakshith Rao", "Rayi Sriman Adithya"],
+        "Grade-4": ["Abdul Saqib Mohammad", "Anudeep Chintha", "Bhavan Bandi", "Harshavardhan Gonela", "Jayadev Chiluveru", "Mahaboob Syed", "Nandith Reddy Enugala", "Sai Charan Goud Mandala", "Sai Prasanna Keerthi", "Ajmeri Shaik", "Akshith Chiluveru", "Jayasri Myakala", "Rahul Kanjarla", "Saketh Devarakonda"],
+        "Grade-5": ["Adya Reddy Vangala", "Kowshik Patel Muppa", "Siri Singaram", "Srikar Mandala", "Abdus Salaam MD", "Akshith Ram Kalvacharla", "Jaffar Anas Shaik", "Khaja Azeemuddin Mohammed", "Nihan Mohammed", "Saif Shaik", "Saketh Renukuntla", "Sreeja Dasari", "Vidhaatri Sahani"],
+        "Grade-6": ["Abdul Razzak Mohammad", "Anudeepthi Chintha", "Saketh Ranaveni", "Shiva Sri Katukuri", "Aklees Shaik", "Akshya Kalvacharla", "Prince Katkuri"],
+        "Grade-7": ["Manikanta Sannayala", "Sreeyan Reddy Karra", "Jayadhithya Chiluveru"],
+        "Grade-8": ["Sathwika Nagavelly", "Vyshnavi Uppala", "Akshaya Gampala", "Ganesh Oggula", "Gayathri Renukuntla", "Khaja Sadeemuddin Mohammed"]
+    };
+
+    async function login() { const snap = await db.ref('admin/password').once('value'); const correct = snap.val() || "Ahmad@07"; if(document.getElementById('adminPass').value === correct) { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { Swal.fire('Error', 'Incorrect Password', 'error'); } }
+    function openRecovery() { document.getElementById('loginScreen').style.display='none'; document.getElementById('recoveryScreen').style.display='flex'; }
+    function closeRecovery() { document.getElementById('recoveryScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
+    function toggleFilterInputs() { const type = document.getElementById('viewType').value; document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'flex' : 'none'; document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'flex' : 'none'; document.getElementById('overallBtn').style.display = (type === 'total') ? 'block' : 'none'; }
+    function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
+
+    // CORRECTED ATTENDANCE VIEW LOGIC
+    async function viewAtt() {
+        const cls = document.getElementById('clsPick').value;
+        const type = document.getElementById('viewType').value;
+        const body = document.getElementById('attBody');
+        const head = document.getElementById('tableHead');
+        if(!cls) return Swal.fire('Error', 'Pick a class', 'info');
+        body.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+
+        if(type === 'daily') {
+            const date = document.getElementById('dateInput').value;
+            if(!date) return Swal.fire('Error', 'Pick date', 'warning');
+            head.innerHTML = `<tr><th>Student</th><th colspan="4">Status</th></tr>`;
+            db.ref(`daily_attendance/${date}/${cls}`).once('value', (snap) => {
+                const data = snap.val() || {};
+                const students = studentDataMaster[cls] || [];
+                body.innerHTML = students.map(n => `<tr><td>${n}</td><td colspan="4" style="font-weight:800; color:${data[n] ? 'green':'red'}">${data[n] === true ? 'PRESENT' : (data[n] === false ? 'ABSENT' : 'Not Marked')}</td></tr>`).join('');
+            });
+        } else {
+            head.innerHTML = `<tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr>`;
+            db.ref(`attendance/${cls}/students`).once('value', (snap) => {
+                const data = snap.val() || {};
+                const students = studentDataMaster[cls] || [];
+                body.innerHTML = students.map(n => {
+                    let p=0, t=0;
+                    if(type === 'monthly') {
+                        const m = document.getElementById('monthInput').value;
+                        const mD = (data[n] && data[n].months && data[n].months[m]) ? data[n].months[m] : {present:0, total:0};
+                        p = mD.present; t = mD.total;
+                    } else if (data[n] && data[n].months) { Object.values(data[n].months).forEach(v => { p += v.present; t += v.total; }); }
+                    return `<tr><td>${n}</td><td>${p}</td><td>${t-p}</td><td>${t}</td><td>${t>0?Math.round(p/t*100):0}%</td></tr>`;
+                }).join('');
+            });
+        }
+    }
+
+    async function secureReset(mode) {
+        const { value: pass } = await Swal.fire({ title: 'Authentication', text: 'Enter Admin Pass to confirm.', input: 'password', showCancelButton: true });
+        if(pass === "Ahmad@07") {
+            if(mode === 'master') { db.ref('attendance').remove(); db.ref('daily_attendance').remove(); Swal.fire('Wiped!', '', 'success'); }
+            else {
+                const m = document.getElementById('monthInput').value;
+                if(!m) return Swal.fire('Error', 'Select month', 'error');
+                const snap = await db.ref('attendance').once('value');
+                const updates = {};
+                if(snap.val()) Object.keys(snap.val()).forEach(c => { const st = snap.val()[c].students; if(st) Object.keys(st).forEach(n => updates[`attendance/${c}/students/${n}/months/${m}`] = null); });
+                await db.ref().update(updates); Swal.fire('Cleared!', m, 'success');
+            }
+        } else if(pass) { Swal.fire('Error', 'Wrong Pass', 'error'); }
+    }
+    document.getElementById('monthInput').value = new Date().toISOString().slice(0, 7);
+</script>
+</body>
+</html> 150px; overflow-x: hidden; }
         
         /* LOGIN BOX */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
