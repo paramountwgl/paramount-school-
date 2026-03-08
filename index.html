@@ -119,7 +119,22 @@
     <div class="card" style="border-top-color: var(--gold);">
         <h3>Daily Homework Tool</h3>
         <div class="row-grid">
-            <div><label>Class</label><select id="hwClass" onchange="updateHWSubjects()"><option value="Pre-KG">Pre-KG</option></select></div>
+            <div>
+                <label>Class</label>
+                <select id="hwClass" onchange="updateHWSubjects()">
+                    <option value="Pre-KG">Pre-KG</option>
+                    <option value="KG-1">KG-1</option>
+                    <option value="KG-2">KG-2</option>
+                    <option value="Grade-1">Grade-1</option>
+                    <option value="Grade-2">Grade-2</option>
+                    <option value="Grade-3">Grade-3</option>
+                    <option value="Grade-4">Grade-4</option>
+                    <option value="Grade-5">Grade-5</option>
+                    <option value="Grade-6">Grade-6</option>
+                    <option value="Grade-7">Grade-7</option>
+                    <option value="Grade-8">Grade-8</option>
+                </select>
+            </div>
             <div><label>Date</label><input type="date" id="hwDate" onchange="fetchExistingHW()"></div>
         </div>
         <label>Subject</label><select id="hwSubSelect" onchange="fetchExistingHW()"></select>
@@ -204,6 +219,7 @@
         document.getElementById('hwSubSelect').innerHTML = subs.map(s => `<option value="${s}">${s}</option>`).join(''); 
         fetchExistingHW(); 
     }
+    
     function fetchExistingHW() { const d = document.getElementById('hwDate').value; const c = document.getElementById('hwClass').value; const s = document.getElementById('hwSubSelect').value; if(!d) return; db.ref(`homework/${d}/${c}/${s}`).once('value', (snap) => { document.getElementById('hwTask').value = snap.val() || ""; }); }
     function postHomework() { const d = document.getElementById('hwDate').value; const c = document.getElementById('hwClass').value; const s = document.getElementById('hwSubSelect').value; const t = document.getElementById('hwTask').value; if(!d || !t) return; db.ref(`homework/${d}/${c}`).update({ [s]: t, lastUpdated: new Date().toLocaleTimeString() }).then(() => Swal.fire('Updated!', 'Homework is live.', 'success')); }
     function clearHomework() { document.getElementById('hwTask').value = ''; Swal.fire('Cleared!', 'Task reset.', 'info'); }
@@ -214,4 +230,3 @@
 </script>
 </body>
 </html>
-
