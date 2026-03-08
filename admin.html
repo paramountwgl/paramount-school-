@@ -12,130 +12,101 @@
         * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 120px; overflow-x: hidden; }
         
-        /* LOGIN SCREEN */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
-        .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; border-bottom: 5px solid var(--forest); position: relative; text-align: center; }
-        .secure-icon { font-size: 50px; color: var(--forest); margin: 0 auto 15px auto; display: block; }
-        .auth-title { color: var(--forest); margin: 0; font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 800; }
-        .auth-input { width: 100%; max-width: 320px; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin: 20px auto; text-align: center; font-size: 16px; outline: none; display: block; }
+        .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; border-bottom: 5px solid var(--forest); text-align: center; }
+        .auth-input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #eee; border-radius: 10px; text-align: center; font-size: 16px; outline: none; }
+
+        /* MATCHING IMAGE HEADER STYLING */
+        header { background: var(--forest); color: white; padding: 25px 5%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 20px; }
         
-        /* HEADER & BRANDING BOX */
-        header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .header-content { display: flex; align-items: center; justify-content: flex-start; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .header-logo { height: clamp(60px, 8vw, 85px); width: auto; flex-shrink: 0; }
         
-        /* LOGO & ICON COMBINED IN BOX (Left Corner) */
-        .admin-access-box { 
-            background: rgba(255, 255, 255, 0.1); 
-            padding: 8px 18px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            border: 1px solid rgba(255, 215, 0, 0.3); 
-        }
-        .header-logo { height: 50px; width: auto; flex-shrink: 0; }
-        .shield-icon { color: var(--gold); font-size: 1.3rem; }
-        .school-text { display: flex; flex-direction: column; line-height: 1.1; white-space: nowrap; }
-        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 800; }
-        .admin-label { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--gold); font-weight: 700; text-transform: uppercase; margin-top: 2px; }
+        /* VERTICAL DIVIDER LINE */
+        .divider { width: 2px; height: 50px; background-color: rgba(255, 255, 255, 0.3); flex-shrink: 0; }
+
+        .school-branding { display: flex; flex-direction: column; line-height: 1; }
+        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 800; letter-spacing: 1px; }
+        .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.7rem, 2vw, 1rem); color: var(--gold); font-weight: 700; text-transform: uppercase; margin-top: 5px; }
+        
+        .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; white-space: nowrap; }
 
         /* DASHBOARD CONTENT */
-        .container { max-width: 850px; margin: 30px auto; padding: 0 15px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
-        h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.3rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 8px solid var(--forest); }
+        h3 { color: var(--forest); margin: 0 0 25px; font-size: 1.4rem; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
         
-        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 14px 35px; border-radius: 50px; font-weight: bold; border: 2px solid rgba(255, 215, 0, 0.3); cursor: pointer; font-size: 14px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 102, 51, 0.3); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-attract:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.5); border-color: var(--gold); }
-        .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
-        .btn-attract.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); }
-        
-        .class-select { flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; border: 2px solid #eee; font-size: 15px; outline: none; }
-        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 500px; }
-        th { background: var(--forest); color: white; text-transform: uppercase; padding: 12px 10px; font-size: 11px; font-weight: 800; text-align: center; }
-        th:first-child { border-top-left-radius: 10px; text-align: left; }
-        th:last-child { border-top-right-radius: 10px; }
-        td { padding: 12px 10px; text-align: center; border-bottom: 1px solid #eee; font-size: 13px; }
-        td:first-child { text-align: left; font-weight: 600; }
+        .btn-admin { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 15px 30px; border-radius: 50px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 15px; font-size: 16px; }
+        .btn-admin:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
+        .btn-admin.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
 
-        .status-p { color: #2e7d32; font-weight: 800; }
-        .status-a { color: #c62828; font-weight: 800; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px 0; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px; background: white; border-top: 1px solid #eee; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
 <div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
-        <i class="fas fa-user-shield secure-icon"></i>
+        <i class="fas fa-user-shield secure-icon" style="font-size: 50px; color: var(--forest); margin-bottom: 20px;"></i>
         <h2 class="auth-title">Admin Access</h2>
-        <input type="password" id="adminPass" class="auth-input" placeholder="Admin Password">
-        <button onclick="login()" class="btn-attract" style="width:100%;">Unlock Dashboard <i class="fas fa-unlock-alt"></i></button>
-        <div style="margin-top:15px;">
-            <span style="color:#666; font-size:13px; text-decoration:underline; cursor:pointer;" onclick="window.location.href='index.html'">Return to Home</span>
-        </div>
+        <input type="password" id="adminPass" class="auth-input" placeholder="Enter Password">
+        <button onclick="login()" class="btn-admin">Unlock Dashboard</button>
     </div>
 </div>
 
 <div id="mainApp" style="display:none;">
     <header>
         <div class="header-content">
-            <div class="admin-access-box">
-                <img src="logo.png" class="header-logo" alt="Logo" onerror="this.style.display='none'">
-                <i class="fas fa-user-shield shield-icon"></i>
-                <div class="school-text">
-                    <span class="school-name-main">PARAMOUNT</span>
-                    <span class="admin-label">Admin Dashboard</span>
-                </div>
+            <img src="logo.png" class="header-logo" alt="Logo">
+            
+            <div class="divider"></div>
+
+            <div class="school-branding">
+                <span class="school-name-main">PARAMOUNT</span>
+                <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
             </div>
+
+            <div class="divider"></div>
+
+            <div class="admin-portal-text">ADMIN PORTAL</div>
         </div>
     </header>
 
     <div class="container">
         <div class="card" style="border-top-color: var(--gold);">
-            <h3><i class="fas fa-bullhorn"></i> School Announcement</h3>
-            <textarea id="annMsg" style="width:100%; height:110px; padding:15px; border-radius:10px; border:2px solid #eee; outline:none; margin-bottom:20px; resize:none;" placeholder="Type broadcast message for teachers..."></textarea>
-            <div style="display:flex; gap:12px;">
-                <button onclick="postAnn()" class="btn-attract">Publish Now <i class="fas fa-check-circle"></i></button>
-                <button onclick="clearAnn()" style="background:#eee; color:#666; border:none; padding:14px 25px; border-radius:50px; font-weight:bold; cursor:pointer;">Clear</button>
+            <h3><i class="fas fa-bullhorn" style="color:var(--gold);"></i> Announcement Control</h3>
+            <textarea id="annMsg" style="width:100%; height:120px; padding:20px; border-radius:15px; border:2px solid #eee; outline:none; margin-bottom:15px; resize:none; font-size: 16px;" placeholder="Type school announcement here..."></textarea>
+            <div style="display:flex; gap:15px;">
+                <button onclick="postAnn()" class="btn-admin">Publish Now <i class="fas fa-check-circle"></i></button>
+                <button onclick="document.getElementById('annMsg').value=''" style="background:#f5f5f5; color:#666; border:none; padding:15px 30px; border-radius:50px; font-weight:bold; cursor:pointer; flex:0.4;">Clear</button>
             </div>
         </div>
 
         <div class="card">
             <h3><i class="fas fa-calendar-check"></i> Attendance Monitoring</h3>
-            <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:25px;">
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <select id="clsPick" class="class-select">
-                        <option value="">-- Choose Class --</option>
-                        <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
-                        <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
-                        <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
-                        <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
-                    </select>
-                    <input type="month" id="monthInput" class="auth-input" style="margin:0; flex:1;">
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <button onclick="viewAtt()" class="btn-attract" style="flex:1;">View Report <i class="fas fa-file-invoice"></i></button>
-                    <button onclick="downloadFilteredReport()" id="dlBtn" class="btn-attract warning" style="display:none; flex:1;"><i class="fas fa-file-excel"></i> Export Excel</button>
-                </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
+                <select id="clsPick" style="padding:15px; border-radius:12px; border:2px solid #eee; font-size: 15px;">
+                    <option value="">-- Choose Class --</option>
+                    <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
+                    <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
+                    <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
+                    <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
+                </select>
+                <input type="month" id="monthInput" style="padding:15px; border-radius:12px; border:2px solid #eee; font-size: 15px;">
             </div>
-            <div class="table-container">
-                <table id="resultsTable">
-                    <thead><tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr></thead>
-                    <tbody id="attBody"></tbody>
-                </table>
-            </div>
+            <button onclick="viewAtt()" class="btn-admin" style="background:#2196f3;">View Report <i class="fas fa-search"></i></button>
+            <div id="attBody" style="margin-top:20px;"></div>
         </div>
 
         <div class="card" style="border-top-color: var(--danger);">
-            <h3><i class="fas fa-tools"></i> Maintenance</h3>
-            <button onclick="resetAttendanceData()" class="btn-admin danger" style="width:100%; border-radius:50px; padding:15px; background:linear-gradient(135deg, #d32f2f, #b71c1c); color:white; font-weight:bold; border:none; cursor:pointer;">Master Database Reset</button>
+            <h3><i class="fas fa-tools"></i> System Maintenance</h3>
+            <button onclick="resetData()" class="btn-admin danger">Master Database Reset <i class="fas fa-trash-alt"></i></button>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button onclick="window.location.href='attendance.html'" class="btn-attract" style="width: 90%; max-width: 400px; background: #2196f3;">
-            <i class="fas fa-arrow-left"></i> Open Teacher Portal
+        <button onclick="window.location.href='attendance.html'" class="btn-admin" style="width: 90%; max-width: 450px; background: #2196f3;">
+            <i class="fas fa-arrow-left"></i> Return to Teacher Portal
         </button>
     </div>
 </div>
@@ -143,78 +114,44 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8", databaseURL: "https://paramount-school-d55bc-default-rtdb.firebaseio.com", projectId: "paramount-school-d55bc" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const studentRolls = {
-        "Hanish Macharla": "1472070", "Arjun Vihaar Illandula": "1478225", "Thanu sree Allakunta": "1469391", "Aadhya Gangaraboina": "1459555", "Aadhya Sri Oggula": "1459560", "Aadhyasri Shivagoni": "1474500", "Afraha Begum": "1460680", "Aliya Sultana": "1472299", "Anvika Bandi": "1459683", "Aradana Devara konda": "1459620", "Devansh Bandi": "1459605", "Hanvitha Mulkalapelli": "1472069", "Harsha Vardhan Seenapelli": "1472723", "Hiranya Bandi": "1459658", "Jashritha Boina": "1478248", "Konreddy Shreyanvi": "1481135", "Kriyansh Sammeta": "1459568", "Mohammed Mohiuddin Sayyad": "1459652", "Nethra Narkurthi": "1459636", "Reeyansh Bandi": "1463720", "Rishi Manupati": "1459582", "Rudransh Bandi": "1459607", "Sanvika Bandi": "1459625", "Shanvith Khatha": "1472074", "Shishira Jalagam": "1469395", "Shiva Sai Mekala": "1456748", "Shree Rudhraveer Chevvu": "1459687", "Shreyansh Gangaraboina": "1459572", "Sreeja Thalla": "1459643", "Srikrithini Myakala": "1459603", "Srivatsav Vanam": "1472536", "Sriyansh Mekala": "1456743", "Thanvika Lakka": "1473500", "Thrilokansh Vudari": "1463724", "Ujjwal Chekka": "1459694", "Vaishnavi Lakka": "1474815", "Vedansh Myakala": "1460690", "Vishnu Priya Molugu": "1478250", "Vyshnav Tej Boina": "1413563", "Yafiah Mohammad": "1459577",
-        "Aadhya Sri Amaravadi": "1424084", "Aditya Manda": "1426519", "Aadhya Jella": "1426518", "Advaita Gauri Bandi": "1392920", "Aizah Amna Shaik": "1392683", "Akshara Singaram": "1472077", "Bhahuveer Raj Somishetti": "1469394", "Gayathri Erroju": "1392676", "Hanvika Mulkalapelli": "1390570", "Manvith Kondoju": "1396188", "Sayyad Vajeed": "1392703", "Mekala Manu sri": "1412110", "Oliva Grace Vallapu": "1392687", "Rithwik Oggula": "1392696", "Rithwika Kandagatla": "1413326", "Srimahi Chevvu": "1392679", "Thanvesh Thalla": "1459706", "Trishul Nanduri": "1317800", "Yoganshika Nanduri": "1424085", "Yusra Mohammad": "1387264", "Zainul Abideen Syed": "1402461",
-        "Deekshanth Sammeta": "1298438", "Hanshith Erroju": "1298439", "Harika Bandi": "1298447", "Himarsha Naini": "1298432", "Karthik Vallepu": "1298440", "Kruthika Bandi": "1298433", "Rajavardhan Gampala": "1298441", "Roshan Kaitha": "1298443", "Sri Anshu Ayaan Lyadala": "1298448", "Srihansh Bandi": "1298444", "Srikshitha Guduri": "1298435", "Varshith Gonela": "1298445", "Adyasri Makala": "1392815", "Anvik Boini": "1394463", "Anvith Pokanati": "1459764", "Awais Ur Rehman Mohammad": "1459748", "Dakshu Pothuganti": "1459742", "Hansith Reddy Katukuri": "1393477", "Harshith Pokanati": "1459762", "Jella Aditya": "1402310", "Krishank Nallabothula": "1390563", "Kundana Katkuri": "1459771", "Munukuntla Revanth Rudhra": "1307790", "Niraja Nethri Siluveru": "1459758", "Pranav Mattepelli": "1459752", "Sreenith Yadav Naini": "1390566", "Uvan Reddy Dasari": "1459756", "Zayan Mohammad": "1459775", "Zoya Mohammed": "1459714",
-        "Dheeraj Gattu": "1298423", "Preetham Sannayala": "1298425", "Shiva nandu Gonela": "1298428", "Shrayan Nuthanakanti": "1298429", "Sriyanksha Mandala": "1392864", "Advitha Garige": "1298411", "Himansi Kondoju": "1298414", "Izhaan Rahamath Syed": "1392895", "Jaisurya Myakala": "1298424", "Khadeeja Fathima": "1298415", "Manaswini Dandugula": "1298416", "Manusri Bandi": "1298417", "Rithwik krishna Amaravadi": "1298426", "Rohan Bandi": "1298427", "Shiva Junnu": "1392876", "Shivanandh Bandi": "1392885", "Sridha Thalla": "1459709", "Srinika Chengelly": "1298419", "Sriyanshi Oggula": "1298420", "Vishwak Chekka": "1298431",
-        "Aliza Manha Shaik": "1298397", "Dhruvan Reddy Katukuri": "1298407", "Druthika Enugala": "1298398", "Manaswini Bandi": "1298399", "Rakshith Macharla": "1298408", "Sathwika Katkuri": "1298401", "Shalini Uppala": "1298402", "Chandu Devarakonda": "1459786", "Gnaneshwar Pokanati": "1459815", "Hasnain Syed": "1298409", "Koushik Siluveru": "1459832", "Senen Desabattula": "1316732", "Shivarajan Pothuganti": "1459817",
-        "Nagavelly Manikanta": "1298393", "Mirja Ismail": "1459834", "Bandi Aryan": "1298390", "Dandugula Mahesh Babu": "1298392", "Bandi Tejasri": "1298387", "Bandi Harshavardhan": "1298391", "Gampala Vyshnavi": "1298389", "Gampala Laxmi": "1298384", "Garige Harshith": "1298410", "Katkuri Hanish": "1459844", "Katukuri Manideep": "1459798", "MD Abdul Quddus": "1459805", "Muppa Sathwik Patel": "1298395", "Nuthanakanti Sansita": "1298386", "Pasarakonda Ritwin": "1298396", "Pinninti Rakshith Rao": "1459841", "Rayi Sriman Adithya": "1400203",
-        "Abdul Saqib Mohammad": "1298376", "Anudeep Chintha": "1298366", "Bhavan Bandi": "1298368", "Harshavardhan Gonela": "1298370", "Jayadev Chiluveru": "1298372", "Mahaboob Syed": "1298373", "Nandith Reddy Enugala": "1298374", "Sai Charan Goud Mandala": "1392930", "Sai Prasanna Keerthi": "1298380", "Ajmeri Shaik": "1298363", "Akshith Chiluveru": "1392939", "Jayasri Myakala": "1298364", "Rahul Kanjarla": "1298381", "Saketh Devarakonda": "1459784",
-        "Adya Reddy Vangala": "1298353", "Kowshik Patel Muppa": "1298361", "Siri Singaram": "1298355", "Srikar Mandala": "1298360", "Abdus Salaam MD": "1459801", "Akshith Ram Kalvacharla": "1392968", "Jaffar Anas Shaik": "1392965", "Khaja Azeemuddin Mohammed": "1298359", "Nihan Mohammed": "1459839", "Saif Shaik": "1392963", "Saketh Renukuntla": "1459794", "Sreeja Dasari": "1392955", "Vidhaatri Sahani": "1459821",
-        "Abdul Razzak Mohammad": "1298347", "Anudeepthi Chintha": "1298341", "Saketh Ranaveni": "1298350", "Shiva Sri Katukuri": "1298346", "Aklees Shaik": "1298348", "Akshya Kalvacharla": "1392992", "Prince Katkuri": "1472577",
-        "Manikanta Sannayala": "1298339", "Sreeyan Reddy Karra": "1298340", "Jayadhithya Chiluveru": "1393008",
-        "Akshaya Gampala": "1459846", "Ganesh Oggula": "1298335", "Gayathri Renukuntla": "1459792", "Khaja Sadeemuddin Mohammed": "1298337", "Sathwika Nagavelly": "1298333", "Vyshnavi Uppala": "1298334"
-    };
-
-    async function login() {
-        const snap = await db.ref('admin/password').once('value');
-        const correct = snap.val() || "Ahmad@07";
-        if(document.getElementById('adminPass').value === correct) {
+    function login() {
+        if(document.getElementById('adminPass').value === "Ahmad@07") {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
-        } else { Swal.fire('Error', 'Incorrect Password', 'error'); }
+        } else { Swal.fire('Error', 'Wrong Password', 'error'); }
     }
 
-    function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published!', '', 'success')); }
-    function clearAnn() { db.ref('announcement').remove().then(() => { document.getElementById('annMsg').value = ""; Swal.fire('Cleared!', '', 'info'); }); }
+    function postAnn() { 
+        const msg = document.getElementById('annMsg').value;
+        if(!msg) return Swal.fire('Empty', 'Enter a message first', 'warning');
+        db.ref('announcement').set(msg).then(() => Swal.fire('Published', 'Message is now live', 'success')); 
+    }
 
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
         const month = document.getElementById('monthInput').value;
-        if(!cls || !month) return Swal.fire('Error', 'Select Class & Month', 'info');
-        
+        if(!cls || !month) return Swal.fire('Select Both', 'Pick class and month', 'info');
         const body = document.getElementById('attBody');
-        body.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
-
+        body.innerHTML = 'Fetching records...';
         db.ref(`attendance/${cls}/students`).once('value', (snap) => {
             const data = snap.val(); body.innerHTML = "";
-            if(!data) { document.getElementById('dlBtn').style.display = 'none'; return body.innerHTML = '<tr><td colspan="5">No data</td></tr>'; }
-            document.getElementById('dlBtn').style.display = 'inline-flex';
+            if(!data) return body.innerHTML = 'No records found.';
             for(let name in data) {
                 const mData = (data[name].months && data[name].months[month]) ? data[name].months[month] : {present:0, total:0};
-                const a = mData.total - mData.present;
-                const pct = mData.total > 0 ? Math.round((mData.present/mData.total)*100) : 0;
-                body.innerHTML += `<tr><td>${name}</td><td>${mData.present}</td><td>${a}</td><td>${mData.total}</td><td>${pct}%</td></tr>`;
+                body.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee;"><b>${name}</b>: ${mData.present} / ${mData.total} days</div>`;
             }
         });
     }
 
-    async function downloadFilteredReport() {
-        const cls = document.getElementById('clsPick').value;
-        const month = document.getElementById('monthInput').value;
-        const workbook = new ExcelJS.Workbook();
-        const sheet = workbook.addWorksheet('Report');
-        sheet.columns = [{header:'STUDENT',key:'n',width:30},{header:'P',key:'p',width:10},{header:'A',key:'a',width:10},{header:'TOTAL',key:'t',width:10}];
-        document.querySelectorAll('#attBody tr').forEach(r => sheet.addRow({n:r.cells[0].innerText, p:r.cells[1].innerText, a:r.cells[2].innerText, t:r.cells[3].innerText}));
-        const buffer = await workbook.xlsx.writeBuffer();
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Paramount_${cls}_${month}.xlsx`; link.click();
-    }
-
-    async function resetAttendanceData() {
-        const confirm = await Swal.fire({ title: 'MASTER RESET', text: "Delete all attendance logs?", icon: 'warning', showCancelButton: true });
-        if(confirm.isConfirmed) {
-            const { value: pw } = await Swal.fire({ title: 'Admin Password', input: 'password' });
-            if(pw === "Ahmad@07") { db.ref('attendance').remove(); db.ref('daily_attendance').remove(); Swal.fire('Success', 'Cleared', 'success'); }
-        }
+    async function resetData() {
+        const { isConfirmed } = await Swal.fire({ title: 'MASTER RESET', text: 'Delete everything?', icon: 'warning', showCancelButton: true });
+        if(isConfirmed) { db.ref().remove().then(() => location.reload()); }
     }
 
     document.getElementById('monthInput').value = new Date().toISOString().slice(0, 7);
