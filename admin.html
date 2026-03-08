@@ -12,7 +12,7 @@
         * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 120px; overflow-x: hidden; }
         
-        /* LOGIN SCREEN - CENTERED */
+        /* LOGIN SCREEN */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-bottom: 5px solid var(--forest); text-align: center; }
         .auth-header-row { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 25px; }
@@ -23,7 +23,7 @@
         .auth-links { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .auth-links span { color: #666; font-size: 13px; text-decoration: underline; cursor: pointer; font-weight: 600; }
 
-        /* HEADER */
+        /* HEADER BRANDING */
         header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px; }
         .header-logo { height: clamp(50px, 8vw, 65px); width: auto; }
@@ -40,8 +40,9 @@
         
         .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 12px 20px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 10px; }
         .btn-view-report { background: linear-gradient(135deg, var(--sky), #1565c0); border-color: white; }
+        .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); border-color: white; }
 
-        /* MOBILE OPTIMIZED TABLE REPLACEMENT */
+        /* MOBILE OPTIMIZED TABLE */
         .table-container { width: 100%; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; display: table; }
         th { background: var(--forest); color: white; padding: 10px; text-transform: uppercase; font-size: 10px; text-align: center; }
@@ -54,14 +55,17 @@
             td { border: none; position: relative; padding-left: 50%; text-align: right; font-weight: bold; }
             td:before { position: absolute; left: 10px; width: 45%; padding-right: 10px; white-space: nowrap; text-align: left; font-weight: normal; color: #666; font-size: 10px; text-transform: uppercase; }
             td:nth-of-type(1):before { content: "Student"; }
-            td:nth-of-type(2):before { content: "Present (P)"; }
-            td:nth-of-type(3):before { content: "Absent (A)"; }
-            td:nth-of-type(4):before { content: "Total Days"; }
-            td:nth-of-type(5):before { content: "Percentage"; }
+            td:nth-of-type(2):before { content: "P"; }
+            td:nth-of-type(3):before { content: "A"; }
+            td:nth-of-type(4):before { content: "Total"; }
+            td:nth-of-type(5):before { content: "Pct %"; }
         }
 
         .filter-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; width: 100%; flex-wrap: wrap; }
+        
+        /* RESTORED TEACHER PORTAL BUTTON WITH ICON */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 14px 40px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 14px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); text-align: center; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -133,7 +137,11 @@
         </div>
     </div>
 
-    <div class="bottom-nav"><a href="index.html" class="btn-premium" style="text-decoration:none; color:white; background:var(--forest); padding:15px 40px; border-radius:50px; font-weight:800; border:2px solid var(--gold);">Open Teacher Portal</a></div>
+    <div class="bottom-nav">
+        <a href="index.html" class="btn-premium">
+            <i class="fas fa-chalkboard-teacher"></i> Open Teacher Portal
+        </a>
+    </div>
 </div>
 
 <script>
@@ -158,7 +166,6 @@
     async function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { alert('Incorrect Password'); } }
     function toggleFilterInputs() { const t = document.getElementById('viewType').value; document.getElementById('monthlyFilter').style.display = (t === 'monthly') ? 'flex' : 'none'; document.getElementById('dailyFilter').style.display = (t === 'daily') ? 'flex' : 'none'; document.getElementById('overallBtn').style.display = (t === 'total') ? 'block' : 'none'; }
     
-    // PREMIUM EXCEL ENGINE
     async function exportToExcel() {
         const cls = document.getElementById('clsPick').value;
         const month = document.getElementById('monthInput').value;
@@ -166,31 +173,25 @@
 
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('Monthly Report');
-
-        // Styles
         const greenFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '006633' } };
         const goldFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD700' } };
-        const whiteFont = { color: { argb: 'FFFFFF' }, bold: true, size: 16 };
-        const blackFont = { color: { argb: '000000' }, bold: true };
 
-        // School Header
         sheet.mergeCells('A1:F3');
         const header = sheet.getCell('A1');
         header.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
-        header.fill = greenFill; header.font = whiteFont; header.alignment = { vertical: 'middle', horizontal: 'center' };
+        header.fill = greenFill; header.font = { color: { argb: 'FFFFFF' }, bold: true, size: 16 };
+        header.alignment = { vertical: 'middle', horizontal: 'center' };
 
-        // Monthly Summary Title
         sheet.mergeCells('A4:F5');
         const subHeader = sheet.getCell('A4');
         subHeader.value = `MONTHLY ATTENDANCE SUMMARY - ${month} (${cls})`;
-        subHeader.fill = goldFill; subHeader.font = blackFont; subHeader.alignment = { vertical: 'middle', horizontal: 'center' };
+        subHeader.fill = goldFill; subHeader.font = { color: { argb: '000000' }, bold: true };
+        subHeader.alignment = { vertical: 'middle', horizontal: 'center' };
 
-        // Table Header
         const headRow = sheet.getRow(7);
         headRow.values = ['S.No', 'Student Name', 'Present Days', 'Absent Days', 'Total Days', 'Percentage (%)'];
-        headRow.eachCell(c => { c.font = blackFont; c.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} }; });
+        headRow.eachCell(c => { c.font = {bold:true}; c.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} }; });
 
-        // Fetch & Fill Data
         const snap = await db.ref(`attendance/${cls}/students`).once('value');
         const data = snap.val() || {};
         const students = studentDataMaster[cls] || [];
@@ -202,11 +203,6 @@
         });
 
         sheet.getColumn(2).width = 30;
-        sheet.getColumn(3).width = 15;
-        sheet.getColumn(4).width = 15;
-        sheet.getColumn(5).width = 15;
-        sheet.getColumn(6).width = 15;
-
         const buffer = await workbook.xlsx.writeBuffer();
         saveAs(new Blob([buffer]), `Paramount_${cls}_${month}.xlsx`);
     }
