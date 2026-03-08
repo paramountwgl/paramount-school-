@@ -10,9 +10,9 @@
     <style>
         :root { --forest: #006633; --gold: #ffd700; --danger: #c62828; --light: #f4f7f6; --sky: #2196f3; }
         * { box-sizing: border-box; } 
-        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 150px; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 120px; overflow-x: hidden; }
         
-        /* LOGIN BOX - MOBILE OPTIMIZED */
+        /* LOGIN SCREEN - CENTERED */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-bottom: 5px solid var(--forest); text-align: center; }
         .auth-header-row { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 25px; }
@@ -23,7 +23,7 @@
         .auth-links { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .auth-links span { color: #666; font-size: 13px; text-decoration: underline; cursor: pointer; font-weight: 600; }
 
-        /* RESPONSIVE HEADER BRANDING */
+        /* HEADER */
         header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px; }
         .header-logo { height: clamp(50px, 8vw, 65px); width: auto; }
@@ -33,37 +33,41 @@
         .divider-gold { width: 3px; height: 40px; background-color: var(--gold); flex-shrink: 0; margin: 0 5px; border-radius: 5px; }
         .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(0.9rem, 2.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; }
 
-        /* MOBILE HEADER ADJUSTMENT */
-        @media (max-width: 600px) {
-            .header-content { gap: 8px; }
-            .divider-gold { height: 30px; width: 2px; }
-        }
-
         /* DASHBOARD UI */
         .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 6px solid var(--forest); }
         h3 { color: var(--forest); margin: 0 0 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
-        /* PREMIUM BUTTONS */
         .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 12px 20px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 10px; }
         .btn-view-report { background: linear-gradient(135deg, var(--sky), #1565c0); border-color: white; }
-        .btn-attract.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); border-color: white; }
-        .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); border-color: white; }
 
-        /* RESPONSIVE FILTER ROWS */
-        .filter-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; width: 100%; flex-wrap: wrap; }
-        .filter-row input, .filter-row select { flex: 1; min-width: 150px; }
-        
-        /* TABLE OPTIMIZATION */
-        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; margin-top: 20px; border: 1px solid #eee; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th { background: var(--forest); color: white; padding: 10px; text-transform: uppercase; text-align: center; font-size: 10px; }
+        /* MOBILE OPTIMIZED TABLE REPLACEMENT */
+        .table-container { width: 100%; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; display: table; }
+        th { background: var(--forest); color: white; padding: 10px; text-transform: uppercase; font-size: 10px; text-align: center; }
         td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 12px; }
 
-        /* STICKY BOTTOM NAV */
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            tr { border: 1px solid #ddd; margin-bottom: 10px; border-radius: 10px; padding: 5px; background: #fafafa; }
+            td { border: none; position: relative; padding-left: 50%; text-align: right; font-weight: bold; }
+            td:before { position: absolute; left: 10px; width: 45%; padding-right: 10px; white-space: nowrap; text-align: left; font-weight: normal; color: #666; font-size: 10px; text-transform: uppercase; }
+            td:nth-of-type(1):before { content: "Student"; }
+            td:nth-of-type(2):before { content: "Present (P)"; }
+            td:nth-of-type(3):before { content: "Absent (A)"; }
+            td:nth-of-type(4):before { content: "Total Days"; }
+            td:nth-of-type(5):before { content: "Percentage"; }
+        }
+
+        .filter-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; width: 100%; flex-wrap: wrap; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 14px 30px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 14px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); text-align: center; width: 90%; max-width: 400px; justify-content: center; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
 
@@ -75,15 +79,8 @@
         </div>
         <input type="password" id="adminPass" class="auth-input" placeholder="Admin Password">
         <button onclick="login()" class="btn-attract">Unlock Dashboard <i class="fas fa-unlock"></i></button>
-        <div class="auth-links">
-            <span onclick="window.location.href='index.html'">Cancel & Return</span>
-            <span onclick="openRecovery()">Forgot Password?</span>
-        </div>
+        <div class="auth-links"><span onclick="window.location.href='index.html'">Cancel & Return</span><span onclick="openRecovery()">Forgot Password?</span></div>
     </div>
-</div>
-
-<div id="recoveryScreen" class="overlay-screen" style="display:none;">
-    <div class="auth-box"><h2>Reset Access</h2><input type="password" id="masterKey" class="auth-input" placeholder="Master Key"><input type="password" id="newPass" class="auth-input" placeholder="New Password"><button onclick="recoverPass()" class="btn-attract">Update Password</button><div class="auth-links"><span onclick="closeRecovery()">Back to Login</span></div></div>
 </div>
 
 <div id="mainApp" style="display:none;">
@@ -97,67 +94,53 @@
     </header>
 
     <div class="container">
-        <div class="card" style="border-top-color: var(--gold);">
-            <h3><i class="fas fa-bullhorn"></i> School Broadcast</h3>
-            <textarea id="annMsg" style="width:100%; height:80px; padding:12px; border-radius:10px; border:2px solid #eee; outline:none; margin-bottom:10px; resize:none;" placeholder="Type broadcast message..."></textarea>
-            <div style="display:flex; gap:10px;"><button onclick="postAnn()" class="btn-attract">Publish Now</button><button onclick="db.ref('announcement').remove()" style="background:#eee; color:#666; border:none; padding:10px 20px; border-radius:50px; font-weight:bold; cursor:pointer;">Clear</button></div>
-        </div>
-
         <div class="card">
             <h3><i class="fas fa-calendar-check"></i> Attendance Monitoring</h3>
-            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
-                <div class="filter-row">
-                    <select id="clsPick" class="auth-input" style="margin:0;">
-                        <option value="">-- Choose Class --</option>
-                        <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
-                        <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
-                        <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
-                        <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
-                    </select>
-                    <select id="viewType" class="auth-input" style="margin:0;" onchange="toggleFilterInputs()">
-                        <option value="total">Overall Totals</option>
-                        <option value="monthly">Monthly Breakdown</option>
-                        <option value="daily">Specific Date</option>
-                    </select>
-                </div>
-
-                <div id="monthlyFilter" class="filter-row" style="display:none;">
-                    <input type="month" id="monthInput" class="auth-input">
-                    <button onclick="viewAtt()" class="btn-attract btn-view-report">View Monthly <i class="fas fa-search"></i></button>
-                </div>
-
-                <div id="dailyFilter" class="filter-row" style="display:none;">
-                    <input type="date" id="dateInput" class="auth-input">
-                    <button onclick="viewAtt()" class="btn-attract btn-view-report">View Daily <i class="fas fa-search"></i></button>
-                </div>
-
-                <button id="overallBtn" onclick="viewAtt()" class="btn-attract btn-view-report" style="width:100%; background:var(--sky);">View Overall Report <i class="fas fa-chart-line"></i></button>
+            <div class="filter-row">
+                <select id="clsPick" class="auth-input" style="flex:1; margin:0;">
+                    <option value="">-- Class --</option>
+                    <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
+                    <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
+                    <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
+                    <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
+                </select>
+                <select id="viewType" class="auth-input" style="flex:1; margin:0;" onchange="toggleFilterInputs()">
+                    <option value="total">Overall Totals</option>
+                    <option value="monthly">Monthly Breakdown</option>
+                    <option value="daily">Specific Date</option>
+                </select>
             </div>
+
+            <div id="monthlyFilter" class="filter-row" style="display:none;">
+                <input type="month" id="monthInput" class="auth-input">
+                <button onclick="viewAtt()" class="btn-attract btn-view-report" style="flex:1;">View Monthly</button>
+                <button onclick="exportToExcel()" class="btn-attract" style="background:#4caf50; flex:1;"><i class="fas fa-file-excel"></i> Download Excel</button>
+            </div>
+
+            <div id="dailyFilter" class="filter-row" style="display:none;">
+                <input type="date" id="dateInput" class="auth-input">
+                <button onclick="viewAtt()" class="btn-attract btn-view-report" style="flex:1;">View Daily</button>
+            </div>
+
+            <button id="overallBtn" onclick="viewAtt()" class="btn-attract btn-view-report" style="width:100%;">View Overall Report <i class="fas fa-chart-line"></i></button>
+
             <div class="table-container"><table id="resultsTable"><thead id="tableHead"><tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr></thead><tbody id="attBody"></tbody></table></div>
         </div>
 
         <div class="card" style="border-top-color: var(--danger);">
             <h3><i class="fas fa-tools"></i> System Maintenance</h3>
-            <div style="display: grid; gap: 10px;">
-                <button onclick="secureReset('monthly')" class="btn-attract warning">Reset Monthly Stats</button>
-                <button onclick="secureReset('master')" class="btn-attract danger">Master Database Reset</button>
-            </div>
+            <button onclick="secureReset('master')" class="btn-attract danger">Master Database Reset (Requires Pass)</button>
         </div>
     </div>
 
-    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Open Teacher Portal</a></div>
+    <div class="bottom-nav"><a href="index.html" class="btn-premium" style="text-decoration:none; color:white; background:var(--forest); padding:15px 40px; border-radius:50px; font-weight:800; border:2px solid var(--gold);">Open Teacher Portal</a></div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8", databaseURL: "https://paramount-school-d55bc-default-rtdb.firebaseio.com", projectId: "paramount-school-d55bc" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 185 MASTER STUDENT RECORDS
     const studentDataMaster = {
         "Pre-KG": ["Hanish Macharla", "Arjun Vihaar Illandula", "Thanu sree Allakunta", "Aadhya Gangaraboina", "Aadhya Sri Oggula", "Aadhyasri Shivagoni", "Afraha Begum", "Aliya Sultana", "Anvika Bandi", "Aradana Devara konda", "Devansh Bandi", "Hanvitha Mulkalapelli", "Harsha Vardhan Seenapelli", "Hiranya Bandi", "Jashritha Boina", "Konreddy Shreyanvi", "Kriyansh Sammeta", "Mohammed Mohiuddin Sayyad", "Nethra Narkurthi", "Reeyansh Bandi", "Rishi Manupati", "Rudransh Bandi", "Sanvika Bandi", "Shanvith Khatha", "Shishira Jalagam", "Shiva Sai Mekala", "Shree Rudhraveer Chevvu", "Shreyansh Gangaraboina", "Sreeja Thalla", "Srikrithini Myakala", "Srivatsav Vanam", "Sriyansh Mekala", "Thanvika Lakka", "Thrilokansh Vudari", "Ujjwal Chekka", "Vaishnavi Lakka", "Vedansh Myakala", "Vishnu Priya Molugu", "Vyshnav Tej Boina", "Yafiah Mohammad"],
         "KG-1": ["Aadhya Sri Amaravadi", "Aditya Manda", "Aadhya Jella", "Advaita Gauri Bandi", "Aizah Amna Shaik", "Akshara Singaram", "Bhahuveer Raj Somishetti", "Gayathri Erroju", "Hanvika Mulkalapelli", "Manvith Kondoju", "Sayyad Vajeed", "Mekala Manu sri", "Oliva Grace Vallapu", "Rithwik Oggula", "Rithwika Kandagatla", "Srimahi Chevvu", "Thanvesh Thalla", "Trishul Nanduri", "Yoganshika Nanduri", "Yusra Mohammad", "Zainul Abideen Syed"],
@@ -172,11 +155,61 @@
         "Grade-8": ["Sathwika Nagavelly", "Vyshnavi Uppala", "Akshaya Gampala", "Ganesh Oggula", "Gayathri Renukuntla", "Khaja Sadeemuddin Mohammed"]
     };
 
-    async function login() { const snap = await db.ref('admin/password').once('value'); const correct = snap.val() || "Ahmad@07"; if(document.getElementById('adminPass').value === correct) { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { Swal.fire('Error', 'Incorrect Password', 'error'); } }
-    function openRecovery() { document.getElementById('loginScreen').style.display='none'; document.getElementById('recoveryScreen').style.display='flex'; }
-    function closeRecovery() { document.getElementById('recoveryScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
-    function toggleFilterInputs() { const type = document.getElementById('viewType').value; document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'flex' : 'none'; document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'flex' : 'none'; document.getElementById('overallBtn').style.display = (type === 'total') ? 'block' : 'none'; }
-    function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
+    async function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { alert('Incorrect Password'); } }
+    function toggleFilterInputs() { const t = document.getElementById('viewType').value; document.getElementById('monthlyFilter').style.display = (t === 'monthly') ? 'flex' : 'none'; document.getElementById('dailyFilter').style.display = (t === 'daily') ? 'flex' : 'none'; document.getElementById('overallBtn').style.display = (t === 'total') ? 'block' : 'none'; }
+    
+    // PREMIUM EXCEL ENGINE
+    async function exportToExcel() {
+        const cls = document.getElementById('clsPick').value;
+        const month = document.getElementById('monthInput').value;
+        if(!cls || !month) return Swal.fire('Error', 'Pick Class and Month', 'info');
+
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Monthly Report');
+
+        // Styles
+        const greenFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '006633' } };
+        const goldFill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD700' } };
+        const whiteFont = { color: { argb: 'FFFFFF' }, bold: true, size: 16 };
+        const blackFont = { color: { argb: '000000' }, bold: true };
+
+        // School Header
+        sheet.mergeCells('A1:F3');
+        const header = sheet.getCell('A1');
+        header.value = 'PARAMOUNT ENGLISH MEDIUM SCHOOL';
+        header.fill = greenFill; header.font = whiteFont; header.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        // Monthly Summary Title
+        sheet.mergeCells('A4:F5');
+        const subHeader = sheet.getCell('A4');
+        subHeader.value = `MONTHLY ATTENDANCE SUMMARY - ${month} (${cls})`;
+        subHeader.fill = goldFill; subHeader.font = blackFont; subHeader.alignment = { vertical: 'middle', horizontal: 'center' };
+
+        // Table Header
+        const headRow = sheet.getRow(7);
+        headRow.values = ['S.No', 'Student Name', 'Present Days', 'Absent Days', 'Total Days', 'Percentage (%)'];
+        headRow.eachCell(c => { c.font = blackFont; c.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} }; });
+
+        // Fetch & Fill Data
+        const snap = await db.ref(`attendance/${cls}/students`).once('value');
+        const data = snap.val() || {};
+        const students = studentDataMaster[cls] || [];
+        
+        students.forEach((n, i) => {
+            const mD = (data[n] && data[n].months && data[n].months[month]) ? data[n].months[month] : {present:0, total:0};
+            const row = sheet.addRow([i+1, n, mD.present, mD.total - mD.present, mD.total, mD.total > 0 ? Math.round(mD.present/mD.total*100) + '%' : '0%']);
+            row.eachCell(c => { c.border = { top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'} }; });
+        });
+
+        sheet.getColumn(2).width = 30;
+        sheet.getColumn(3).width = 15;
+        sheet.getColumn(4).width = 15;
+        sheet.getColumn(5).width = 15;
+        sheet.getColumn(6).width = 15;
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        saveAs(new Blob([buffer]), `Paramount_${cls}_${month}.xlsx`);
+    }
 
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
@@ -188,12 +221,11 @@
 
         if(type === 'daily') {
             const date = document.getElementById('dateInput').value;
-            if(!date) return Swal.fire('Error', 'Pick date', 'warning');
             head.innerHTML = `<tr><th>Student</th><th colspan="4">Status</th></tr>`;
             db.ref(`daily_attendance/${date}/${cls}`).once('value', (snap) => {
                 const data = snap.val() || {};
                 const students = studentDataMaster[cls] || [];
-                body.innerHTML = students.map(n => `<tr><td>${n}</td><td colspan="4" style="font-weight:800; color:${data[n] ? 'green':'red'}">${data[n] === true ? 'PRESENT' : (data[n] === false ? 'ABSENT' : 'Not Marked')}</td></tr>`).join('');
+                body.innerHTML = students.map(n => `<tr><td>${n}</td><td colspan="4" style="color:${data[n] ? 'green':'red'}; font-weight:800">${data[n] === true ? 'PRESENT' : (data[n] === false ? 'ABSENT' : 'Not Marked')}</td></tr>`).join('');
             });
         } else {
             head.innerHTML = `<tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr>`;
@@ -214,20 +246,10 @@
     }
 
     async function secureReset(mode) {
-        const { value: pass } = await Swal.fire({ title: 'Authentication', text: 'Enter Admin Pass to confirm.', input: 'password', showCancelButton: true });
-        if(pass === "Ahmad@07") {
-            if(mode === 'master') { db.ref('attendance').remove(); db.ref('daily_attendance').remove(); Swal.fire('Wiped!', '', 'success'); }
-            else {
-                const m = document.getElementById('monthInput').value;
-                if(!m) return Swal.fire('Error', 'Select month first', 'error');
-                const snap = await db.ref('attendance').once('value');
-                const updates = {};
-                if(snap.val()) Object.keys(snap.val()).forEach(c => { const st = snap.val()[c].students; if(st) Object.keys(st).forEach(n => updates[`attendance/${c}/students/${n}/months/${m}`] = null); });
-                await db.ref().update(updates); Swal.fire('Cleared!', m, 'success');
-            }
-        } else if(pass) { Swal.fire('Error', 'Wrong Pass', 'error'); }
+        const { value: pass } = await Swal.fire({ title: 'Master Reset', text: 'Enter password to confirm.', input: 'password', showCancelButton: true });
+        if(pass === "Ahmad@07") { db.ref().remove().then(() => location.reload()); }
+        else if(pass) { Swal.fire('Error', 'Wrong Pass', 'error'); }
     }
-    document.getElementById('monthInput').value = new Date().toISOString().slice(0, 7);
 </script>
 </body>
 </html>
