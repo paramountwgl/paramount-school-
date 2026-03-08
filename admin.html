@@ -12,7 +12,7 @@
         * { box-sizing: border-box; } 
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 150px; overflow-x: hidden; }
         
-        /* LOGIN BOX - CENTERED BRANDING */
+        /* LOGIN BOX - MOBILE OPTIMIZED */
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-bottom: 5px solid var(--forest); text-align: center; }
         .auth-header-row { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 25px; }
@@ -23,34 +23,46 @@
         .auth-links { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .auth-links span { color: #666; font-size: 13px; text-decoration: underline; cursor: pointer; font-weight: 600; }
 
-        /* HEADER BRANDING */
-        header { background: var(--forest); color: white; padding: 25px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        /* RESPONSIVE HEADER BRANDING */
+        header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px; }
-        .header-logo { height: 75px; width: auto; flex-shrink: 0; }
+        .header-logo { height: clamp(50px, 8vw, 65px); width: auto; }
         .school-branding { display: flex; flex-direction: column; line-height: 1; text-align: left; }
-        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; letter-spacing: 1px; }
-        .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.6rem, 1.8vw, 0.9rem); color: var(--gold); font-weight: 700; text-transform: uppercase; }
-        .divider-gold { width: 3px; height: 50px; background-color: var(--gold); flex-shrink: 0; margin: 0 10px; border-radius: 5px; }
-        .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; }
+        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.1rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: 1px; }
+        .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.55rem, 1.5vw, 0.9rem); color: var(--gold); font-weight: 700; text-transform: uppercase; }
+        .divider-gold { width: 3px; height: 40px; background-color: var(--gold); flex-shrink: 0; margin: 0 5px; border-radius: 5px; }
+        .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(0.9rem, 2.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; }
+
+        /* MOBILE HEADER ADJUSTMENT */
+        @media (max-width: 600px) {
+            .header-content { gap: 8px; }
+            .divider-gold { height: 30px; width: 2px; }
+        }
 
         /* DASHBOARD UI */
-        .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
-        h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 14px 25px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 10px; }
-        .btn-attract:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
-        .btn-view-report { background: linear-gradient(135deg, var(--sky), #1565c0); border-color: white; width: auto; flex: 0.8; margin-top: 0; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 6px solid var(--forest); }
+        h3 { color: var(--forest); margin: 0 0 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        
+        /* PREMIUM BUTTONS */
+        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 12px 20px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 10px; }
+        .btn-view-report { background: linear-gradient(135deg, var(--sky), #1565c0); border-color: white; }
         .btn-attract.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); border-color: white; }
         .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); border-color: white; }
 
-        .filter-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; width: 100%; }
-        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: var(--forest); color: white; padding: 12px; text-transform: uppercase; text-align: center; font-size: 11px; }
-        td { padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-size: 13px; }
+        /* RESPONSIVE FILTER ROWS */
+        .filter-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; width: 100%; flex-wrap: wrap; }
+        .filter-row input, .filter-row select { flex: 1; min-width: 150px; }
+        
+        /* TABLE OPTIMIZATION */
+        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; margin-top: 20px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { background: var(--forest); color: white; padding: 10px; text-transform: uppercase; text-align: center; font-size: 10px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 12px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px 0; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
-        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 16px 50px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 15px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 12px; box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
+        /* STICKY BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+        .btn-premium { background: linear-gradient(135deg, #004d26, var(--forest)); color: white; padding: 14px 30px; border-radius: 60px; font-weight: 800; text-decoration: none; font-size: 14px; border: 2px solid var(--gold); transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); text-align: center; width: 90%; max-width: 400px; justify-content: center; }
     </style>
 </head>
 <body>
@@ -87,22 +99,22 @@
     <div class="container">
         <div class="card" style="border-top-color: var(--gold);">
             <h3><i class="fas fa-bullhorn"></i> School Broadcast</h3>
-            <textarea id="annMsg" style="width:100%; height:100px; padding:15px; border-radius:10px; border:2px solid #eee; outline:none; margin-bottom:20px; resize:none;" placeholder="Type broadcast message..."></textarea>
-            <div style="display:flex; gap:10px;"><button onclick="postAnn()" class="btn-attract">Publish Now</button><button onclick="db.ref('announcement').remove()" style="background:#eee; color:#666; border:none; padding:14px 25px; border-radius:50px; font-weight:bold; cursor:pointer;">Clear</button></div>
+            <textarea id="annMsg" style="width:100%; height:80px; padding:12px; border-radius:10px; border:2px solid #eee; outline:none; margin-bottom:10px; resize:none;" placeholder="Type broadcast message..."></textarea>
+            <div style="display:flex; gap:10px;"><button onclick="postAnn()" class="btn-attract">Publish Now</button><button onclick="db.ref('announcement').remove()" style="background:#eee; color:#666; border:none; padding:10px 20px; border-radius:50px; font-weight:bold; cursor:pointer;">Clear</button></div>
         </div>
 
         <div class="card">
             <h3><i class="fas fa-calendar-check"></i> Attendance Monitoring</h3>
-            <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:25px;">
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <select id="clsPick" class="auth-input" style="flex:1; margin:0;">
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
+                <div class="filter-row">
+                    <select id="clsPick" class="auth-input" style="margin:0;">
                         <option value="">-- Choose Class --</option>
                         <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
                         <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
                         <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
                         <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
                     </select>
-                    <select id="viewType" class="auth-input" style="flex:1; margin:0;" onchange="toggleFilterInputs()">
+                    <select id="viewType" class="auth-input" style="margin:0;" onchange="toggleFilterInputs()">
                         <option value="total">Overall Totals</option>
                         <option value="monthly">Monthly Breakdown</option>
                         <option value="daily">Specific Date</option>
@@ -127,8 +139,8 @@
         <div class="card" style="border-top-color: var(--danger);">
             <h3><i class="fas fa-tools"></i> System Maintenance</h3>
             <div style="display: grid; gap: 10px;">
-                <button onclick="secureReset('monthly')" class="btn-attract warning">Reset Monthly Stats (Requires Pass)</button>
-                <button onclick="secureReset('master')" class="btn-attract danger">Master Database Reset (Requires Pass)</button>
+                <button onclick="secureReset('monthly')" class="btn-attract warning">Reset Monthly Stats</button>
+                <button onclick="secureReset('master')" class="btn-attract danger">Master Database Reset</button>
             </div>
         </div>
     </div>
@@ -166,7 +178,6 @@
     function toggleFilterInputs() { const type = document.getElementById('viewType').value; document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'flex' : 'none'; document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'flex' : 'none'; document.getElementById('overallBtn').style.display = (type === 'total') ? 'block' : 'none'; }
     function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
 
-    // CORRECTED ATTENDANCE VIEW LOGIC
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
         const type = document.getElementById('viewType').value;
@@ -208,7 +219,7 @@
             if(mode === 'master') { db.ref('attendance').remove(); db.ref('daily_attendance').remove(); Swal.fire('Wiped!', '', 'success'); }
             else {
                 const m = document.getElementById('monthInput').value;
-                if(!m) return Swal.fire('Error', 'Select month', 'error');
+                if(!m) return Swal.fire('Error', 'Select month first', 'error');
                 const snap = await db.ref('attendance').once('value');
                 const updates = {};
                 if(snap.val()) Object.keys(snap.val()).forEach(c => { const st = snap.val()[c].students; if(st) Object.keys(st).forEach(n => updates[`attendance/${c}/students/${n}/months/${m}`] = null); });
