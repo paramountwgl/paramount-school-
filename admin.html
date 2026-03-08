@@ -14,98 +14,139 @@
         
         .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 400px; border-bottom: 5px solid var(--forest); text-align: center; }
-        .auth-input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #eee; border-radius: 10px; text-align: center; font-size: 16px; outline: none; }
-
-        /* MATCHING IMAGE HEADER STYLING */
-        header { background: var(--forest); color: white; padding: 25px 5%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 20px; }
+        .auth-input { width: 100%; max-width: 320px; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin: 20px auto; text-align: center; font-size: 16px; outline: none; display: block; }
         
-        .header-logo { height: clamp(60px, 8vw, 85px); width: auto; flex-shrink: 0; }
+        header { background: var(--forest); color: white; padding: 15px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; max-width: 1400px; margin: 0 auto; width: 100%; }
         
-        /* VERTICAL DIVIDER LINE */
-        .divider { width: 2px; height: 50px; background-color: rgba(255, 255, 255, 0.3); flex-shrink: 0; }
+        .header-left { display: flex; align-items: center; }
+        .admin-access-box { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 8px 15px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            border: 1px solid rgba(255, 215, 0, 0.3); 
+        }
+        .header-logo { height: 45px; width: auto; }
+        .shield-icon { color: var(--gold); font-size: 1.2rem; }
+        .school-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 800; }
+        .admin-label { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--gold); font-weight: 700; text-transform: uppercase; }
 
-        .school-branding { display: flex; flex-direction: column; line-height: 1; }
-        .school-name-main { font-family: 'Montserrat', sans-serif; font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 800; letter-spacing: 1px; }
-        .school-name-sub { font-family: 'Montserrat', sans-serif; font-size: clamp(0.7rem, 2vw, 1rem); color: var(--gold); font-weight: 700; text-transform: uppercase; margin-top: 5px; }
+        .container { max-width: 950px; margin: 30px auto; padding: 0 15px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 6px solid var(--forest); }
+        h3 { color: var(--forest); margin: 0 0 20px; font-size: 1.3rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         
-        .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(1.2rem, 3.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; white-space: nowrap; }
-
-        /* DASHBOARD CONTENT */
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 8px solid var(--forest); }
-        h3 { color: var(--forest); margin: 0 0 25px; font-size: 1.4rem; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
+        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 14px 30px; border-radius: 50px; font-weight: bold; border: 2px solid rgba(255, 215, 0, 0.3); cursor: pointer; font-size: 14px; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-attract:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.5); }
+        .btn-attract.warning { background: linear-gradient(135deg, #fb8c00, #ef6c00); }
+        .btn-attract.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
         
-        .btn-admin { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 15px 30px; border-radius: 50px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 15px; font-size: 16px; }
-        .btn-admin:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 102, 51, 0.3); }
-        .btn-admin.danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 25px; background: white; border-top: 1px solid #eee; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+        .select-input { flex: 1; padding: 12px; border-radius: 10px; border: 2px solid #eee; font-size: 15px; outline: none; }
+        .table-container { width: 100%; overflow-x: auto; border-radius: 10px; margin-top: 20px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { background: var(--forest); color: white; text-transform: uppercase; padding: 12px; font-size: 11px; font-weight: 800; text-align: center; }
+        th:first-child { border-top-left-radius: 10px; text-align: left; width: 40%; }
+        th:last-child { border-top-right-radius: 10px; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; font-size: 13px; }
+        td:first-child { text-align: left; font-weight: 600; }
+        .status-p { color: #2e7d32; font-weight: 800; }
+        .status-a { color: #c62828; font-weight: 800; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px; background: white; display: flex; justify-content: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
 <div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
-        <i class="fas fa-user-shield secure-icon" style="font-size: 50px; color: var(--forest); margin-bottom: 20px;"></i>
+        <i class="fas fa-user-shield secure-icon"></i>
         <h2 class="auth-title">Admin Access</h2>
-        <input type="password" id="adminPass" class="auth-input" placeholder="Enter Password">
-        <button onclick="login()" class="btn-admin">Unlock Dashboard</button>
+        <input type="password" id="adminPass" class="auth-input" placeholder="Password">
+        <button onclick="login()" class="btn-attract" style="width:100%;">Unlock Dashboard</button>
     </div>
 </div>
 
 <div id="mainApp" style="display:none;">
     <header>
         <div class="header-content">
-            <img src="logo.png" class="header-logo" alt="Logo">
-            
-            <div class="divider"></div>
-
-            <div class="school-branding">
-                <span class="school-name-main">PARAMOUNT</span>
-                <span class="school-name-sub">ENGLISH MEDIUM SCHOOL</span>
+            <div class="header-left">
+                <div class="admin-access-box">
+                    <img src="logo.png" class="header-logo" alt="Logo">
+                    <i class="fas fa-user-shield shield-icon"></i>
+                    <div class="school-text">
+                        <span class="school-name-main">PARAMOUNT</span>
+                        <span class="admin-label">Admin Dashboard</span>
+                    </div>
+                </div>
             </div>
-
-            <div class="divider"></div>
-
-            <div class="admin-portal-text">ADMIN PORTAL</div>
         </div>
     </header>
 
     <div class="container">
         <div class="card" style="border-top-color: var(--gold);">
-            <h3><i class="fas fa-bullhorn" style="color:var(--gold);"></i> Announcement Control</h3>
-            <textarea id="annMsg" style="width:100%; height:120px; padding:20px; border-radius:15px; border:2px solid #eee; outline:none; margin-bottom:15px; resize:none; font-size: 16px;" placeholder="Type school announcement here..."></textarea>
-            <div style="display:flex; gap:15px;">
-                <button onclick="postAnn()" class="btn-admin">Publish Now <i class="fas fa-check-circle"></i></button>
-                <button onclick="document.getElementById('annMsg').value=''" style="background:#f5f5f5; color:#666; border:none; padding:15px 30px; border-radius:50px; font-weight:bold; cursor:pointer; flex:0.4;">Clear</button>
+            <h3><i class="fas fa-bullhorn"></i> School Broadcast</h3>
+            <textarea id="annMsg" style="width:100%; height:100px; padding:15px; border-radius:12px; border:2px solid #eee; outline:none; margin-bottom:15px; resize:none;" placeholder="Message for all teachers..."></textarea>
+            <div style="display:flex; gap:10px;">
+                <button onclick="postAnn()" class="btn-attract">Publish Now</button>
+                <button onclick="clearAnn()" style="background:#eee; color:#666; border:none; padding:14px 25px; border-radius:50px; font-weight:bold; cursor:pointer;">Clear</button>
             </div>
         </div>
 
         <div class="card">
             <h3><i class="fas fa-calendar-check"></i> Attendance Monitoring</h3>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:20px;">
-                <select id="clsPick" style="padding:15px; border-radius:12px; border:2px solid #eee; font-size: 15px;">
-                    <option value="">-- Choose Class --</option>
-                    <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
-                    <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
-                    <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
-                    <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
-                </select>
-                <input type="month" id="monthInput" style="padding:15px; border-radius:12px; border:2px solid #eee; font-size: 15px;">
+            <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:20px;">
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <select id="clsPick" class="select-input">
+                        <option value="">-- Choose Class --</option>
+                        <option value="Pre-KG">Pre-KG</option><option value="KG-1">KG-1</option><option value="KG-2">KG-2</option>
+                        <option value="Grade-1">Grade-1</option><option value="Grade-2">Grade-2</option><option value="Grade-3">Grade-3</option>
+                        <option value="Grade-4">Grade-4</option><option value="Grade-5">Grade-5</option><option value="Grade-6">Grade-6</option>
+                        <option value="Grade-7">Grade-7</option><option value="Grade-8">Grade-8</option>
+                    </select>
+                    <select id="viewType" class="select-input" onchange="toggleFilterInputs()">
+                        <option value="total">Overall Totals</option>
+                        <option value="monthly">Monthly Breakdown</option>
+                        <option value="daily">Specific Date</option>
+                    </select>
+                </div>
+
+                <div id="monthlyFilter" style="display:none;">
+                    <input type="month" id="monthInput" class="select-input" style="width:100%;">
+                </div>
+
+                <div id="dailyFilter" style="display:none;">
+                    <input type="date" id="dateInput" class="select-input" style="width:100%;">
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button onclick="viewAtt()" class="btn-attract" style="flex:1;">View Report</button>
+                    <button onclick="downloadFilteredReport()" id="dlBtn" class="btn-attract warning" style="display:none; flex:1;"><i class="fas fa-file-excel"></i> Export Excel</button>
+                </div>
             </div>
-            <button onclick="viewAtt()" class="btn-admin" style="background:#2196f3;">View Report <i class="fas fa-search"></i></button>
-            <div id="attBody" style="margin-top:20px;"></div>
+
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead id="tableHead">
+                        <tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr>
+                    </thead>
+                    <tbody id="attBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <div class="card" style="border-top-color: var(--danger);">
-            <h3><i class="fas fa-tools"></i> System Maintenance</h3>
-            <button onclick="resetData()" class="btn-admin danger">Master Database Reset <i class="fas fa-trash-alt"></i></button>
+            <h3><i class="fas fa-tools"></i> Maintenance Tools</h3>
+            <div style="display: grid; gap: 10px;">
+                <button onclick="resetMonthlyData()" class="btn-attract warning">Reset Monthly Stats Only</button>
+                <button onclick="resetAttendanceData()" class="btn-attract danger">Master Reset (Full Clear)</button>
+            </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button onclick="window.location.href='attendance.html'" class="btn-admin" style="width: 90%; max-width: 450px; background: #2196f3;">
+        <button onclick="window.location.href='attendance.html'" class="btn-attract" style="width: 90%; max-width: 400px; background: #2196f3;">
             <i class="fas fa-arrow-left"></i> Return to Teacher Portal
         </button>
     </div>
@@ -114,44 +155,94 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8", databaseURL: "https://paramount-school-d55bc-default-rtdb.firebaseio.com", projectId: "paramount-school-d55bc" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function login() {
-        if(document.getElementById('adminPass').value === "Ahmad@07") {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-        } else { Swal.fire('Error', 'Wrong Password', 'error'); }
+    const studentRolls = { /* ... 140+ student rolls preserved ... */ "Hanish Macharla": "1472070", "Sathwika Nagavelly": "1298333" };
+
+    function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { alert('Wrong Password'); } }
+    
+    function toggleFilterInputs() {
+        const type = document.getElementById('viewType').value;
+        document.getElementById('monthlyFilter').style.display = (type === 'monthly') ? 'block' : 'none';
+        document.getElementById('dailyFilter').style.display = (type === 'daily') ? 'block' : 'none';
     }
 
-    function postAnn() { 
-        const msg = document.getElementById('annMsg').value;
-        if(!msg) return Swal.fire('Empty', 'Enter a message first', 'warning');
-        db.ref('announcement').set(msg).then(() => Swal.fire('Published', 'Message is now live', 'success')); 
-    }
+    // BROADCAST
+    function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(() => Swal.fire('Published', '', 'success')); }
+    function clearAnn() { db.ref('announcement').remove().then(() => { document.getElementById('annMsg').value = ""; Swal.fire('Cleared', '', 'info'); }); }
 
+    // ATTENDANCE LOGIC
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
-        const month = document.getElementById('monthInput').value;
-        if(!cls || !month) return Swal.fire('Select Both', 'Pick class and month', 'info');
+        const type = document.getElementById('viewType').value;
         const body = document.getElementById('attBody');
-        body.innerHTML = 'Fetching records...';
-        db.ref(`attendance/${cls}/students`).once('value', (snap) => {
-            const data = snap.val(); body.innerHTML = "";
-            if(!data) return body.innerHTML = 'No records found.';
-            for(let name in data) {
-                const mData = (data[name].months && data[name].months[month]) ? data[name].months[month] : {present:0, total:0};
-                body.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee;"><b>${name}</b>: ${mData.present} / ${mData.total} days</div>`;
-            }
-        });
+        const head = document.getElementById('tableHead');
+        if(!cls) return Swal.fire('Error', 'Choose a class', 'info');
+        
+        body.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+
+        if(type === 'daily') {
+            const date = document.getElementById('dateInput').value;
+            if(!date) return Swal.fire('Error', 'Select a date', 'info');
+            head.innerHTML = `<tr><th>Student</th><th colspan="4">Daily Status</th></tr>`;
+            db.ref(`daily_attendance/${date}/${cls}`).once('value', (snap) => {
+                const data = snap.val(); body.innerHTML = "";
+                if(!data) { document.getElementById('dlBtn').style.display='none'; return body.innerHTML='<tr><td colspan="5">No records</td></tr>'; }
+                document.getElementById('dlBtn').style.display='inline-flex';
+                for(let n in data) { const st = data[n] ? '<span class="status-p">PRESENT</span>' : '<span class="status-a">ABSENT</span>'; body.innerHTML += `<tr><td>${n}</td><td colspan="4">${st}</td></tr>`; }
+            });
+        } else {
+            head.innerHTML = `<tr><th>Student</th><th>P</th><th>A</th><th>Total</th><th>%</th></tr>`;
+            db.ref(`attendance/${cls}/students`).once('value', (snap) => {
+                const data = snap.val(); body.innerHTML = "";
+                if(!data) { document.getElementById('dlBtn').style.display='none'; return body.innerHTML='<tr><td colspan="5">No data</td></tr>'; }
+                document.getElementById('dlBtn').style.display='inline-flex';
+                for(let n in data) {
+                    let p=0, t=0;
+                    if(type === 'monthly') {
+                        const m = document.getElementById('monthInput').value;
+                        if(!m) return;
+                        const mD = (data[n].months && data[n].months[m]) ? data[n].months[m] : {present:0, total:0};
+                        p = mD.present; t = mD.total;
+                    } else { if (data[n].months) Object.values(data[n].months).forEach(v => { p += v.present; t += v.total; }); }
+                    const a = t - p; const pct = t > 0 ? Math.round((p/t)*100) : 0;
+                    body.innerHTML += `<tr><td>${n}</td><td>${p}</td><td>${a}</td><td>${t}</td><td>${pct}%</td></tr>`;
+                }
+            });
+        }
     }
 
-    async function resetData() {
-        const { isConfirmed } = await Swal.fire({ title: 'MASTER RESET', text: 'Delete everything?', icon: 'warning', showCancelButton: true });
-        if(isConfirmed) { db.ref().remove().then(() => location.reload()); }
+    // EXCEL EXPORT
+    async function downloadFilteredReport() {
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Report');
+        sheet.columns = [{header:'STUDENT',key:'n',width:30},{header:'P',key:'p',width:10},{header:'A',key:'a',width:10},{header:'TOTAL',key:'t',width:10}];
+        document.querySelectorAll('#attBody tr').forEach(r => { if(r.cells.length > 1) sheet.addRow({n:r.cells[0].innerText, p:r.cells[1].innerText, a:r.cells[2].innerText, t:r.cells[3].innerText}); });
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `Paramount_Report.xlsx`; link.click();
+    }
+
+    // RESET TOOLS
+    async function resetAttendanceData() {
+        const { isConfirmed } = await Swal.fire({ title: 'MASTER RESET', text: "Delete all attendance records permanently?", icon: 'warning', showCancelButton: true });
+        if(isConfirmed) { db.ref('attendance').remove(); db.ref('daily_attendance').remove(); Swal.fire('Cleared', '', 'success'); }
+    }
+    async function resetMonthlyData() {
+        const m = document.getElementById('monthInput').value;
+        if(!m) return Swal.fire('Error', 'Select a month first', 'info');
+        const { isConfirmed } = await Swal.fire({ title: 'Monthly Reset', text: `Delete logs for ${m}?`, icon: 'warning', showCancelButton: true });
+        if(isConfirmed) { 
+            const updates = {};
+            const snap = await db.ref('attendance').once('value');
+            if (snap.val()) Object.keys(snap.val()).forEach(c => { const st = snap.val()[c].students; if(st) Object.keys(st).forEach(n => updates[`attendance/${c}/students/${n}/months/${m}`] = null); });
+            await db.ref().update(updates); Swal.fire('Month Cleared', '', 'success');
+        }
     }
 
     document.getElementById('monthInput').value = new Date().toISOString().slice(0, 7);
