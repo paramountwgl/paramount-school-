@@ -12,7 +12,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: #eef2f1; margin: 0; padding-bottom: 100px; overflow-x: hidden; }
         
-        /* HEADER - PC & MOBILE ADAPTIVE */
+        /* HEADER */
         header { background: var(--forest); color: white; padding: 20px 15px; border-bottom: 4px solid var(--gold); }
         .header-content { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 1200px; margin: 0 auto; text-align: center; }
         .header-logo { height: 60px; width: auto; }
@@ -34,7 +34,6 @@
         .student-mark-card { background: white; border: 1px solid #eee; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
         .student-name { font-weight: 800; color: var(--forest); font-size: 1rem; display: block; margin-bottom: 15px; border-bottom: 1px solid #f1f1f1; padding-bottom: 8px; }
         
-        /* MARKS GRID - MOBILE FIRST */
         .marks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .subject-box { background: #f9fcf9; padding: 8px; border-radius: 12px; border: 1px solid #f0f0f0; text-align: center; }
         .subject-box label { font-size: 9px; margin-bottom: 5px; color: #555; }
@@ -42,8 +41,8 @@
 
         .stats-bar { display: flex; justify-content: space-between; margin-top: 15px; padding: 12px; background: #f1f8f4; border-radius: 12px; font-size: 10px; font-weight: 800; color: var(--forest); }
         
-        /* AUDIT SYSTEM STYLE */
-        .audit-footer { font-size: 9px; color: #999; font-style: italic; margin-top: 10px; text-align: left; padding-top: 8px; border-top: 1px dashed #eee; }
+        /* AUDIT FOOTER - HIDDEN UNTIL DATA EXISTS */
+        .audit-footer { font-size: 9px; color: #999; font-style: italic; margin-top: 10px; text-align: left; padding-top: 8px; border-top: 1px dashed #eee; display: none; }
         .audit-footer b { color: #555; }
 
         .btn-fetch { background: var(--forest); color: white; border: none; border-radius: 12px; padding: 15px; font-weight: 800; width: 100%; margin-top: 15px; cursor: pointer; text-transform: uppercase; font-size: 11px; }
@@ -51,13 +50,12 @@
         .btn-save { flex: 2; background: var(--premium-gradient); color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 12px; box-shadow: 0 5px 15px rgba(0,102,51,0.2); }
         .btn-delete { flex: 1; background: white; color: var(--danger); border: 2px solid var(--danger); padding: 18px; border-radius: 50px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 12px; }
 
-        /* DESKTOP VIEW ADJUSTMENTS */
         @media (min-width: 768px) {
             .header-content { flex-direction: row; justify-content: center; gap: 20px; text-align: left; }
             .divider-v { display: block; }
             .setup-grid { grid-template-columns: 1fr 1fr; }
             .marks-grid { grid-template-columns: repeat(6, 1fr); }
-            .action-row { flex-direction: row; max-width: 500px; margin: 25px auto; }
+            .action-row { flex-direction: row; max-width: 500px; margin: 20px auto; }
             .page-brand { margin-top: 0; font-size: 1.5rem; }
         }
     </style>
@@ -125,7 +123,7 @@
     
     <div class="action-row" id="actionRow">
         <button id="saveAllBtn" class="btn-save" onclick="saveAllMarks()">Save All Records <i class="fas fa-cloud-upload-alt"></i></button>
-        <button class="btn-delete" onclick="deleteAllMarks()"><i class="fas fa-trash-alt"></i> Delete records</button>
+        <button class="btn-delete" onclick="deleteAllMarks()"><i class="fas fa-trash-alt"></i> Delete Records</button>
     </div>
 
     <div style="text-align:center; margin-top:20px;">
@@ -192,7 +190,7 @@
                         <div class="subject-box">
                             <label>${sub}</label>
                             <input type="number" class="sub-input" data-sub="${sub}" placeholder="0" 
-                            min="0" max="100" oninput="if(this.value > 100) { this.value = 100; Swal.fire('Limit', 'Maximum marks allowed is 100', 'warning'); } calculateStats(this)">
+                            min="0" max="100" oninput="if(this.value > 100) { this.value = 100; Swal.fire('Limit', 'Maximum marks is 100', 'warning'); } calculateStats(this)">
                         </div>`).join('')}
                 </div>
                 <div class="stats-bar">
@@ -200,7 +198,7 @@
                     <span>%: <span class="res-perc">0%</span></span>
                     <span>GRADE: <span class="res-grade">-</span></span>
                 </div>
-                <div class="audit-footer" id="audit-${studentId}">No update logs found.</div>
+                <div class="audit-footer" id="audit-${studentId}"></div>
             </div>`;
         });
         list.innerHTML = html;
@@ -217,7 +215,7 @@
         db.ref(`progress_cards/${cls}/${exam}`).once('value', (snap) => {
             const data = snap.val();
             Swal.close();
-            if(!data) return Swal.fire('Notice', 'No previous records found for this selection.', 'info');
+            if(!data) return Swal.fire('Notice', 'No previous records found.', 'info');
 
             document.querySelectorAll('.student-mark-card').forEach(card => {
                 const name = card.getAttribute('data-student');
@@ -233,10 +231,13 @@
                     
                     if(data[name].updatedBy && data[name].updatedAt) {
                         auditDiv.innerHTML = `Last updated by: <b>${data[name].updatedBy}</b> on <b>${data[name].updatedAt}</b>`;
+                        auditDiv.style.display = "block";
                     }
+                } else {
+                    auditDiv.style.display = "none";
                 }
             });
-            Swal.fire('Data Loaded', 'Existing marks can now be modified.', 'success');
+            Swal.fire('Data Loaded', 'Existing marks loaded.', 'success');
         });
     }
 
@@ -283,11 +284,13 @@
             };
             
             const studentId = name.replace(/\s+/g, '');
-            document.getElementById(`audit-${studentId}`).innerHTML = `Last updated by: <b>${authenticatedTeacher}</b> on <b>${timeStamp}</b>`;
+            const auditDiv = document.getElementById(`audit-${studentId}`);
+            auditDiv.innerHTML = `Last updated by: <b>${authenticatedTeacher}</b> on <b>${timeStamp}</b>`;
+            auditDiv.style.display = "block";
         });
 
-        Swal.fire({ title: 'Saving Marks...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-        db.ref().update(updates).then(() => Swal.fire('Success!', 'Progress Cards Updated.', 'success'));
+        Swal.fire({ title: 'Saving...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        db.ref().update(updates).then(() => Swal.fire('Saved!', 'Marks records updated.', 'success'));
     }
 
     async function deleteAllMarks() {
@@ -296,20 +299,20 @@
         if(!cls) return;
 
         const result = await Swal.fire({
-            title: 'Delete Class Marks?',
+            title: 'Delete Class Records?',
             text: `Remove ALL marks for ${cls} - ${exam}?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Yes, Wipe Data'
+            confirmButtonText: 'Yes, Delete'
         });
 
         if (result.isConfirmed) {
             db.ref(`progress_cards/${cls}/${exam}`).remove().then(() => {
                 document.querySelectorAll('.sub-input').forEach(i => i.value = '');
-                document.querySelectorAll('.res-total, .res-perc, .res-grade').forEach(s => s.innerText = '-');
-                document.querySelectorAll('.audit-footer').forEach(f => f.innerText = 'No records found.');
-                Swal.fire('Deleted', 'Database records wiped.', 'success');
+                document.querySelectorAll('.res-total, .res-perc, .res-grade').forEach(s => s.innerText = '0');
+                document.querySelectorAll('.audit-footer').forEach(f => { f.innerHTML = ''; f.style.display = 'none'; });
+                Swal.fire('Deleted', 'Data wiped.', 'success');
             });
         }
     }
