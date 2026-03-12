@@ -113,7 +113,7 @@
 
         <div style="display:flex; gap:12px; margin-top:15px;">
             <button class="btn" onclick="postHomework()"><i class="fas fa-upload"></i> Publish / Update</button>
-            <button class="btn warning" style="flex:0.5;" onclick="clearHomework()"><i class="fas fa-eraser"></i> Clear</button>
+            <button class="btn warning" style="flex:0.5;" onclick="clearHomework()"><i class="fas fa-eraser"></i> Clear & Remove</button>
         </div>
     </div>
 </div>
@@ -133,7 +133,6 @@
         "Ms. S. Neelima": "Neelima@123", "Ms. Riha": "Riha@123", "Ms. Raniya Zainab": "Raniya@123"
     };
 
-    // [Student Data provided for logic reference]
     const studentData = { "Pre-KG": [], "KG-1": [], "KG-2": [], "Grade-1": [], "Grade-2": [], "Grade-3": [], "Grade-4": [], "Grade-5": [], "Grade-6": [], "Grade-7": [], "Grade-8": [] };
 
     async function verifyAccess() {
@@ -162,13 +161,11 @@
         }
     }
 
-    // Restored Attendance Logic
     async function loadStudents() {
         const cls = document.getElementById('attClass').value; const date = document.getElementById('attDate').value; const list = document.getElementById('studentList');
         if(!cls || !date) return; list.innerHTML = "Loading...";
         const snap = await db.ref(`daily_attendance/${date}/${cls}`).once('value');
         const existing = snap.val() || {};
-        // Note: Replace studentData[cls] content with your full list here
         list.innerHTML = (studentData[cls] || []).map(n => {
             const isP = (existing[n] !== undefined) ? (existing[n] ? "checked" : "") : "checked";
             return `<div class="student-item"><span>${n}</span><input type="checkbox" class="att-check" data-name="${n}" ${isP}></div>`;
@@ -183,20 +180,16 @@
         db.ref().update(updates).then(() => Swal.fire('Success', 'Attendance Updated!', 'success'));
     }
 
-    // UPDATED SUBJECT DROPDOWN LOGIC
     function updateHWSubjects() { 
         const cls = document.getElementById('hwClass').value; 
         const common = ["TELUGU", "HINDI", "ENGLISH", "MATHS", "SOCIAL STUDIES"]; 
         let subs = [];
 
         if (["Grade-6", "Grade-7", "Grade-8"].includes(cls)) {
-            // Grades 6-8: Separated Science + IIT
             subs = [...common, "PHYSICS", "CHEMISTRY", "BIOLOGY", "IIT"];
         } else if (cls === "Grade-5") {
-            // Grade 5: Science + IIT
             subs = [...common, "SCIENCE", "IIT"];
         } else {
-            // Pre-KG to Grade 4: Standard Science
             subs = [...common, "SCIENCE"];
         }
             
@@ -231,8 +224,10 @@
         const s = document.getElementById('hwSubSelect').value; 
         const t = document.getElementById('hwTask').value; 
         if(!d || !t) return;
+        
         const now = new Date();
         const timeStamp = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
         db.ref(`homework/${d}/${c}/${s}`).set({
             task: t, updatedBy: authenticatedTeacher, updatedAt: timeStamp
         }).then(() => {
@@ -241,9 +236,33 @@
         }); 
     }
 
-    function clearHomework() { document.getElementById('hwTask').value = ''; }
+    // UPDATED: Now removes the data from the database entirely
+    async function clearHomework() {
+        const d = document.getElementById('hwDate').value;
+        const c = document.getElementById('hwClass').value;
+        const s = document.getElementById('hwSubSelect').value;
 
-    // Initialization
+        if (!d || !s) return;
+
+        const result = await Swal.fire({
+            title: 'Delete Homework?',
+            text: `This will remove ${s} homework for ${c} from the portal.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#006633',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!'
+        });
+
+        if (result.isConfirmed) {
+            db.ref(`homework/${d}/${c}/${s}`).remove().then(() => {
+                document.getElementById('hwTask').value = '';
+                document.getElementById('hwAuditTrail').style.display = 'none';
+                Swal.fire('Removed', 'Data cleared from portal.', 'success');
+            });
+        }
+    }
+
     document.getElementById('hwDate').valueAsDate = new Date();
     document.getElementById('attDate').valueAsDate = new Date();
     updateHWSubjects();
