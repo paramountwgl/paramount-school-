@@ -12,8 +12,8 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; } 
         body { font-family: 'Segoe UI', sans-serif; background: var(--light); margin: 0; padding-bottom: 120px; overflow-x: hidden; }
         
-        /* LOGIN SCREEN - RESTORED EXACTLY */
-        .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 100; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        /* --- LOGIN SCREEN (EXACT POSITIONS) --- */
+        .overlay-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--light); z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 15px; }
         .auth-box { background: white; padding: 40px 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); width: 100%; max-width: 420px; border-bottom: 5px solid var(--forest); text-align: center; }
         .auth-header-row { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; margin-bottom: 25px; }
         .auth-logo { height: 75px; width: auto; }
@@ -23,7 +23,7 @@
         .auth-links { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
         .auth-links span { color: #666; font-size: 13px; text-decoration: underline; cursor: pointer; font-weight: 600; }
 
-        /* HEADER BRANDING */
+        /* --- HEADER BRANDING --- */
         header { background: var(--forest); color: white; padding: 20px 3%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50; }
         .header-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; width: 100%; gap: 15px; }
         .header-logo { height: clamp(50px, 8vw, 65px); width: auto; }
@@ -33,7 +33,7 @@
         .divider-gold { width: 3px; height: 40px; background-color: var(--gold); flex-shrink: 0; margin: 0 5px; border-radius: 5px; }
         .admin-portal-text { font-family: 'Montserrat', sans-serif; font-size: clamp(0.9rem, 2.5vw, 2.2rem); font-weight: 800; text-transform: uppercase; }
 
-        /* 360 DASHBOARD */
+        /* --- DASHBOARD & 360 SEARCH --- */
         .container { max-width: 900px; margin: 20px auto; padding: 0 10px; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 6px solid var(--forest); }
         h3 { color: var(--forest); margin: 0 0 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -45,7 +45,7 @@
         #dashboard360 { display: none; }
         .v-profile { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
         .v-photo { width: 110px; height: 110px; border-radius: 15px; border: 4px solid var(--gold); object-fit: cover; background: #eee; }
-        .v-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; }
+        .v-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; text-align: left; }
         .v-item label { font-size: 8px; font-weight: 800; color: #999; display: block; text-transform: uppercase; }
         .v-item span { font-size: 13px; font-weight: 700; color: #333; }
         
@@ -58,11 +58,11 @@
         .fee-label { position: absolute; width: 100%; text-align: center; line-height: 25px; font-weight: 900; font-size: 11px; z-index: 2; color: #333; }
 
         .marks-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .marks-table th { background: #f8f9fa; padding: 8px; text-align: left; font-size: 10px; }
+        .marks-table th { background: #f8f9fa; padding: 8px; text-align: left; font-size: 10px; border-bottom: 1px solid #eee; }
         .marks-table td { padding: 10px 8px; border-bottom: 1px solid #f0f0f0; font-size: 12px; font-weight: 700; }
-        .hw-box { background: #fffde7; padding: 15px; border-radius: 10px; border-left: 5px solid #fbc02d; font-style: italic; }
+        .hw-box { background: #fffde7; padding: 15px; border-radius: 10px; border-left: 5px solid #fbc02d; font-style: italic; text-align: left; }
 
-        /* ORIGINAL TOOLS */
+        /* --- ORIGINAL TOOLS STYLES --- */
         .filter-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; width: 100%; }
         .filter-row input, .filter-row select { flex: 1.5; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; height: 44px; outline: none; }
         .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 0 15px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 44px; flex: 1; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
@@ -120,7 +120,7 @@
 
     <div class="container">
         <div class="search-card">
-            <input type="text" id="rollSearch" placeholder="Student Roll No (e.g. 1298337)">
+            <input type="text" id="rollSearch" placeholder="Student Roll No (e.g. 1298337)" onkeypress="if(event.key === 'Enter') search360()">
             <button class="btn-search" onclick="search360()">SEARCH 360°</button>
         </div>
 
@@ -129,13 +129,14 @@
                 <div class="v-profile">
                     <img id="vPhoto" src="logo.png" class="v-photo" onerror="this.src='logo.png'">
                     <div style="flex:1;">
-                        <h2 id="vName" style="margin:0 0 10px; color:var(--forest);">STUDENT NAME</h2>
+                        <h2 id="vName" style="margin:0 0 10px; color:var(--forest); text-transform: uppercase;">NAME</h2>
                         <div class="v-details">
                             <div class="v-item"><label>Class</label><span id="vClass">---</span></div>
                             <div class="v-item"><label>Father</label><span id="vFather">---</span></div>
                             <div class="v-item"><label>Adm No</label><span id="vAdm">---</span></div>
                             <div class="v-item"><label>DOB</label><span id="vDob">---</span></div>
                             <div class="v-item"><label>Phone</label><span id="vPhone">---</span></div>
+                            <div class="v-item"><label>Roll No</label><span id="vRoll">---</span></div>
                         </div>
                         <div id="vBadges" style="margin-top:10px;"></div>
                     </div>
@@ -161,7 +162,7 @@
 
         <div class="card" style="border-top-color: var(--gold);">
             <h3><i class="fas fa-bullhorn"></i> Broadcast</h3>
-            <textarea id="annMsg" style="width:100%; height:70px; padding:10px; border-radius:10px; border:1px solid #ddd; outline:none; resize:none; margin-bottom:10px;" placeholder="Message..."></textarea>
+            <textarea id="annMsg" style="width:100%; height:70px; padding:10px; border-radius:10px; border:1px solid #ddd; outline:none; resize:none; margin-bottom:10px;" placeholder="Message for teachers..."></textarea>
             <div style="display:flex; gap:10px;">
                 <button onclick="postAnn()" class="btn-attract" style="flex:1;">Publish <i class="fas fa-paper-plane"></i></button>
                 <button onclick="clearAnn()" class="btn-attract" style="background:#eee; color:#666; border-color:#ccc; flex:0.4;">Clear</button>
@@ -184,18 +185,18 @@
                     <option value="daily">Specific Date</option>
                 </select>
             </div>
-            <div id="monthlyFilter" class="filter-row" style="display:none;">
+            <div id="mFilter" class="filter-row" style="display:none;">
                 <input type="month" id="monthInput">
                 <button onclick="viewAtt()" class="btn-attract" style="background:var(--sky); border:none;">View</button>
                 <button onclick="exportToExcel()" class="btn-attract" style="background:#4caf50; border:none; flex:0.4;"><i class="fas fa-file-excel"></i></button>
             </div>
-            <div id="dailyFilter" class="filter-row" style="display:none;">
+            <div id="dFilter" class="filter-row" style="display:none;">
                 <input type="date" id="dateInput">
                 <button onclick="viewAtt()" class="btn-attract" style="background:var(--sky); border:none;">View</button>
             </div>
-            <button id="overallBtn" onclick="viewAtt()" class="btn-attract" style="width:100%; margin-top:10px; background:var(--sky); border:none;">View Overall Report</button>
+            <button id="ovBtn" onclick="viewAtt()" class="btn-attract" style="width:100%; margin-top:10px; background:var(--sky); border:none;">View Overall Report</button>
             <div class="table-container">
-                <table><thead id="tableHead"><tr><th>Student Name</th><th>P</th><th>A</th><th>Tot</th><th>%</th></tr></thead><tbody id="attBody"></tbody></table>
+                <table><thead id="tHead"><tr><th>Student Name</th><th>P</th><th>A</th><th>Tot</th><th>%</th></tr></thead><tbody id="attBody"></tbody></table>
             </div>
         </div>
 
@@ -207,7 +208,7 @@
             </div>
         </div>
     </div>
-    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Teacher Portal</a></div>
+    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Open Teacher Portal</a></div>
 </div>
 
 <script>
@@ -215,7 +216,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ALL 185 STUDENTS DATA
+    // ALL 185 STUDENTS DATA FROM STUDENT PORTAL
     const studentData = {
         "1472070": { Name: "Hanish Macharla", Class: "Pre-KG (Diamond)", AdmissionNo: "2052", Father: "M.Vinay", Roll: "1472070", Phonenumber: "9182861346", Gender: "Male", Dob: "---" },
         "1478225": { Name: "Arjun Vihaar Illandula", Class: "Pre-KG (Diamond)", AdmissionNo: "2061", Father: "Illandula Ravi", Roll: "1478225", Phonenumber: "9848742172", Gender: "Male", Dob: "2022-11-22" },
@@ -410,20 +411,16 @@
         "KG-2": ["Deekshanth Sammeta", "Hanshith Erroju", "Harika Bandi", "Himarsha Naini", "Karthik Vallepu", "Kruthika Bandi", "Rajavardhan Gampala", "Roshan Kaitha", "Sri Anshu Ayaan Lyadala", "Srihansh Bandi", "Srikshitha Guduri", "Varshith Gonela", "Adyasri Makala", "Anvik Boini", "Anvith Pokanati", "Awais Ur Rehman Mohammad", "Dakshu Pothuganti", "Hansith Reddy Katukuri", "Harshith Pokanati", "Jella Aditya", "Krishank Nallabothula", "Kundana Katkuri", "Munukuntla Revanth Rudhra", "Niraja Nethri Siluveru", "Pranav Mattepelli", "Sreenith Yadav Naini", "Uvan Reddy Dasari", "Zayan Mohammad", "Zoya Mohammed"],
         "Grade-1": ["Dheeraj Gattu", "Preetham Sannayala", "Shiva nandu Gonela", "Shrayan Nuthanakanti", "Sriyanksha Mandala", "Advitha Garige", "Harika Bandi", "Himansi Kondoju", "Izhaan Rahamath Syed", "Jaisurya Myakala", "Khadeeja Fathima", "Manaswini Dandugula", "Manusri Bandi", "Rithwik krishna Amaravadi", "Rohan Bandi", "Shiva Junnu", "Shivanandh Bandi", "Sridha Thalla", "Srinika Chengelly", "Sriyanshi Oggula", "Vishwak Chekka"],
         "Grade-2": ["Aliza Manha Shaik", "Dhruvan Reddy Katukuri", "Druthika Enugala", "Manaswini Bandi", "Rakshith Macharla", "Sathwika Katkuri", "Shalini Uppala", "Chandu Devarakonda", "Gnaneshwar Pokanati", "Hasnain Syed", "Koushik Siluveru", "Senen Desabattula", "Shivarajan Pothuganti"],
-        "Grade-3": ["Nagavelly Manikanta", "Mirja Ismail", "Bandi Aryan", "Dandugula Mahesh Babu", "Bandi Tejasri", "Bandi Harshavardhan", "Gampala Vyshnavi", "Gampala Laxmi", "Garige Harshith", "Katkuri Hanish", "Katukuri Manideep", "MD Abdul Quddus", "Muppa Sathwik Patel", "Nuthanakanti Sansita", "Pasarakonda Ritwin", "Pinninti Rakshith Rao", "Rayi Sriman Adithya"],
-        "Grade-4": ["Abdul Saqib Mohammad", "Anudeep Chintha", "Bhavan Bandi", "Harshavardhan Gonela", "Jayadev Chiluveru", "Mahaboob Syed", "Nandith Reddy Enugala", "Sai Charan Goud Mandala", "Sai Prasanna Keerthi", "Ajmeri Shaik", "Akshith Chiluveru", "Jayasri Myakala", "Rahul Kanjarla", "Saketh Devarakonda"],
-        "Grade-5": ["Adya Reddy Vangala", "Kowshik Patel Muppa", "Siri Singaram", "Srikar Mandala", "Abdus Salaam MD", "Akshith Ram Kalvacharla", "Jaffar Anas Shaik", "Khaja Azeemuddin Mohammed", "Nihan Mohammed", "Saif Shaik", "Saketh Renukuntla", "Sreeja Dasari", "Vidhaatri Sahani"],
-        "Grade-6": ["Abdul Razzak Mohammad", "Anudeepthi Chintha", "Saketh Ranaveni", "Shiva Sri Katukuri", "Aklees Shaik", "Akshya Kalvacharla", "Prince Katkuri"],
         "Grade-7": ["Manikanta Sannayala", "Sreeyan Reddy Karra", "Jayadhithya Chiluveru"],
         "Grade-8": ["Sathwika Nagavelly", "Vyshnavi Uppala", "Akshaya Gampala", "Ganesh Oggula", "Gayathri Renukuntla", "Khaja Sadeemuddin Mohammed"]
     };
 
-    function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { Swal.fire('Error','Wrong PW','error'); } }
+    function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { Swal.fire('Error','Wrong Password','error'); } }
     function openRecovery() { document.getElementById('loginScreen').style.display='none'; document.getElementById('recoveryScreen').style.display='flex'; }
     function closeRecovery() { document.getElementById('recoveryScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
     function recoverPass() { if(document.getElementById('masterKey').value === "paramount") { db.ref('admin/password').set(document.getElementById('newPass').value).then(() => { Swal.fire('Success','Updated','success'); closeRecovery(); }); } }
 
-    async function fetchAllData() {
+    async function search360() {
         const roll = document.getElementById('rollSearch').value.trim();
         const s = studentData[roll];
         if(!s) return Swal.fire('Error','Roll Not Found','warning');
@@ -436,16 +433,15 @@
         document.getElementById('vDob').innerText = s.Dob;
         document.getElementById('vPhone').innerText = s.Phonenumber;
         document.getElementById('vRoll').innerText = roll;
-        // CORRECT PHOTO PATH
         document.getElementById('vPhoto').src = `students/${roll}.png`;
 
-        const clsShort = s.Class.split(" ")[0];
+        const name = s.Name; const clsPrefix = s.Class.split(" ")[0];
 
         // ATTENDANCE
         db.ref('daily_attendance').once('value', snap => {
             const data = snap.val() || {};
             let p=0, t=0;
-            Object.keys(data).forEach(d => { if(data[d][clsShort] && data[d][clsShort][s.Name] !== undefined) { t++; if(data[d][clsShort][s.Name]===true) p++; } });
+            Object.keys(data).forEach(d => { if(data[d][clsPrefix] && data[d][clsPrefix][name] !== undefined) { t++; if(data[d][clsPrefix][name]===true) p++; } });
             document.getElementById('vTotal').innerText = t;
             document.getElementById('vPres').innerText = p;
             document.getElementById('vAbs').innerText = t-p;
@@ -453,7 +449,7 @@
         });
 
         // MARKS
-        db.ref(`exam_results/${clsShort}/${s.Name}`).once('value', snap => {
+        db.ref(`exam_results/${clsPrefix}/${name}`).once('value', snap => {
             const res = snap.val();
             const body = document.getElementById('vMarksBody');
             body.innerHTML = "";
@@ -468,23 +464,20 @@
 
         // HOMEWORK
         const today = new Date().toISOString().split('T')[0];
-        db.ref(`homework/${clsShort}/${today}`).once('value', snap => { document.getElementById('vHW').innerText = snap.exists() ? snap.val() : "No homework assigned."; });
+        db.ref(`homework/${clsPrefix}/${today}`).once('value', snap => { document.getElementById('vHW').innerText = snap.exists() ? snap.val() : "No homework assigned."; });
 
         // FEES
-        db.ref(`fee_records/${clsShort}/${s.Name}`).limitToLast(1).once('value', snap => {
+        db.ref(`fee_records/${clsPrefix}/${name}`).limitToLast(1).once('value', snap => {
             const f = snap.val();
             if(f) {
                 const entry = Object.values(f)[0];
                 const pct = (entry.paid/entry.total)*100;
                 document.getElementById('vFeeFill').style.width = Math.min(pct,100)+"%";
-                document.getElementById('vFeeLabel').innerText = Math.round(pct)+"% Collected";
-                document.getElementById('vPaid').innerText = entry.paid;
-                document.getElementById('vDue').innerText = entry.total - entry.paid;
+                document.getElementById('vFeeLabel').innerText = Math.round(pct)+"%";
             }
         });
     }
 
-    // ORIGINAL DASHBOARD LOGIC
     function toggleInputs() { const t = document.getElementById('viewType').value; document.getElementById('mFilter').style.display = (t==='monthly'?'flex':'none'); document.getElementById('dFilter').style.display = (t==='daily'?'flex':'none'); }
     async function viewAtt() {
         const cls = document.getElementById('clsPick').value;
@@ -498,8 +491,8 @@
             names.forEach(n => {
                 let p=0, t=0;
                 Object.keys(allData).forEach(d => {
-                    if(type==='monthly' && !d.startsWith(document.getElementById('monthIn').value)) return;
-                    if(type==='daily' && d !== document.getElementById('dateIn').value) return;
+                    if(type==='monthly' && !d.startsWith(document.getElementById('monthInput').value)) return;
+                    if(type==='daily' && d !== document.getElementById('dateInput').value) return;
                     if(allData[d][cls] && allData[d][cls][n] !== undefined) { t++; if(allData[d][cls][n]===true) p++; }
                 });
                 html += `<tr><td>${n}</td><td>${p}</td><td>${t-p}</td><td>${t}</td><td>${t>0?Math.round((p/t)*100):0}%</td></tr>`;
