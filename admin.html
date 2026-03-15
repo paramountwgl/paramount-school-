@@ -41,7 +41,7 @@
 
         #dashboard360 { display: none; }
         .v-profile { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; }
-        .v-photo-container { width: 120px; height: 120px; border-radius: 15px; border: 4px solid var(--gold); overflow: hidden; background: #eee; flex-shrink: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .v-photo-container { width: 120px; height: 120px; border-radius: 15px; border: 4px solid var(--gold); overflow: hidden; background: #eee; flex-shrink: 0; }
         .v-photo { width: 100%; height: 100%; object-fit: cover; }
         .v-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1; text-align: left; }
         .v-item label { font-size: 8px; font-weight: 800; color: #999; display: block; text-transform: uppercase; }
@@ -60,7 +60,6 @@
         .marks-table td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 700; }
         .hw-box { background: #fffde7; padding: 15px; border-radius: 10px; border-left: 5px solid #fbc02d; font-style: italic; }
 
-        .btn-attract { background: linear-gradient(135deg, var(--forest), #004d26); color: white; padding: 12px; border-radius: 50px; font-weight: bold; border: 2px solid var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: white; display: flex; justify-content: center; z-index: 50; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
         .btn-premium { background: var(--forest); color: white; padding: 14px 30px; border-radius: 60px; font-weight: 800; text-decoration: none; border: 2px solid var(--gold); display: flex; align-items: center; gap: 10px; }
 
@@ -76,29 +75,17 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 <div id="loginScreen" class="overlay-screen">
     <div class="auth-box">
         <img src="logo.png" class="auth-logo">
         <div class="auth-branding-text"><h2>PARAMOUNT</h2><p style="color:var(--gold); font-weight:800; font-size:11px;">Admin Access Box</p></div>
-        <input type="password" id="adminPass" class="auth-input" placeholder="Password" onkeypress="if(event.key === 'Enter') login()">
+        <input type="password" id="adminPass" class="auth-input" placeholder="Admin Password" onkeypress="if(event.key === 'Enter') login()">
         <button onclick="login()" class="btn-attract" style="height:50px; width:100%">Unlock Dashboard <i class="fas fa-unlock"></i></button>
         <div class="auth-links">
             <span onclick="window.location.href='index.html'">Cancel & Return</span>
             <span onclick="openRecovery()">Forgot Password?</span>
         </div>
-    </div>
-</div>
-
-<div id="recoveryScreen" class="overlay-screen" style="display:none;">
-    <div class="auth-box">
-        <h2>Reset Access</h2>
-        <input type="password" id="masterKey" class="auth-input" placeholder="Master Key">
-        <input type="password" id="newPass" class="auth-input" placeholder="New Password">
-        <button onclick="recoverPass()" class="btn-attract">Update Password</button>
-        <div class="auth-links"><span onclick="closeRecovery()">Back to Login</span></div>
     </div>
 </div>
 
@@ -114,7 +101,7 @@
 
     <div class="container">
         <div class="search-card">
-            <input type="text" id="rollSearch" placeholder="Student Roll No (e.g. 1298337)">
+            <input type="text" id="rollSearch" placeholder="Student Roll No (e.g. 1472070)" onkeypress="if(event.key === 'Enter') search360()">
             <button class="btn-search" onclick="search360()">SEARCH 360°</button>
         </div>
 
@@ -138,7 +125,7 @@
                     </div>
                 </div>
                 <div class="stat-grid">
-                    <div class="stat-box"><small>TOTAL</small><strong id="vTotal">0</strong></div>
+                    <div class="stat-box"><small>TOTAL DAYS</small><strong id="vTotal">0</strong></div>
                     <div class="stat-box"><small>PRESENT</small><strong id="vPres" style="color:green;">0</strong></div>
                     <div class="stat-box"><small>ABSENT</small><strong id="vAbs" style="color:var(--danger);">0</strong></div>
                 </div>
@@ -151,8 +138,8 @@
             </div>
 
             <div class="card" style="border-top-color: #fbc02d;">
-                <h3><i class="fas fa-book-open"></i> Daily Homework</h3>
-                <div id="vHW" class="hw-box">No homework assigned today.</div>
+                <h3><i class="fas fa-book-open"></i> Today's Homework</h3>
+                <div id="vHW" class="hw-box">No homework assigned.</div>
             </div>
 
             <div class="card" style="border-top-color: var(--gold);">
@@ -177,16 +164,8 @@
                 <button onclick="clearAnn()" class="btn-attract" style="background:#eee; color:#666; border-color:#ccc; flex:0.4;">Clear</button>
             </div>
         </div>
-
-        <div class="card" style="border-top-color: var(--danger);">
-            <h3><i class="fas fa-tools"></i> System Tools</h3>
-            <div style="display: grid; gap: 8px; grid-template-columns: 1fr 1fr;">
-                <button onclick="secureReset('monthly')" class="btn-attract" style="background:#fb8c00;">Reset Month</button>
-                <button onclick="secureReset('master')" class="btn-attract danger" style="background:#c62828;">Full Wipe</button>
-            </div>
-        </div>
     </div>
-    <div class="bottom-nav"><a href="index.html" class="btn-premium"><i class="fas fa-chalkboard-teacher"></i> Teacher Portal</a></div>
+    <div class="bottom-nav"><a href="index.html" class="btn-premium">Teacher Portal</a></div>
 </div>
 
 <script>
@@ -194,7 +173,7 @@ const firebaseConfig = { apiKey: "AIzaSyDRYk9KOK-ga0c88dnYMsAoifW2NJTd_Y8", data
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- COMPLETE 185 STUDENT DATABASE ---
+// --- MASTER 185 STUDENT DATABASE ---
 const studentData = {
     "1472070": { Name: "Hanish Macharla", Class: "Pre-KG (Diamond)", AdmissionNo: "2052", Father: "M.Vinay", Roll: "1472070", Phonenumber: "9182861346", Gender: "Male", Dob: "---" },
     "1478225": { Name: "Arjun Vihaar Illandula", Class: "Pre-KG (Diamond)", AdmissionNo: "2061", Father: "Illandula Ravi", Roll: "1478225", Phonenumber: "9848742172", Gender: "Male", Dob: "2022-11-22" },
@@ -383,7 +362,7 @@ const studentData = {
     "1298334": { Name: "Vyshnavi Uppala", Class: "Grade-8", AdmissionNo: "34", Father: "Ramesh", Roll: "1298334", Phonenumber: "8179254251", Gender: "Female", Dob: "2012-12-10" }
 };
 
-// --- SUBJECT REGISTRY ---
+// --- SUBJECT CONFIGURATION ---
 const classSubjects = {
     "Pre-KG": ["English Oral", "Number Work", "GK", "Rhymes"],
     "KG-1": ["English", "Mathematics", "EVS", "Rhymes", "Hindi"],
@@ -398,25 +377,22 @@ const classSubjects = {
     "Grade-8": ["English", "Telugu", "Hindi", "Maths", "Physics", "Chemistry", "Biology", "Social", "IIT"]
 };
 
-function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { Swal.fire('Error','Wrong Password','error'); } }
-function openRecovery() { document.getElementById('loginScreen').style.display='none'; document.getElementById('recoveryScreen').style.display='flex'; }
-function closeRecovery() { document.getElementById('recoveryScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
-function recoverPass() { if(document.getElementById('masterKey').value === "paramount") { db.ref('admin/password').set(document.getElementById('newPass').value).then(() => { Swal.fire('Success','Updated','success'); closeRecovery(); }); } }
+function login() { if(document.getElementById('adminPass').value === "Ahmad@07") { document.getElementById('loginScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; } }
 
 async function search360() {
     const roll = document.getElementById('rollSearch').value.trim();
     const s = studentData[roll];
     if(!s) return Swal.fire('Error','Roll Not Found','warning');
 
-    // Reset UI
-    document.getElementById('vMarksBody').innerHTML = '<tr><td colspan="3" style="text-align:center;">Syncing...</td></tr>';
+    // UI Reset
+    document.getElementById('dashboard360').style.display = 'block';
+    document.getElementById('vMarksBody').innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
     document.getElementById('vBadges').innerHTML = "";
-    document.getElementById('vFeeFill').style.width = "0%";
     document.getElementById('vTotalAmt').innerText = "0";
     document.getElementById('vPaid').innerText = "0";
     document.getElementById('vDue').innerText = "0";
+    document.getElementById('vFeeFill').style.width = "0%";
 
-    document.getElementById('dashboard360').style.display = 'block';
     document.getElementById('vName').innerText = s.Name;
     document.getElementById('vClass').innerText = s.Class;
     document.getElementById('vAdm').innerText = s.AdmissionNo;
@@ -425,32 +401,20 @@ async function search360() {
     document.getElementById('vPhone').innerText = s.Phonenumber;
     document.getElementById('vRoll').innerText = roll;
     
-    // --- FIXED IMAGE LOADER (MATCHING STUDENT PORTAL) ---
-    const photoEl = document.getElementById('vPhoto');
-    const ts = new Date().getTime();
-    photoEl.src = `students/${roll}.png?v=${ts}`;
-    photoEl.onerror = function() {
-        if (!this.src.includes('.jpg')) {
-            this.src = `students/${roll}.jpg?v=${ts}`;
-        } else {
-            this.src = 'logo.png';
-            this.onerror = null;
-        }
-    };
+    // --- DIRECT PNG IMAGE LOADER ---
+    document.getElementById('vPhoto').src = `students/${roll}.png`;
 
     const name = s.Name; 
     const fullClass = s.Class; 
-    const shortClass = s.Class.split(" ")[0];
+    const shortClass = s.Class.split(" ")[0]; 
 
     // 1. ATTENDANCE
     db.ref('daily_attendance').once('value', snap => {
         const data = snap.val() || {};
         let p=0, t=0;
         Object.keys(data).forEach(d => {
-            const classPath = data[d][fullClass] || data[d][shortClass];
-            if(classPath && classPath[name] !== undefined) {
-                t++; if(classPath[name] === true) p++;
-            }
+            const cp = data[d][fullClass] || data[d][shortClass];
+            if(cp && cp[name] !== undefined) { t++; if(cp[name] === true) p++; }
         });
         document.getElementById('vTotal').innerText = t;
         document.getElementById('vPres').innerText = p;
@@ -458,24 +422,23 @@ async function search360() {
         document.getElementById('vAttPct').innerText = `Attendance Rate: ${t>0?Math.round((p/t)*100):0}%`;
     });
 
-    // 2. MARKS & BADGES (PATH MATCHING FIX)
+    // 2. MARKS SYNC
     db.ref(`exam_results`).once('value', snap => {
-        const allRes = snap.val() || {};
-        const res = (allRes[fullClass] && allRes[fullClass][name]) || (allRes[shortClass] && allRes[shortClass][name]);
+        const allData = snap.val() || {};
+        const res = (allData[fullClass] && allData[fullClass][name]) || (allData[shortClass] && allData[shortClass][name]);
         const body = document.getElementById('vMarksBody');
+        const subjects = classSubjects[shortClass] || ["English", "Maths"];
         body.innerHTML = "";
 
-        const subjectsToSearch = classSubjects[shortClass] || ["English", "Maths"];
-        
         if(res && res.subjects) {
-            subjectsToSearch.forEach(sub => {
+            subjects.forEach(sub => {
                 const mk = res.subjects[sub] || "---";
-                let gr = mk === "---" ? "---" : (mk >= 75 ? 'A' : (mk >= 50 ? 'B' : 'C'));
+                const gr = mk === "---" ? "---" : (mk >= 75 ? 'A' : (mk >= 50 ? 'B' : 'C'));
                 body.innerHTML += `<tr><td>${sub}</td><td>${mk}</td><td>${gr}</td></tr>`;
             });
             if(res.badge) document.getElementById('vBadges').innerHTML = `<span style="background:var(--gold); padding:4px 12px; border-radius:50px; font-size:10px; font-weight:900; color:black; border:1px solid #b8860b;">${res.badge}</span>`;
         } else {
-            body.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;">No synced marks found.</td></tr>';
+            body.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#999;">No data found.</td></tr>';
         }
     });
 
@@ -487,15 +450,14 @@ async function search360() {
         document.getElementById('vHW').innerText = (hw && hw[today]) ? hw[today] : "No homework assigned.";
     });
 
-    // 4. FEES (DYNAMIC SYNC)
+    // 4. FEES
     db.ref(`fee_records`).once('value', snap => {
         const allFees = snap.val() || {};
         const studentFees = (allFees[fullClass] && allFees[fullClass][name]) || (allFees[shortClass] && allFees[shortClass][name]);
         if(studentFees) {
-            const keys = Object.keys(studentFees);
-            const entry = studentFees[keys[keys.length - 1]];
-            const total = parseFloat(entry.total) || 0;
-            const paid = parseFloat(entry.paid) || 0;
+            const lastEntry = Object.values(studentFees).pop();
+            const total = parseFloat(lastEntry.total) || 0;
+            const paid = parseFloat(lastEntry.paid) || 0;
             const due = total - paid;
             const pct = total > 0 ? (paid/total)*100 : 0;
             document.getElementById('vFeeFill').style.width = Math.min(pct,100)+"%";
@@ -509,7 +471,6 @@ async function search360() {
 
 function postAnn() { db.ref('announcement').set(document.getElementById('annMsg').value).then(()=>Swal.fire('Posted','','success')); }
 function clearAnn() { db.ref('announcement').remove().then(()=>{document.getElementById('annMsg').value=""; Swal.fire('Cleared','','info');}); }
-async function secureReset(m) { const { value: pass } = await Swal.fire({ title: 'Verify', input: 'password' }); if(pass === "Ahmad@07") { if(m === 'master') db.ref('daily_attendance').remove(); Swal.fire('Done','','success'); } }
 </script>
 </body>
 </html>
